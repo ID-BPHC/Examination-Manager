@@ -54,6 +54,9 @@ class CourseList:
     def find_by_code(self, code):
         for course in self.courses:
 
+            if course.code == code:
+                return course
+
             splitted = course.code.split("/")
 
             for splitted_course in splitted:

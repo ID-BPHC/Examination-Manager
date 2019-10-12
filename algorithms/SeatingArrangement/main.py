@@ -1,5 +1,5 @@
 import datetime
-from Course import CourseList
+from algorithms.SeatingArrangement.Course import CourseList
 from openpyxl import Workbook
 from openpyxl.styles import Alignment, Font
 
@@ -9,9 +9,9 @@ def get_dates_from_key(key):
     splitted = key.split("|")
 
     start = datetime.datetime.strptime(
-        splitted[0].strip() + " " + splitted[1].strip(), "%d/%m/%Y %H:%M")
+        splitted[0].strip() + " " + splitted[1].strip(), "%d/%m/%y %H:%M")
     end = datetime.datetime.strptime(
-        splitted[0].strip() + " " + splitted[2].strip(), "%d/%m/%Y %H:%M")
+        splitted[0].strip() + " " + splitted[2].strip(), "%d/%m/%y %H:%M")
 
     return (start, end)
 
@@ -36,7 +36,7 @@ def get_course_list(file_name):
 
     course_list = CourseList()
 
-    for line in f.readlines():
+    for line in f.readlines()[1:]:
 
         splitted = line.split(",")
         room = splitted[0]
@@ -96,7 +96,7 @@ def export_xlsx(course_list, file_name):
         ws[f"A{current_row}"] = f"{course.code}"
         ws[f"B{current_row}"] = f"{course.name}"
 
-        date_string = f"{course.exam_start.strftime('%d %B %Y - %I:%M %p')} to {course.exam_end.strftime('%I:%M %p')}"
+        date_string = f"{course.exam_start.strftime('%d %B %y - %I:%M %p')} to {course.exam_end.strftime('%I:%M %p')}"
         ws[f"C{current_row}"] = date_string
 
         exam_slices = course.get_exam_slices()
@@ -115,7 +115,7 @@ def export_xlsx(course_list, file_name):
     wb.save(file_name)
 
 
-def start_process(room_allotment_csv, students_csv):
+def start_seating_arrangement_process(room_allotment_csv, students_csv):
     course_list = get_course_list(room_allotment_csv)
 
     invalid_courses = add_students(course_list, students_csv)
