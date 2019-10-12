@@ -161,7 +161,7 @@ class MainFrame ( wx.Frame ):
 		gbSizer21.Fit( self.m_panel4 )
 		self.m_notebook2.AddPage( self.m_panel4, u"Seating Arrangement", False )
 		self.m_panel5 = wx.Panel( self.m_notebook2, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
-		gbSizer211 = wx.GridBagSizer( 12, 8 )
+		gbSizer211 = wx.GridBagSizer( 4, 8 )
 		gbSizer211.SetFlexibleDirection( wx.BOTH )
 		gbSizer211.SetNonFlexibleGrowMode( wx.FLEX_GROWMODE_SPECIFIED )
 
@@ -197,7 +197,7 @@ class MainFrame ( wx.Frame ):
 		self.invig_chamber_csv_picker = wx.FilePickerCtrl( self.m_panel5, wx.ID_ANY, wx.EmptyString, u"Select a file", u"*.csv", wx.DefaultPosition, wx.DefaultSize, wx.FLP_DEFAULT_STYLE )
 		gbSizer211.Add( self.invig_chamber_csv_picker, wx.GBPosition( 3, 1 ), wx.GBSpan( 1, 1 ), wx.ALL|wx.EXPAND, 5 )
 
-		self.m_staticText212 = wx.StaticText( self.m_panel5, wx.ID_ANY, u"Timetable CSV\nCourse Code, Course Title, Class_Instructor, Course_admin", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText212 = wx.StaticText( self.m_panel5, wx.ID_ANY, u"Timetable CSV\n-Course Code, Course Title, Class_Instructor, Course_admin", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_staticText212.Wrap( -1 )
 
 		gbSizer211.Add( self.m_staticText212, wx.GBPosition( 4, 0 ), wx.GBSpan( 1, 1 ), wx.ALIGN_CENTER_VERTICAL|wx.ALL, 5 )
@@ -205,7 +205,7 @@ class MainFrame ( wx.Frame ):
 		self.invig_timetable_csv_picker = wx.FilePickerCtrl( self.m_panel5, wx.ID_ANY, wx.EmptyString, u"Select a file", u"*.csv", wx.DefaultPosition, wx.DefaultSize, wx.FLP_DEFAULT_STYLE )
 		gbSizer211.Add( self.invig_timetable_csv_picker, wx.GBPosition( 4, 1 ), wx.GBSpan( 1, 1 ), wx.ALL|wx.EXPAND, 5 )
 
-		self.m_staticText22 = wx.StaticText( self.m_panel5, wx.ID_ANY, u"Leaves CSV\nPSRN, start_date_time, end_date_time (DD/MM/YYYY HH:MM)", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText22 = wx.StaticText( self.m_panel5, wx.ID_ANY, u"Leaves CSV\n-PSRN, start_date_time, end_date_time (DD/MM/YYYY HH:MM)", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_staticText22.Wrap( -1 )
 
 		gbSizer211.Add( self.m_staticText22, wx.GBPosition( 5, 0 ), wx.GBSpan( 1, 1 ), wx.ALL, 5 )
@@ -213,7 +213,7 @@ class MainFrame ( wx.Frame ):
 		self.invig_leaves_csv_picker = wx.FilePickerCtrl( self.m_panel5, wx.ID_ANY, wx.EmptyString, u"Select a file", u"*.csv", wx.DefaultPosition, wx.DefaultSize, wx.FLP_DEFAULT_STYLE )
 		gbSizer211.Add( self.invig_leaves_csv_picker, wx.GBPosition( 5, 1 ), wx.GBSpan( 1, 1 ), wx.ALL|wx.EXPAND, 5 )
 
-		self.m_staticText23 = wx.StaticText( self.m_panel5, wx.ID_ANY, u"Max Duties CSV\nPSRN, max_duties", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText23 = wx.StaticText( self.m_panel5, wx.ID_ANY, u"Max Duties CSV\n-PSRN, max_duties", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_staticText23.Wrap( -1 )
 
 		gbSizer211.Add( self.m_staticText23, wx.GBPosition( 6, 0 ), wx.GBSpan( 1, 1 ), wx.ALL, 5 )
@@ -221,8 +221,24 @@ class MainFrame ( wx.Frame ):
 		self.invig_duties_csv_picker = wx.FilePickerCtrl( self.m_panel5, wx.ID_ANY, wx.EmptyString, u"Select a file", u"*.csv", wx.DefaultPosition, wx.DefaultSize, wx.FLP_DEFAULT_STYLE )
 		gbSizer211.Add( self.invig_duties_csv_picker, wx.GBPosition( 6, 1 ), wx.GBSpan( 1, 1 ), wx.ALL|wx.EXPAND, 5 )
 
+		self.m_staticText191 = wx.StaticText( self.m_panel5, wx.ID_ANY, u"Reserve duties per time slot", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText191.Wrap( -1 )
+
+		gbSizer211.Add( self.m_staticText191, wx.GBPosition( 7, 0 ), wx.GBSpan( 1, 1 ), wx.ALL, 5 )
+
+		self.invig_reserve_duties_box = wx.SpinCtrl( self.m_panel5, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, wx.SP_ARROW_KEYS, 0, 10, 0 )
+		gbSizer211.Add( self.invig_reserve_duties_box, wx.GBPosition( 7, 1 ), wx.GBSpan( 1, 1 ), wx.ALL|wx.EXPAND, 5 )
+
+		self.m_staticText201 = wx.StaticText( self.m_panel5, wx.ID_ANY, u"Big Course Cutoffs", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText201.Wrap( -1 )
+
+		gbSizer211.Add( self.m_staticText201, wx.GBPosition( 8, 0 ), wx.GBSpan( 1, 1 ), wx.ALL, 5 )
+
+		self.invig_big_course_cutoffs_box = wx.TextCtrl( self.m_panel5, wx.ID_ANY, u"150,300,500,1000", wx.DefaultPosition, wx.DefaultSize, 0 )
+		gbSizer211.Add( self.invig_big_course_cutoffs_box, wx.GBPosition( 8, 1 ), wx.GBSpan( 1, 1 ), wx.ALL|wx.EXPAND, 5 )
+
 		self.invig_generate_btn = wx.Button( self.m_panel5, wx.ID_ANY, u"Generate", wx.DefaultPosition, wx.DefaultSize, 0 )
-		gbSizer211.Add( self.invig_generate_btn, wx.GBPosition( 7, 0 ), wx.GBSpan( 1, 2 ), wx.ALIGN_CENTER|wx.ALL, 5 )
+		gbSizer211.Add( self.invig_generate_btn, wx.GBPosition( 9, 0 ), wx.GBSpan( 1, 2 ), wx.ALIGN_CENTER|wx.ALL, 5 )
 
 		self.invig_error_box = wx.stc.StyledTextCtrl(self.m_panel5, wx.ID_ANY, wx.DefaultPosition, wx.Size( -1,-1 ), 0)
 		self.invig_error_box.SetUseTabs ( True )
@@ -254,12 +270,12 @@ class MainFrame ( wx.Frame ):
 		self.invig_error_box.MarkerDefine( wx.stc.STC_MARKNUM_FOLDERTAIL, wx.stc.STC_MARK_EMPTY )
 		self.invig_error_box.SetSelBackground( True, wx.SystemSettings.GetColour(wx.SYS_COLOUR_HIGHLIGHT ) )
 		self.invig_error_box.SetSelForeground( True, wx.SystemSettings.GetColour(wx.SYS_COLOUR_HIGHLIGHTTEXT ) )
-		gbSizer211.Add( self.invig_error_box, wx.GBPosition( 8, 0 ), wx.GBSpan( 1, 2 ), wx.EXPAND |wx.ALL, 5 )
+		gbSizer211.Add( self.invig_error_box, wx.GBPosition( 10, 0 ), wx.GBSpan( 1, 2 ), wx.EXPAND |wx.ALL, 5 )
 
 
 		gbSizer211.AddGrowableCol( 0 )
 		gbSizer211.AddGrowableCol( 1 )
-		gbSizer211.AddGrowableRow( 8 )
+		gbSizer211.AddGrowableRow( 10 )
 
 		self.m_panel5.SetSizer( gbSizer211 )
 		self.m_panel5.Layout()
