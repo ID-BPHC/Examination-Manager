@@ -38,18 +38,18 @@ class MainFrame ( wx.Frame ):
 		self.room_csv_picker = wx.FilePickerCtrl( self.m_panel3, wx.ID_ANY, wx.EmptyString, u"Select a file", u"*.csv", wx.DefaultPosition, wx.Size( -1,-1 ), wx.FLP_DEFAULT_STYLE )
 		gbSizer2.Add( self.room_csv_picker, wx.GBPosition( 0, 1 ), wx.GBSpan( 1, 1 ), wx.ALL|wx.EXPAND, 5 )
 
-		self.m_staticText2 = wx.StaticText( self.m_panel3, wx.ID_ANY, u"*Exam CSV File*\n-course_code, course_title, Enrolment_Count, date,start_time,end_time\n-No Duplicates", wx.DefaultPosition, wx.DefaultSize, 0 )
-		self.m_staticText2.Wrap( 350 )
+		self.m_staticText2 = wx.StaticText( self.m_panel3, wx.ID_ANY, u"*Exam CSV File*\n-course_code, course_title, Enrolment_Count, date (DD/MM/YY), start_time (HH:MM), end_time (HH:MM)\n-No Duplicates", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText2.Wrap( 490 )
 
-		gbSizer2.Add( self.m_staticText2, wx.GBPosition( 1, 0 ), wx.GBSpan( 1, 1 ), wx.ALIGN_CENTER_VERTICAL|wx.ALL, 5 )
+		gbSizer2.Add( self.m_staticText2, wx.GBPosition( 1, 0 ), wx.GBSpan( 1, 1 ), wx.ALIGN_CENTER_VERTICAL|wx.ALL|wx.EXPAND, 5 )
 
-		self.exam_csv_picker = wx.FilePickerCtrl( self.m_panel3, wx.ID_ANY, wx.EmptyString, u"Select a file", u"*.csv", wx.DefaultPosition, wx.DefaultSize, wx.FLP_DEFAULT_STYLE )
-		gbSizer2.Add( self.exam_csv_picker, wx.GBPosition( 1, 1 ), wx.GBSpan( 1, 1 ), wx.ALIGN_CENTER|wx.EXPAND, 5 )
+		self.room_exam_csv_picker = wx.FilePickerCtrl( self.m_panel3, wx.ID_ANY, wx.EmptyString, u"Select a file", u"*.csv", wx.DefaultPosition, wx.DefaultSize, wx.FLP_DEFAULT_STYLE )
+		gbSizer2.Add( self.room_exam_csv_picker, wx.GBPosition( 1, 1 ), wx.GBSpan( 1, 1 ), wx.ALIGN_CENTER|wx.EXPAND, 5 )
 
-		algorithm_radioChoices = [ u"Single Course", u"Double Course" ]
-		self.algorithm_radio = wx.RadioBox( self.m_panel3, wx.ID_ANY, u"Allotment Algorithm", wx.DefaultPosition, wx.Size( -1,-1 ), algorithm_radioChoices, 2, wx.RA_SPECIFY_COLS )
-		self.algorithm_radio.SetSelection( 0 )
-		gbSizer2.Add( self.algorithm_radio, wx.GBPosition( 2, 0 ), wx.GBSpan( 1, 1 ), wx.ALIGN_CENTER_VERTICAL|wx.ALL|wx.EXPAND, 5 )
+		room_algorithm_radioChoices = [ u"Single Course", u"Double Course" ]
+		self.room_algorithm_radio = wx.RadioBox( self.m_panel3, wx.ID_ANY, u"Allotment Algorithm", wx.DefaultPosition, wx.Size( -1,-1 ), room_algorithm_radioChoices, 2, wx.RA_SPECIFY_COLS )
+		self.room_algorithm_radio.SetSelection( 1 )
+		gbSizer2.Add( self.room_algorithm_radio, wx.GBPosition( 2, 0 ), wx.GBSpan( 1, 1 ), wx.ALIGN_CENTER_VERTICAL|wx.ALL|wx.EXPAND, 5 )
 
 		self.room_generate_btn = wx.Button( self.m_panel3, wx.ID_ANY, u"Generate", wx.DefaultPosition, wx.DefaultSize, 0 )
 		gbSizer2.Add( self.room_generate_btn, wx.GBPosition( 2, 1 ), wx.GBSpan( 1, 1 ), wx.ALIGN_CENTER|wx.ALL, 5 )
