@@ -121,8 +121,8 @@
                         <object class="notebookpage" expanded="1">
                             <property name="bitmap"></property>
                             <property name="label">Room Allotment</property>
-                            <property name="select">0</property>
-                            <object class="wxPanel" expanded="1">
+                            <property name="select">1</property>
+                            <object class="wxPanel" expanded="0">
                                 <property name="BottomDockable">1</property>
                                 <property name="LeftDockable">1</property>
                                 <property name="RightDockable">1</property>
@@ -173,7 +173,7 @@
                                 <property name="window_extra_style"></property>
                                 <property name="window_name"></property>
                                 <property name="window_style">wxTAB_TRAVERSAL</property>
-                                <object class="wxGridBagSizer" expanded="1">
+                                <object class="wxGridBagSizer" expanded="0">
                                     <property name="empty_cell_size"></property>
                                     <property name="flexible_direction">wxBOTH</property>
                                     <property name="growablecols">0,1</property>
@@ -668,7 +668,7 @@
                             <property name="bitmap"></property>
                             <property name="label">Seating Arrangement</property>
                             <property name="select">0</property>
-                            <object class="wxPanel" expanded="1">
+                            <object class="wxPanel" expanded="0">
                                 <property name="BottomDockable">1</property>
                                 <property name="LeftDockable">1</property>
                                 <property name="RightDockable">1</property>
@@ -719,7 +719,7 @@
                                 <property name="window_extra_style"></property>
                                 <property name="window_name"></property>
                                 <property name="window_style">wxTAB_TRAVERSAL</property>
-                                <object class="wxGridBagSizer" expanded="1">
+                                <object class="wxGridBagSizer" expanded="0">
                                     <property name="empty_cell_size"></property>
                                     <property name="flexible_direction">wxBOTH</property>
                                     <property name="growablecols">0,1</property>
@@ -1145,7 +1145,7 @@
                             <property name="bitmap"></property>
                             <property name="label">Invigilation</property>
                             <property name="select">0</property>
-                            <object class="wxPanel" expanded="1">
+                            <object class="wxPanel" expanded="0">
                                 <property name="BottomDockable">1</property>
                                 <property name="LeftDockable">1</property>
                                 <property name="RightDockable">1</property>
@@ -1196,7 +1196,7 @@
                                 <property name="window_extra_style"></property>
                                 <property name="window_name"></property>
                                 <property name="window_style">wxTAB_TRAVERSAL</property>
-                                <object class="wxGridBagSizer" expanded="1">
+                                <object class="wxGridBagSizer" expanded="0">
                                     <property name="empty_cell_size"></property>
                                     <property name="flexible_direction">wxBOTH</property>
                                     <property name="growablecols">0,1</property>
@@ -2282,7 +2282,7 @@
                             <property name="bitmap"></property>
                             <property name="label">Reports</property>
                             <property name="select">0</property>
-                            <object class="wxPanel" expanded="1">
+                            <object class="wxPanel" expanded="0">
                                 <property name="BottomDockable">1</property>
                                 <property name="LeftDockable">1</property>
                                 <property name="RightDockable">1</property>
@@ -3097,8 +3097,8 @@
                         <object class="notebookpage" expanded="1">
                             <property name="bitmap"></property>
                             <property name="label">Mailer</property>
-                            <property name="select">1</property>
-                            <object class="wxPanel" expanded="1">
+                            <property name="select">0</property>
+                            <object class="wxPanel" expanded="0">
                                 <property name="BottomDockable">1</property>
                                 <property name="LeftDockable">1</property>
                                 <property name="RightDockable">1</property>
@@ -3149,7 +3149,7 @@
                                 <property name="window_extra_style"></property>
                                 <property name="window_name"></property>
                                 <property name="window_style">wxTAB_TRAVERSAL</property>
-                                <object class="wxGridBagSizer" expanded="1">
+                                <object class="wxGridBagSizer" expanded="0">
                                     <property name="empty_cell_size"></property>
                                     <property name="flexible_direction">wxBOTH</property>
                                     <property name="growablecols">0,1</property>

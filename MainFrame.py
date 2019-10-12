@@ -94,7 +94,7 @@ class MainFrame ( wx.Frame ):
 		self.m_panel3.SetSizer( gbSizer2 )
 		self.m_panel3.Layout()
 		gbSizer2.Fit( self.m_panel3 )
-		self.m_notebook2.AddPage( self.m_panel3, u"Room Allotment", False )
+		self.m_notebook2.AddPage( self.m_panel3, u"Room Allotment", True )
 		self.m_panel4 = wx.Panel( self.m_notebook2, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
 		gbSizer21 = wx.GridBagSizer( 20, 20 )
 		gbSizer21.SetFlexibleDirection( wx.BOTH )
@@ -457,7 +457,7 @@ class MainFrame ( wx.Frame ):
 		self.m_panel7.SetSizer( gbSizer15 )
 		self.m_panel7.Layout()
 		gbSizer15.Fit( self.m_panel7 )
-		self.m_notebook2.AddPage( self.m_panel7, u"Mailer", True )
+		self.m_notebook2.AddPage( self.m_panel7, u"Mailer", False )
 
 		bSizer1.Add( self.m_notebook2, 1, wx.EXPAND |wx.ALL, 5 )
 
