@@ -216,9 +216,9 @@ def get_dates_from_key(key):
     splitted = key.split("|")
 
     start = datetime.datetime.strptime(
-        splitted[0].strip() + " " + splitted[1].strip(), "%d/%m/%Y %H:%M")
+        splitted[0].strip() + " " + splitted[1].strip(), "%d/%m/%y %H:%M")
     end = datetime.datetime.strptime(
-        splitted[0].strip() + " " + splitted[2].strip(), "%d/%m/%Y %H:%M")
+        splitted[0].strip() + " " + splitted[2].strip(), "%d/%m/%y %H:%M")
 
     return (start, end)
 
@@ -640,7 +640,7 @@ def export_csv(invigilator_list, file_name):
 
     f = open(file_name, "w")
 
-    f.write(f"invigilator_psrn,invigilator_name,invigilator_type,invigilator_dept,room,course_code,course_name,date,start_time,end_time,invigilator_email,total_invigilator_duties,ic_psrn,ic_name,ic_email,ic_chamber" + os.linesep)
+    f.write(f"invigilator_psrn,invigilator_name,invigilator_type,invigilator_dept,room,course_code,course_name,date,start_time,end_time,invigilator_email,total_invigilator_duties,ic_psrn,ic_name,ic_email,ic_chamber\n")
 
     for invigilator in invigilator_list:
         invigilator_type = "SCHOLAR" if invigilator.is_research_scholar else "FACULTY"
@@ -652,7 +652,7 @@ def export_csv(invigilator_list, file_name):
             end_time = duty.end_time.strftime("%H:%M:%S")
 
             f.write(
-                f"{invigilator.psrn},{invigilator.name},{invigilator_type},{invigilator.department},{duty.room},{duty.course.code},{duty.course.name},{date},{start_time},{end_time},{invigilator.email},{len(invigilator.duties)},{duty.course.ic.psrn},{duty.course.ic.name},{duty.course.ic.email},{duty.course.ic.chamber}" + os.linesep)
+                f"{invigilator.psrn},{invigilator.name},{invigilator_type},{invigilator.department},{duty.room},{duty.course.code},{duty.course.name},{date},{start_time},{end_time},{invigilator.email},{len(invigilator.duties)},{duty.course.ic.psrn},{duty.course.ic.name},{duty.course.ic.email},{duty.course.ic.chamber}\n")
 
     f.close()
 
