@@ -205,7 +205,7 @@ class MainFrame ( wx.Frame ):
 		self.invig_timetable_csv_picker = wx.FilePickerCtrl( self.m_panel5, wx.ID_ANY, wx.EmptyString, u"Select a file", u"*.csv", wx.DefaultPosition, wx.DefaultSize, wx.FLP_DEFAULT_STYLE )
 		gbSizer211.Add( self.invig_timetable_csv_picker, wx.GBPosition( 4, 1 ), wx.GBSpan( 1, 1 ), wx.ALL|wx.EXPAND, 5 )
 
-		self.m_staticText22 = wx.StaticText( self.m_panel5, wx.ID_ANY, u"Leaves CSV\n-PSRN, start_date_time, end_date_time (DD/MM/YYYY HH:MM)", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText22 = wx.StaticText( self.m_panel5, wx.ID_ANY, u"Leaves CSV\n-PSRN, start_date_time, end_date_time (DD/MM/YY HH:MM)", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_staticText22.Wrap( -1 )
 
 		gbSizer211.Add( self.m_staticText22, wx.GBPosition( 5, 0 ), wx.GBSpan( 1, 1 ), wx.ALL, 5 )
