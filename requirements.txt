@@ -1,2 +1,5 @@
 wxpython
 openpyxl
+reportlab
+beautifulsoup4
+lxml
