@@ -286,7 +286,7 @@ class MainFrame ( wx.Frame ):
 		gbSizer212.SetFlexibleDirection( wx.BOTH )
 		gbSizer212.SetNonFlexibleGrowMode( wx.FLEX_GROWMODE_SPECIFIED )
 
-		self.report_config_btn = wx.Button( self.m_panel6, wx.ID_ANY, u"Update Configuration", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.report_config_btn = wx.Button( self.m_panel6, wx.ID_ANY, u"Update Configuration (Application Restart Required)", wx.DefaultPosition, wx.DefaultSize, 0 )
 		gbSizer212.Add( self.report_config_btn, wx.GBPosition( 0, 0 ), wx.GBSpan( 1, 3 ), wx.ALL|wx.EXPAND, 5 )
 
 		self.m_staticText112 = wx.StaticText( self.m_panel6, wx.ID_ANY, u"Invigilation CSV File", wx.DefaultPosition, wx.DefaultSize, 0 )
