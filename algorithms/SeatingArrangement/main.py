@@ -116,6 +116,9 @@ def export_xlsx(course_list, file_name):
 
 
 def start_seating_arrangement_process(room_allotment_csv, students_csv):
+
+    print("Starting....")
+
     course_list = get_course_list(room_allotment_csv)
 
     invalid_courses = add_students(course_list, students_csv)

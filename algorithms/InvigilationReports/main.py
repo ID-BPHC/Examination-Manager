@@ -149,6 +149,9 @@ def generate_report_pdfs(reports, path):
 
 
 def start_invig_report_generation(invig_csv):
+
+    print("***** Starting Report Generation *****")
+
     if os.path.exists("./Invigilation_Reports") and os.path.isdir("./Invigilation_Reports"):
         shutil.rmtree("./Invigilation_Reports")
 
@@ -164,3 +167,5 @@ def start_invig_report_generation(invig_csv):
     print("******** Generating IC PDFs ********")
     ic_reports = get_ic_reports(invig_csv)
     generate_report_pdfs(ic_reports, "./Invigilation_Reports/IC")
+
+    print("******** Done ********")

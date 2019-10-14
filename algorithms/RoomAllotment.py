@@ -213,6 +213,9 @@ def export_csv(rooms, file_name):
 
 
 def start_process(rooms_csv, exams_csv, is_double):
+
+    print("Starting....")
+
     # room, capacity
     # Ensure no commas, DUPLICATES and BOM
     rooms = get_rooms(rooms_csv)

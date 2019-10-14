@@ -658,6 +658,9 @@ def export_csv(invigilator_list, file_name):
 
 
 def start_invigilation_process(faculty_csv, scholar_csv, chamber_csv, course_teacher_csv, leaves_csv, max_duties_csv, room_allotment_csv, reserve_duties, big_course_cutoffs):
+
+    print("Starting....")
+
     # ENSURE UNIQUE ROWS IN EACH CSV
 
     # psrn, name, dept, email
