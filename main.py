@@ -4,6 +4,8 @@ from MainFrame import MainFrame
 from algorithms import RoomAllotment
 from algorithms.SeatingArrangement.main import start_seating_arrangement_process
 from algorithms.Invigilation.main import start_invigilation_process
+from algorithms.InvigilationReports.main import start_invig_report_generation
+from xmlEditor import start_xml_editor
 
 frame: MainFrame = None
 app = None
@@ -45,6 +47,15 @@ def invig_generate_btn_clicked(event):
         cutoffs
     )
 
+def report_config_clicked(event):
+    start_xml_editor()
+
+def report_invig_generate_btn_clicked(event):
+    sys.stdout = frame.report_error_box
+    sys.stderr = frame.report_error_box
+    frame.report_error_box.ClearAll()
+    start_invig_report_generation(frame.report_invig_csv_picker.GetPath())
+
 
 if __name__ == "__main__":
     app = wx.App(False)
@@ -53,5 +64,7 @@ if __name__ == "__main__":
     frame.seating_generate_btn.Bind(
         wx.EVT_BUTTON, seating_generate_btn_clicked)
     frame.invig_generate_btn.Bind(wx.EVT_BUTTON, invig_generate_btn_clicked)
+    frame.report_config_btn.Bind(wx.EVT_BUTTON, report_config_clicked)
+    frame.report_invig_generate_btn.Bind(wx.EVT_BUTTON, report_invig_generate_btn_clicked)
     frame.Show()
     app.MainLoop()

@@ -297,7 +297,7 @@ class GUI(tk.Frame):
         for element in AutoSelectEntry.elements:
             element.dirty = False
 
-        self.status.set("File backed up and saved.")
+        self.status.set("File saved.")
 
     def make(self, frame, bs):
         children = list(filter(istag, bs.children))
@@ -389,7 +389,7 @@ def MSiffy(data):
     return nd.replace("\n\n", "")
 
 
-def main():
+def start_xml_editor():
     root = tk.Tk()
     window = GUI(root)
     window.pack(fill=tk.BOTH, expand=True)
@@ -402,7 +402,6 @@ def main():
 
 if __name__ == "__main__":
     try:
-        main()
+        start_xml_editor()
     except Exception as e:
         showerror("Fatal error!", "Config Editor crashed.\n\n"+str(e))
-        raise
