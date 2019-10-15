@@ -2542,7 +2542,7 @@
                             <property name="bitmap"></property>
                             <property name="label">Reports</property>
                             <property name="select">0</property>
-                            <object class="wxPanel" expanded="1">
+                            <object class="wxPanel" expanded="0">
                                 <property name="BottomDockable">1</property>
                                 <property name="LeftDockable">1</property>
                                 <property name="RightDockable">1</property>
@@ -2593,7 +2593,7 @@
                                 <property name="window_extra_style"></property>
                                 <property name="window_name"></property>
                                 <property name="window_style">wxTAB_TRAVERSAL</property>
-                                <object class="wxGridBagSizer" expanded="1">
+                                <object class="wxGridBagSizer" expanded="0">
                                     <property name="empty_cell_size"></property>
                                     <property name="flexible_direction">wxBOTH</property>
                                     <property name="growablecols">0,1</property>
@@ -2604,14 +2604,14 @@
                                     <property name="non_flexible_grow_mode">wxFLEX_GROWMODE_SPECIFIED</property>
                                     <property name="permission">none</property>
                                     <property name="vgap">20</property>
-                                    <object class="gbsizeritem" expanded="1">
+                                    <object class="gbsizeritem" expanded="0">
                                         <property name="border">5</property>
                                         <property name="colspan">3</property>
                                         <property name="column">0</property>
                                         <property name="flag">wxALL|wxEXPAND</property>
                                         <property name="row">0</property>
                                         <property name="rowspan">1</property>
-                                        <object class="wxButton" expanded="1">
+                                        <object class="wxButton" expanded="0">
                                             <property name="BottomDockable">1</property>
                                             <property name="LeftDockable">1</property>
                                             <property name="RightDockable">1</property>
@@ -2921,7 +2921,7 @@
                                             <property name="gripper">0</property>
                                             <property name="hidden">0</property>
                                             <property name="id">wxID_ANY</property>
-                                            <property name="label">Seating Arrangement XLSX</property>
+                                            <property name="label">Room Allotment CSV</property>
                                             <property name="markup">0</property>
                                             <property name="max_size"></property>
                                             <property name="maximize_button">0</property>
@@ -3012,7 +3012,7 @@
                                             <property name="validator_type">wxDefaultValidator</property>
                                             <property name="validator_variable"></property>
                                             <property name="value"></property>
-                                            <property name="wildcard">*.xlsx</property>
+                                            <property name="wildcard">*.csv</property>
                                             <property name="window_extra_style"></property>
                                             <property name="window_name"></property>
                                             <property name="window_style"></property>

@@ -300,12 +300,12 @@ class MainFrame ( wx.Frame ):
 		self.report_invig_generate_btn = wx.Button( self.m_panel6, wx.ID_ANY, u"Generate Invigilation PDFs", wx.DefaultPosition, wx.DefaultSize, 0 )
 		gbSizer212.Add( self.report_invig_generate_btn, wx.GBPosition( 1, 2 ), wx.GBSpan( 1, 1 ), wx.ALL, 5 )
 
-		self.m_staticText213 = wx.StaticText( self.m_panel6, wx.ID_ANY, u"Seating Arrangement XLSX", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText213 = wx.StaticText( self.m_panel6, wx.ID_ANY, u"Room Allotment CSV", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_staticText213.Wrap( 350 )
 
 		gbSizer212.Add( self.m_staticText213, wx.GBPosition( 2, 0 ), wx.GBSpan( 1, 1 ), wx.ALIGN_CENTER_VERTICAL|wx.ALL, 5 )
 
-		self.report_seating_xlsx_picker = wx.FilePickerCtrl( self.m_panel6, wx.ID_ANY, wx.EmptyString, u"Select a file", u"*.xlsx", wx.DefaultPosition, wx.DefaultSize, wx.FLP_DEFAULT_STYLE )
+		self.report_seating_xlsx_picker = wx.FilePickerCtrl( self.m_panel6, wx.ID_ANY, wx.EmptyString, u"Select a file", u"*.csv", wx.DefaultPosition, wx.DefaultSize, wx.FLP_DEFAULT_STYLE )
 		gbSizer212.Add( self.report_seating_xlsx_picker, wx.GBPosition( 2, 1 ), wx.GBSpan( 1, 1 ), wx.ALL|wx.EXPAND, 5 )
 
 		self.m_staticText31 = wx.StaticText( self.m_panel6, wx.ID_ANY, u"Registered Students CSV File\n-student_id, course_code", wx.DefaultPosition, wx.DefaultSize, 0 )
