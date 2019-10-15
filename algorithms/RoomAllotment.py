@@ -197,6 +197,20 @@ def allot_rooms_double(rooms, date_course_map):
                     course, time_slot, seats_alloted, "FULL"))
                 pointer[active_pointer] += 1
 
+def post_process(rooms):
+
+    for room in rooms:
+        for allotment_1 in room.allotments:
+            for allotment_2 in room.allotments:
+
+                if allotment_1 is allotment_2:
+                    continue
+                
+                if allotment_1.course is allotment_2.course:
+
+                    allotment_1.seats_alloted += allotment_2.seats_alloted
+                    allotment_1.remarks = "FULL"
+                    room.allotments.remove(allotment_2)
 
 def export_csv(rooms, file_name):
 
@@ -229,6 +243,7 @@ def start_process(rooms_csv, exams_csv, is_double):
 
     else:
         allot_rooms_single(rooms, date_course_map)
-
+        
+    post_process(rooms)
     export_csv(rooms, "./RoomAllotment.csv")
     print("Room Allotment file exported to ./RoomAllotment.csv")
