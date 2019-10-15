@@ -7,6 +7,7 @@ from algorithms import RoomAllotment
 from algorithms.SeatingArrangement.main import start_seating_arrangement_process
 from algorithms.Invigilation.main import start_invigilation_process
 from algorithms.InvigilationReports.main import start_invig_report_generation
+from algorithms.SeatingChart.main import generate_seating_charts
 from algorithms.Mailer.main import send_mails
 from algorithms.Mailer.login import login_mail_account
 from xmlEditor import start_xml_editor
@@ -68,6 +69,19 @@ def report_invig_generate_btn_clicked(event):
     thread.start()
 
 
+def report_generate_seat_charts_btn_clicked(event):
+    sys.stdout = frame.report_error_box
+    sys.stderr = frame.report_error_box
+    frame.report_error_box.ClearAll()
+    thread = threading.Thread(target=generate_seating_charts, args=(
+        frame.report_room_map_csv_picker.GetPath(), 
+        frame.report_room_csv_picker.GetPath(), 
+        frame.report_students_csv_picker.GetPath(), 
+        frame.report_ic_csv_picker.GetPath()
+    ))
+    thread.start()
+
+
 def mailer_send_btn_clicked(event):
     sys.stdout = frame.mailer_error_box
     sys.stderr = frame.mailer_error_box
@@ -77,6 +91,7 @@ def mailer_send_btn_clicked(event):
         frame.mailer_subject_box.GetValue(), frame.mailer_body_box.GetValue(), frame.mailer_dir_picker.GetPath()))
     thread.start()
 
+
 def mailer_login_btn_clicked(event):
     sys.stdout = frame.mailer_error_box
     sys.stderr = frame.mailer_error_box
@@ -84,8 +99,10 @@ def mailer_login_btn_clicked(event):
     thread = threading.Thread(target=login_mail_account)
     thread.start()
 
+
 def mailer_dir_picker_changed(evnet):
     frame.mailer_send_btn.Enable()
+
 
 if __name__ == "__main__":
     app = wx.App(False)
@@ -99,6 +116,9 @@ if __name__ == "__main__":
         wx.EVT_BUTTON, report_invig_generate_btn_clicked)
     frame.mailer_send_btn.Bind(wx.EVT_BUTTON, mailer_send_btn_clicked)
     frame.mailer_login_btn.Bind(wx.EVT_BUTTON, mailer_login_btn_clicked)
-    frame.mailer_dir_picker.Bind(wx.EVT_DIRPICKER_CHANGED, mailer_dir_picker_changed)
+    frame.mailer_dir_picker.Bind(
+        wx.EVT_DIRPICKER_CHANGED, mailer_dir_picker_changed)
+    frame.report_generate_seat_charts_btn.Bind(
+        wx.EVT_BUTTON, report_generate_seat_charts_btn_clicked)
     frame.Show()
     app.MainLoop()

@@ -221,7 +221,10 @@ def generate_seating_charts(room_map_csv, room_allotment_csv, registered_student
 
         if course.allotment_index < len(course.students):
             print(
-                f"Seating Arrangement Discrepancy {len(course.students) - course.allotment_index} students after {course.get_next_student()} for {course.code} - {course.title}")
+                f"Seating Arrangement Discrepancy - {len(course.students) - course.allotment_index} students after {course.get_next_student()} for {course.code} - {course.title}")
+
+    export_charts()
+    print("***** Done *****")
 
 
 def export_charts():
@@ -293,8 +296,8 @@ def export_charts():
                         cell.border = thin_border
 
                         if cell.value is not None and cell.value.split("-")[0].strip() == course.code:
-                            cell.fill = PatternFill(start_color="E8E8E8", end_color="E8E8E8", fill_type = "solid")
-
+                            cell.fill = PatternFill(
+                                start_color="E8E8E8", end_color="E8E8E8", fill_type="solid")
 
         del wb["Sheet"]
         path = os.path.join("Seating_Charts", course.ic_email,
