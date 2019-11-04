@@ -18,19 +18,10 @@ basestring = str
 __version__ = (0, 2)
 debug = False
 
-# load global options dictionary
-opt_fn = "reader_options.json"
-
 # default options
 opt = {
     'dir': None  # last seen directory
 }
-
-try:
-    with open(opt_fn) as f:
-        opt.update(json.load(f))
-except Exception as e:
-    print("default options used due to", e)
 
 
 class FilePicker(tk.Frame):
@@ -396,9 +387,6 @@ def start_xml_editor():
     if len(sys.argv) > 1:
         window.top.load_path(" ".join(sys.argv[1:]))
     root.mainloop()
-    with open(opt_fn, 'w') as f:
-        json.dump(opt, f, indent=2)
-
 
 if __name__ == "__main__":
     try:
