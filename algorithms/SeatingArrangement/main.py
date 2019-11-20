@@ -123,12 +123,22 @@ def start_seating_arrangement_process(room_allotment_csv, students_csv):
 
     invalid_courses = add_students(course_list, students_csv)
 
-    print("The following courses do not have a room allotment (please re-confirm):\n")
+    print("\nThe following courses do not have a room allotment (please re-confirm):\n")
 
     for course in invalid_courses:
         print(f"\t=> {course}")
 
     course_list.sort_entries()
+
+    for course in course_list.courses:
+
+        total = 0
+
+        for room, student_count in course.rooms:
+            total += student_count
+        
+        if total != len(course.students):
+            print(f"{course.code} Student count mismatch. Room Allotment -> {total} and Enrolments -> {len(course.students)}")
 
     export_xlsx(
         course_list, "./SeatingArrangement.xlsx")

@@ -28,12 +28,6 @@ class Course:
                 (room[0], room[1], self.students[start_index], self.students[end_index]))
             start_index += room[1]
 
-        if start_index != len(self.students):
-            print(
-                f"Total seated students different from students enrolled for {self.code}{os.linesep}")
-            print(
-                f"\tSeated: {start_index}{os.linesep}\tEnrolled: {len(self.students)}\n")
-
         return slices
 
     def __repr__(self):
