@@ -66,7 +66,7 @@ class CourseList:
         return f"{len(self.courses)} courses"
 
 
-def get_matched_rooms(number):
+def get_matched_rooms(room_map, number):
 
     keys = []
 
@@ -78,12 +78,11 @@ def get_matched_rooms(number):
     return keys
 
 
-room_map = {}
-final_solution = {}
-course_list = CourseList()
+def get_populated_maps(room_map_csv, room_allotment_csv, registered_students_csv, ic_csv):
 
-
-def populate_maps(room_map_csv, room_allotment_csv, registered_students_csv, ic_csv):
+    room_map = {}
+    final_solution = {}
+    course_list = CourseList()
 
     print("Reading Data")
 
@@ -126,7 +125,7 @@ def populate_maps(room_map_csv, room_allotment_csv, registered_students_csv, ic_
             final_solution[time] = {}
 
         if room not in final_solution[time]:
-            matched_room_keys = get_matched_rooms(room)
+            matched_room_keys = get_matched_rooms(room_map, room)
 
             for key in matched_room_keys:
 
@@ -178,19 +177,21 @@ def populate_maps(room_map_csv, room_allotment_csv, registered_students_csv, ic_
 
     f.close()
 
+    return room_map, final_solution, course_list
+
 
 def generate_seating_charts(room_map_csv, room_allotment_csv, registered_students_csv, ic_csv):
 
     print("Generating Seating Charts")
 
-    populate_maps(room_map_csv, room_allotment_csv,
+    room_map, final_solution, course_list = get_populated_maps(room_map_csv, room_allotment_csv,
                   registered_students_csv, ic_csv)
 
     for course in course_list.courses:
 
         for room, remark, student_count in course.rooms:
 
-            keys = get_matched_rooms(room)
+            keys = get_matched_rooms(room_map, room)
             seated = 0
 
             for key in keys:
@@ -223,11 +224,11 @@ def generate_seating_charts(room_map_csv, room_allotment_csv, registered_student
             print(
                 f"Seating Arrangement Discrepancy - {len(course.students) - course.allotment_index} students after {course.get_next_student()} for {course.code} - {course.title}")
 
-    export_charts()
+    export_charts(room_map, course_list, final_solution)
     print("***** Done *****")
 
 
-def export_charts():
+def export_charts(room_map, course_list, final_solution):
 
     print("***** Starting Chart Generation *****")
 
@@ -257,7 +258,7 @@ def export_charts():
 
         for room, flag, student_count in course.rooms:
 
-            keys = get_matched_rooms(room)
+            keys = get_matched_rooms(room_map, room)
 
             for key in keys:
 
