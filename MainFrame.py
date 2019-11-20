@@ -10,6 +10,7 @@
 import wx
 import wx.xrc
 import wx.stc
+import wx.adv
 
 ###########################################################################
 ## Class MainFrame
@@ -18,7 +19,7 @@ import wx.stc
 class MainFrame ( wx.Frame ):
 
 	def __init__( self, parent ):
-		wx.Frame.__init__ ( self, parent, id = wx.ID_ANY, title = wx.EmptyString, pos = wx.DefaultPosition, size = wx.Size( 1024,600 ), style = wx.DEFAULT_FRAME_STYLE|wx.TAB_TRAVERSAL )
+		wx.Frame.__init__ ( self, parent, id = wx.ID_ANY, title = wx.EmptyString, pos = wx.DefaultPosition, size = wx.Size( 994,600 ), style = wx.DEFAULT_FRAME_STYLE|wx.TAB_TRAVERSAL )
 
 		self.SetSizeHints( wx.DefaultSize, wx.DefaultSize )
 
@@ -485,6 +486,34 @@ class MainFrame ( wx.Frame ):
 		self.m_panel7.Layout()
 		gbSizer15.Fit( self.m_panel7 )
 		self.m_notebook2.AddPage( self.m_panel7, u"Mailer", False )
+		self.m_panel61 = wx.Panel( self.m_notebook2, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
+		bSizer2 = wx.BoxSizer( wx.VERTICAL )
+
+		self.m_staticText25 = wx.StaticText( self.m_panel61, wx.ID_ANY, u"Developed for Timetable Division - BITS Pilani Hyderabad Campus", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText25.Wrap( -1 )
+
+		self.m_staticText25.SetFont( wx.Font( 15, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, wx.EmptyString ) )
+
+		bSizer2.Add( self.m_staticText25, 0, wx.ALL, 5 )
+
+		self.m_hyperlink1 = wx.adv.HyperlinkCtrl( self.m_panel61, wx.ID_ANY, u"https://github.com/ID-BPHC/Examination-Manager", u"https://github.com/ID-BPHC/Examination-Manager", wx.DefaultPosition, wx.DefaultSize, wx.adv.HL_DEFAULT_STYLE )
+		bSizer2.Add( self.m_hyperlink1, 0, wx.ALL, 5 )
+
+		self.m_bitmap2 = wx.StaticBitmap( self.m_panel61, wx.ID_ANY, wx.Bitmap( u"bits-logo.bmp", wx.BITMAP_TYPE_ANY ), wx.DefaultPosition, wx.DefaultSize, 0 )
+		bSizer2.Add( self.m_bitmap2, 0, wx.ALL, 5 )
+
+		self.m_staticText27 = wx.StaticText( self.m_panel61, wx.ID_ANY, u"Developers:\n\nSohail Rajdev               2016AATS0158H\nVaibhav Kumar Tyagi    2016A7PS0141H", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText27.Wrap( -1 )
+
+		self.m_staticText27.SetFont( wx.Font( 10, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, wx.EmptyString ) )
+
+		bSizer2.Add( self.m_staticText27, 0, wx.ALL, 5 )
+
+
+		self.m_panel61.SetSizer( bSizer2 )
+		self.m_panel61.Layout()
+		bSizer2.Fit( self.m_panel61 )
+		self.m_notebook2.AddPage( self.m_panel61, u"About", False )
 
 		bSizer1.Add( self.m_notebook2, 1, wx.EXPAND |wx.ALL, 5 )
 
