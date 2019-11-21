@@ -1,6 +1,7 @@
 from glob import glob
 import time
 import os
+import shutil
 
 from googleapiclient.discovery import build
 from algorithms.Mailer.mime_creator import *
@@ -10,8 +11,16 @@ from algorithms.Mailer.login import login_mail_account
 def get_email_from_path(path):
     return ".".join(path.split(os.sep)[-1].split(".")[0:-1])
 
+def zip_all_dirs(path):
+    for root, dirs, files in os.walk(path):
+        for _dir in dirs:
+            print(f"Zipping {_dir}")
+            shutil.make_archive(os.path.join(path, _dir), 'zip', os.path.join(root, _dir))
+
 
 def send_mails(subject, body, path):
+
+    zip_all_dirs(path)
 
     print("Starting...")
 
@@ -43,5 +52,5 @@ def send_mails(subject, body, path):
                 print(f"ERROR: Failed to send {file} to {email}")
 
             time.sleep(2)
-    
+
     print("**** Done ****")
