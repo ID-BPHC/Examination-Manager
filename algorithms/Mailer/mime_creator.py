@@ -6,6 +6,7 @@ from email.mime.base import *
 from email.mime.image import *
 from email.mime.multipart import *
 from email.mime.text import *
+from email import encoders
 
 def create_message_with_attachment(to, subject, message_text, file):
 
@@ -37,6 +38,12 @@ def create_message_with_attachment(to, subject, message_text, file):
         fp = open(file, 'rb')
         msg = MIMEAudio(fp.read(), _subtype=sub_type)
         fp.close()
+    
+    elif main_type == "application" and sub_type == "zip":
+        fp = open(file, 'rb')
+        msg = MIMEBase('application', 'zip')
+        msg.set_payload(fp.read())
+        encoders.encode_base64(msg)
 
     else:
         fp = open(file, 'rb')

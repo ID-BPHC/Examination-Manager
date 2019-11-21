@@ -20,9 +20,10 @@ def zip_all_dirs(path):
 
 def send_mails(subject, body, path):
 
-    zip_all_dirs(path)
 
     print("Starting...")
+
+    zip_all_dirs(path)
 
     creds = login_mail_account()
 
@@ -30,26 +31,26 @@ def send_mails(subject, body, path):
 
     for root, d, files in os.walk(path):
 
-        for file in files:
+        for _file in files:
 
-            if file.index("@") < 0:
+            if "@" not in _file:
                 continue
 
-            email = get_email_from_path(file)
+            email = get_email_from_path(_file)
 
-            print(f"Sending {file} to {email}")
+            print(f"Sending {_file} to {email}")
 
             try:
 
                 message = create_message_with_attachment(
-                    email, subject, body, os.path.join(root, file))
+                    email, subject, body, os.path.join(root, _file))
 
                 # Call the Gmail API
                 (service.users().messages().send(userId="me", body=message)
                  .execute())
 
             except:
-                print(f"ERROR: Failed to send {file} to {email}")
+                print(f"ERROR: Failed to send {_file} to {email}")
 
             time.sleep(2)
 

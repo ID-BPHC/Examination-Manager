@@ -203,6 +203,7 @@ dmypy.json
 /**/*.csv
 /**/*.xls
 /**/*.xlsx
+/**/*.zip
 /**/*.pdf
 /**/*.json
 /**/*.pickle
