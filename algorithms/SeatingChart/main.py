@@ -4,6 +4,7 @@ import os
 import shutil
 import openpyxl
 import time
+import csv
 
 from openpyxl.styles.borders import Border, Side
 from openpyxl.styles import Font, PatternFill
@@ -186,7 +187,9 @@ def generate_seating_charts(room_map_csv, room_allotment_csv, registered_student
 
     room_map, final_solution, course_list = get_populated_maps(room_map_csv, room_allotment_csv,
                   registered_students_csv, ic_csv)
-
+    left_out_students = {};
+    left_out_students_copy = {};
+    not_alloted_students = 0
     for course in course_list.courses:
 
         for room, remark, student_count in course.rooms:
@@ -217,15 +220,71 @@ def generate_seating_charts(room_map_csv, room_allotment_csv, registered_student
                         start_point = start_point ^ 1
 
             for i in range(seated, student_count):
-                print(
-                    f"Could not assign a seat for {course.get_next_student()} in {room} for {course.code} - {course.ic_email}. Assign manually in the room.")
+                key_dict = (room, course.time)
+                if key_dict not in left_out_students:
+                    left_out_students[key_dict] = {}
+                    left_out_students_copy[key_dict] = {}
+                if course.code not in left_out_students[key_dict]:
+                    left_out_students[key_dict][course.code] = []
+                    left_out_students_copy[key_dict][course.code] = []
+                student = course.get_next_student()
+                left_out_students[key_dict][course.code].append(student)
+                left_out_students_copy[key_dict][course.code].append(student)
+                not_alloted_students += 1
 
         if course.allotment_index < len(course.students):
             print(
                 f"Seating Arrangement Discrepancy - {len(course.students) - course.allotment_index} students after {course.get_next_student()} for {course.code} - {course.title}")
 
+    left_out_students_count = 0
+    for time_room, courses in left_out_students.items():
+
+        room = time_room[0]
+        for course_code in courses:
+
+            count = 0
+            course = course_list.find_by_code(course_code)
+            keys = get_matched_rooms(room_map, room)
+            for key in keys:
+
+                chart = final_solution[course.time][key]
+                limits = room_map[key]
+                for i in range(0, len(limits)):
+
+                    for j in range(start_point, limits[i], step_value):
+
+                        if(count == len(left_out_students[time_room][course_code])):
+                            break
+
+                        student = left_out_students[time_room][course_code][count]
+
+                        if chart[len(chart) - j - 1][i] == "":
+                                chart[len(chart) - j - 1][i] = f"{course.code} - {student}"
+                                left_out_students_copy[time_room][course_code].remove(student)
+                                count += 1
+                                left_out_students_count += 1
+
+            
     export_charts(room_map, course_list, final_solution)
+    print("Number of students alloted after alloting consecutive seats where required",left_out_students_count)
+    print("Number of students which are still not alloted ",not_alloted_students - left_out_students_count)
+
+    print("Exporting Error file to error_file.csv ...")
+
+    with open('error_file.csv', 'w', newline="") as csv_file:  
+        writer = csv.writer(csv_file)
+        for time_room, course_dict in left_out_students_copy.items():
+            count = 0
+            for course, students in course_dict.items():
+                for student in students:
+                    if count == 0:
+                        writer.writerow([time_room[0], time_room[1],  course, student])
+                    else:
+                        writer.writerow(["", "", "", student])
+                    count += 1
+
     print("***** Done *****")
+        
 
 
 def export_charts(room_map, course_list, final_solution):
@@ -301,6 +360,9 @@ def export_charts(room_map, course_list, final_solution):
                                 start_color="E8E8E8", end_color="E8E8E8", fill_type="solid")
 
         del wb["Sheet"]
-        path = os.path.join("Seating_Charts", course.ic_email,
-                            course.code.split("/")[0] + ".xlsx")
-        wb.save(path)
+        try:
+            path = os.path.join("Seating_Charts", course.ic_email,
+                                course.code.split("/")[0] + ".xlsx")
+            wb.save(path)
+        except:
+            print("Could not create ", course.ic_email, " ", course.code)
