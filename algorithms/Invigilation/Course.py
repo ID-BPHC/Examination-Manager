@@ -54,7 +54,7 @@ class CourseList:
 
         if code is None:
             return
-        
+
         if self.find_by_code(code) is not None:
             return
 
@@ -68,7 +68,7 @@ class CourseList:
             if i.name == name:
                 return i
         return None
-    
+
     def find_by_code(self, code):
         for i in self.courses:
             if i.code == code:

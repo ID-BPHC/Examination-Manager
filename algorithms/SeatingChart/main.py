@@ -173,6 +173,7 @@ def get_populated_maps(room_map_csv, room_allotment_csv, registered_students_csv
         course = course_list.find_by_code(course_code)
 
         if course is not None:
+            # print(email)
             course.ic_email = email
 
     f.close()
@@ -252,6 +253,7 @@ def export_charts(room_map, course_list, final_solution):
             continue
 
         if not os.path.exists(f"./Seating_Charts/{course.ic_email}"):
+            print("Folder created for ", course.ic_email)
             os.mkdir(f"./Seating_Charts/{course.ic_email}")
 
         wb = openpyxl.Workbook()
@@ -301,6 +303,9 @@ def export_charts(room_map, course_list, final_solution):
                                 start_color="E8E8E8", end_color="E8E8E8", fill_type="solid")
 
         del wb["Sheet"]
-        path = os.path.join("Seating_Charts", course.ic_email,
+        try:
+            path = os.path.join("Seating_Charts", course.ic_email,
                             course.code.split("/")[0] + ".xlsx")
-        wb.save(path)
+            wb.save(path)
+        except:
+            print("Course could not be allotted ", course.code)

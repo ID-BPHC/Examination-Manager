@@ -23,7 +23,7 @@ def create_message_with_attachment(to, subject, message_text, file):
         content_type = 'application/octet-stream'
 
     main_type, sub_type = content_type.split('/', 1)
-
+    print(main_type, sub_type)
     if main_type == 'text':
         fp = open(file, 'rb')
         msg = MIMEText(fp.read(), _subtype=sub_type)
@@ -38,8 +38,9 @@ def create_message_with_attachment(to, subject, message_text, file):
         fp = open(file, 'rb')
         msg = MIMEAudio(fp.read(), _subtype=sub_type)
         fp.close()
-    
-    elif main_type == "application" and sub_type == "zip":
+
+    elif main_type == "application" and (sub_type == "x-zip-compressed" or sub_type == "zip"):
+        print("Test")
         fp = open(file, 'rb')
         msg = MIMEBase('application', 'zip')
         msg.set_payload(fp.read())

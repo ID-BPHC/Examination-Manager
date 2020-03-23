@@ -6,4 +6,4 @@ class Leave:
         self.end_time = end_time
 
     def __repr__(self):
-        return datetime.datetime.strftime(self.start_time, "%d/%m/%Y %H:%M") + " TO " + datetime.datetime.strftime(self.end_time, "%d/%m/%Y %H:%M")
+        return datetime.datetime.strftime(self.start_time, "%d-%m-%y") + " TO " + datetime.datetime.strftime(self.end_time, "%d-%m-%y")

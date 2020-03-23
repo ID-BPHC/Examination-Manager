@@ -171,7 +171,7 @@ class MainFrame ( wx.Frame ):
 
 		gbSizer211.Add( self.m_staticText111, wx.GBPosition( 0, 0 ), wx.GBSpan( 1, 1 ), wx.ALIGN_CENTER_VERTICAL|wx.ALL, 5 )
 
-		self.invig_room_csv_picker = wx.FilePickerCtrl( self.m_panel5, wx.ID_ANY, wx.EmptyString, u"Select a file", u"*.csv", wx.DefaultPosition, wx.DefaultSize, wx.FLP_DEFAULT_STYLE )
+		self.invig_room_csv_picker = wx.FilePickerCtrl( self.m_panel5, wx.ID_ANY, "C:/Users/Amartya/Desktop/Examination-Manager/data files/Invigilation/RoomAllotment (4) (4) (3).csv", u"Select a file", u"*.csv", wx.DefaultPosition, wx.DefaultSize, wx.FLP_DEFAULT_STYLE )
 		gbSizer211.Add( self.invig_room_csv_picker, wx.GBPosition( 0, 1 ), wx.GBSpan( 1, 1 ), wx.ALIGN_CENTER|wx.EXPAND, 5 )
 
 		self.m_staticText211 = wx.StaticText( self.m_panel5, wx.ID_ANY, u"Faculty List\n-psrn, name, department, email", wx.DefaultPosition, wx.DefaultSize, 0 )
@@ -179,7 +179,7 @@ class MainFrame ( wx.Frame ):
 
 		gbSizer211.Add( self.m_staticText211, wx.GBPosition( 1, 0 ), wx.GBSpan( 1, 1 ), wx.ALIGN_CENTER_VERTICAL|wx.ALL, 5 )
 
-		self.invig_faculty_csv_picker = wx.FilePickerCtrl( self.m_panel5, wx.ID_ANY, wx.EmptyString, u"Select a file", u"*.csv", wx.DefaultPosition, wx.DefaultSize, wx.FLP_DEFAULT_STYLE )
+		self.invig_faculty_csv_picker = wx.FilePickerCtrl( self.m_panel5, wx.ID_ANY, "C:/Users/Amartya/Desktop/Examination-Manager/data files/Invigilation/fac_list.csv", u"Select a file", u"*.csv", wx.DefaultPosition, wx.DefaultSize, wx.FLP_DEFAULT_STYLE )
 		gbSizer211.Add( self.invig_faculty_csv_picker, wx.GBPosition( 1, 1 ), wx.GBSpan( 1, 1 ), wx.ALL|wx.EXPAND, 5 )
 
 		self.m_staticText19 = wx.StaticText( self.m_panel5, wx.ID_ANY, u"Scholar List\n-psrn, name, department, email", wx.DefaultPosition, wx.DefaultSize, 0 )
@@ -187,7 +187,7 @@ class MainFrame ( wx.Frame ):
 
 		gbSizer211.Add( self.m_staticText19, wx.GBPosition( 2, 0 ), wx.GBSpan( 1, 1 ), wx.ALIGN_CENTER_VERTICAL|wx.ALL, 5 )
 
-		self.invig_scholar_csv_picker = wx.FilePickerCtrl( self.m_panel5, wx.ID_ANY, wx.EmptyString, u"Select a file", u"*.csv", wx.DefaultPosition, wx.DefaultSize, wx.FLP_DEFAULT_STYLE )
+		self.invig_scholar_csv_picker = wx.FilePickerCtrl( self.m_panel5, wx.ID_ANY, "C:/Users/Amartya/Desktop/Examination-Manager/data files/Invigilation/Research_Scho.csv", u"Select a file", u"*.csv", wx.DefaultPosition, wx.DefaultSize, wx.FLP_DEFAULT_STYLE )
 		gbSizer211.Add( self.invig_scholar_csv_picker, wx.GBPosition( 2, 1 ), wx.GBSpan( 1, 1 ), wx.ALL|wx.EXPAND, 5 )
 
 		self.m_staticText20 = wx.StaticText( self.m_panel5, wx.ID_ANY, u"Faculty Chamber CSV\n-psrn, chamber", wx.DefaultPosition, wx.DefaultSize, 0 )
@@ -195,7 +195,7 @@ class MainFrame ( wx.Frame ):
 
 		gbSizer211.Add( self.m_staticText20, wx.GBPosition( 3, 0 ), wx.GBSpan( 1, 1 ), wx.ALIGN_CENTER_VERTICAL|wx.ALL, 5 )
 
-		self.invig_chamber_csv_picker = wx.FilePickerCtrl( self.m_panel5, wx.ID_ANY, wx.EmptyString, u"Select a file", u"*.csv", wx.DefaultPosition, wx.DefaultSize, wx.FLP_DEFAULT_STYLE )
+		self.invig_chamber_csv_picker = wx.FilePickerCtrl( self.m_panel5, wx.ID_ANY, "C:/Users/Amartya/Desktop/Examination-Manager/data files/Invigilation/Fac_chamber.csv", u"Select a file", u"*.csv", wx.DefaultPosition, wx.DefaultSize, wx.FLP_DEFAULT_STYLE )
 		gbSizer211.Add( self.invig_chamber_csv_picker, wx.GBPosition( 3, 1 ), wx.GBSpan( 1, 1 ), wx.ALL|wx.EXPAND, 5 )
 
 		self.m_staticText212 = wx.StaticText( self.m_panel5, wx.ID_ANY, u"Timetable CSV\n-Course Code, Course Title, Class_Instructor, Course_admin", wx.DefaultPosition, wx.DefaultSize, 0 )
@@ -203,7 +203,7 @@ class MainFrame ( wx.Frame ):
 
 		gbSizer211.Add( self.m_staticText212, wx.GBPosition( 4, 0 ), wx.GBSpan( 1, 1 ), wx.ALIGN_CENTER_VERTICAL|wx.ALL, 5 )
 
-		self.invig_timetable_csv_picker = wx.FilePickerCtrl( self.m_panel5, wx.ID_ANY, wx.EmptyString, u"Select a file", u"*.csv", wx.DefaultPosition, wx.DefaultSize, wx.FLP_DEFAULT_STYLE )
+		self.invig_timetable_csv_picker = wx.FilePickerCtrl( self.m_panel5, wx.ID_ANY, "C:/Users/Amartya/Desktop/Examination-Manager/data files/Invigilation/BITS_TIME_TABLE_WITHFACILITY_21578.csv", u"Select a file", u"*.csv", wx.DefaultPosition, wx.DefaultSize, wx.FLP_DEFAULT_STYLE )
 		gbSizer211.Add( self.invig_timetable_csv_picker, wx.GBPosition( 4, 1 ), wx.GBSpan( 1, 1 ), wx.ALL|wx.EXPAND, 5 )
 
 		self.m_staticText22 = wx.StaticText( self.m_panel5, wx.ID_ANY, u"Leaves CSV\n-PSRN, start_date_time, end_date_time (DD/MM/YY HH:MM)", wx.DefaultPosition, wx.DefaultSize, 0 )
@@ -211,7 +211,7 @@ class MainFrame ( wx.Frame ):
 
 		gbSizer211.Add( self.m_staticText22, wx.GBPosition( 5, 0 ), wx.GBSpan( 1, 1 ), wx.ALL, 5 )
 
-		self.invig_leaves_csv_picker = wx.FilePickerCtrl( self.m_panel5, wx.ID_ANY, wx.EmptyString, u"Select a file", u"*.csv", wx.DefaultPosition, wx.DefaultSize, wx.FLP_DEFAULT_STYLE )
+		self.invig_leaves_csv_picker = wx.FilePickerCtrl( self.m_panel5, wx.ID_ANY, "C:/Users/Amartya/Desktop/Examination-Manager/data files/Invigilation/leaves.csv", u"Select a file", u"*.csv", wx.DefaultPosition, wx.DefaultSize, wx.FLP_DEFAULT_STYLE )
 		gbSizer211.Add( self.invig_leaves_csv_picker, wx.GBPosition( 5, 1 ), wx.GBSpan( 1, 1 ), wx.ALL|wx.EXPAND, 5 )
 
 		self.m_staticText23 = wx.StaticText( self.m_panel5, wx.ID_ANY, u"Max Duties CSV\n-PSRN, max_duties", wx.DefaultPosition, wx.DefaultSize, 0 )
@@ -219,7 +219,7 @@ class MainFrame ( wx.Frame ):
 
 		gbSizer211.Add( self.m_staticText23, wx.GBPosition( 6, 0 ), wx.GBSpan( 1, 1 ), wx.ALL, 5 )
 
-		self.invig_duties_csv_picker = wx.FilePickerCtrl( self.m_panel5, wx.ID_ANY, wx.EmptyString, u"Select a file", u"*.csv", wx.DefaultPosition, wx.DefaultSize, wx.FLP_DEFAULT_STYLE )
+		self.invig_duties_csv_picker = wx.FilePickerCtrl( self.m_panel5, wx.ID_ANY, "C:/Users/Amartya/Desktop/Examination-Manager/data files/Invigilation/maxDuties.csv", u"Select a file", u"*.csv", wx.DefaultPosition, wx.DefaultSize, wx.FLP_DEFAULT_STYLE )
 		gbSizer211.Add( self.invig_duties_csv_picker, wx.GBPosition( 6, 1 ), wx.GBSpan( 1, 1 ), wx.ALL|wx.EXPAND, 5 )
 
 		self.m_staticText191 = wx.StaticText( self.m_panel5, wx.ID_ANY, u"Reserve duties per time slot", wx.DefaultPosition, wx.DefaultSize, 0 )
@@ -227,7 +227,7 @@ class MainFrame ( wx.Frame ):
 
 		gbSizer211.Add( self.m_staticText191, wx.GBPosition( 7, 0 ), wx.GBSpan( 1, 1 ), wx.ALL, 5 )
 
-		self.invig_reserve_duties_box = wx.SpinCtrl( self.m_panel5, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, wx.SP_ARROW_KEYS, 0, 10, 0 )
+		self.invig_reserve_duties_box = wx.SpinCtrl( self.m_panel5, wx.ID_ANY, "4", wx.DefaultPosition, wx.DefaultSize, wx.SP_ARROW_KEYS, 0, 10, 0 )
 		gbSizer211.Add( self.invig_reserve_duties_box, wx.GBPosition( 7, 1 ), wx.GBSpan( 1, 1 ), wx.ALL|wx.EXPAND, 5 )
 
 		self.m_staticText201 = wx.StaticText( self.m_panel5, wx.ID_ANY, u"Big Course Cutoffs", wx.DefaultPosition, wx.DefaultSize, 0 )
@@ -235,7 +235,7 @@ class MainFrame ( wx.Frame ):
 
 		gbSizer211.Add( self.m_staticText201, wx.GBPosition( 8, 0 ), wx.GBSpan( 1, 1 ), wx.ALL, 5 )
 
-		self.invig_big_course_cutoffs_box = wx.TextCtrl( self.m_panel5, wx.ID_ANY, u"150,300,500,1000", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.invig_big_course_cutoffs_box = wx.TextCtrl( self.m_panel5, wx.ID_ANY, u"40,300,500,1000", wx.DefaultPosition, wx.DefaultSize, 0 )
 		gbSizer211.Add( self.invig_big_course_cutoffs_box, wx.GBPosition( 8, 1 ), wx.GBSpan( 1, 1 ), wx.ALL|wx.EXPAND, 5 )
 
 		self.invig_generate_btn = wx.Button( self.m_panel5, wx.ID_ANY, u"Generate", wx.DefaultPosition, wx.DefaultSize, 0 )
@@ -525,5 +525,3 @@ class MainFrame ( wx.Frame ):
 
 	def __del__( self ):
 		pass
-
-

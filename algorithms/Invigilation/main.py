@@ -73,13 +73,13 @@ def update_invigilator_leaves(invigilator_list, leaves_file_name):
         if faculty is not None:
             try:
                 start_time = datetime.datetime.strptime(
-                    splitted[1].strip(), "%d/%m/%y %H:%M")
+                    splitted[1].strip(), "%d-%m-%y")
                 end_time = datetime.datetime.strptime(
-                    splitted[2].strip(), "%d/%m/%y %H:%M")
+                    splitted[2].strip(), "%d-%m-%y")
                 faculty.leaves.append(Leave(start_time, end_time))
             except:
                 print(
-                    f"****** ERROR: Invalid leave date for faculty {faculty.psrn} ******")
+                    f"****** ERROR: Invalid leave date for faculty {faculty.psrn} {splitted[1]}******")
                 print("Leave will not be considered" + os.linesep)
 
     f.close()
@@ -150,7 +150,7 @@ def get_master_map(course_list, file_name):
 
         if course is None:
             print(
-                f"****** ERROR: Course not found '{splitted[1]}' ******")
+                f"****** ERROR: Course not found '{splitted[2]}' ******")
             print("No invigilators will be alloted for this course. Check Room Allotments or Course CSV file", os.linesep)
             continue
 
@@ -216,24 +216,30 @@ def get_dates_from_key(key):
     splitted = key.split("|")
 
     start = datetime.datetime.strptime(
-        splitted[0].strip() + " " + splitted[1].strip(), "%d/%m/%y %H:%M")
+        splitted[0].strip() + " " + splitted[1].strip(), "%d-%m-%y %H:%M")
     end = datetime.datetime.strptime(
-        splitted[0].strip() + " " + splitted[2].strip(), "%d/%m/%y %H:%M")
-
+        splitted[0].strip() + " " + splitted[2].strip(), "%d-%m-%y %H:%M")
     return (start, end)
 
 
 def get_primary_invigilator(course, invigilator_list, start, end):
     # Get other invigilator after one faculty has been assigned
-    fns = [
-        partial(course.get_available_faculty, start, end),
-        partial(invigilator_list.get_available_department_faculty,
-                course.ic.department, start, end),
-        partial(invigilator_list.get_available_faculty, start, end)
-    ]
+    if(course.ic != None):
+        fns = [
+            partial(course.get_available_faculty, start, end),
+            partial(invigilator_list.get_available_department_faculty,
+                    course.ic.department, start, end),
+            partial(invigilator_list.get_available_faculty, start, end)
+        ]
 
+    else:
+        fns = [
+            partial(course.get_available_faculty, start, end),
+            # partial(invigilator_list.get_available_department_faculty,
+                    # course.ic.department, start, end),
+            partial(invigilator_list.get_available_faculty, start, end)
+        ]
     for fn in fns:
-
         invigilator = fn()
 
         if invigilator is not None:
@@ -244,27 +250,29 @@ def get_primary_invigilator(course, invigilator_list, start, end):
 
 def get_secondary_invigilator(course, invigilator_list, start, end):
     # Get other invigilator after one faculty has been assigned
-    fns = [
-        partial(course.get_available_scholar, start, end),
-        partial(course.get_available_faculty, start, end),
-        partial(invigilator_list.get_available_department_scholar,
-                course.ic.department, start, end),
-        partial(invigilator_list.get_available_department_faculty,
-                course.ic.department, start, end),
-        partial(invigilator_list.get_available_scholar,
-                start, end),
-        partial(invigilator_list.get_available_faculty,
-                start, end)
-    ]
+    try:
+        fns = [
+            partial(course.get_available_scholar, start, end),
+            partial(course.get_available_faculty, start, end),
+            partial(invigilator_list.get_available_department_scholar,
+                    course.ic.department, start, end),
+            partial(invigilator_list.get_available_department_faculty,
+                    course.ic.department, start, end),
+            partial(invigilator_list.get_available_scholar,
+                    start, end),
+            partial(invigilator_list.get_available_faculty,
+                    start, end)
+        ]
 
-    for fn in fns:
+        for fn in fns:
 
-        invigilator = fn()
+            invigilator = fn()
 
-        if invigilator is not None:
-            return invigilator
-
-    return None
+            if invigilator is not None:
+                return invigilator
+    except:
+        print("Could not get secondary invigilator", course)
+        return None
 
 
 def get_reserved_invigilator(invigilator_list, start, end):
@@ -287,7 +295,6 @@ def get_reserved_invigilator(invigilator_list, start, end):
 
 
 def assign_invigilators(master_map, invigilator_list):
-
     for room in master_map:
 
         for time_slot_key in master_map[room]:
@@ -297,6 +304,7 @@ def assign_invigilators(master_map, invigilator_list):
 
             try:
                 start, end = get_dates_from_key(time_slot_key)
+                #print("$$$",start, end)
             except:
                 continue
 
@@ -317,7 +325,23 @@ def assign_invigilators(master_map, invigilator_list):
 
                 if (left_primary is None) and (right_primary is None):
                     print(
-                        f"****** ERROR: Could not allot primary invigilator at '{room}' for '{right_course.code}'  ******")
+                        f"****** ERROR: Could not allot primary invigilator at '{room}' for '{right_course.code}'  Alloting secondary invigilators ******")
+                    left_invigilator = get_secondary_invigilator(
+                        left_course, invigilator_list, start, end)
+                    left_invigilator.duties.append(
+                        Duty(room, left_course, start, end))
+                    right_invigilator = get_secondary_invigilator(
+                        right_course, invigilator_list, start, end)
+                    right_invigilator.duties.append(
+                        Duty(room, right_course, start, end))
+                    if(left_invigilator is None):
+                        print(f"Could not find primary and secondary invigilator at '{room}' for {left_course.code} ")
+                        continue
+                    if(right_invigilator is None):
+                        print(f"Could not find primary and secondary invigilator at '{room}' for {right_course.code} ")
+                        continue
+                    master_map[room][time_slot_key]["left_invigilator"] = left_invigilator
+                    master_map[room][time_slot_key]["right_invigilator"] = right_invigilator
                     continue
 
                 elif left_primary is right_primary:
@@ -360,11 +384,10 @@ def assign_invigilators(master_map, invigilator_list):
 
                         left_invigilator = get_secondary_invigilator(
                             left_course, invigilator_list, start, end)
+                        if(left_invigilator != None):
+                            left_invigilator.duties.append(Duty(room, left_course, start, end))
 
-                        left_invigilator.duties.append(
-                            Duty(room, left_course, start, end))
-
-                        master_map[room][time_slot_key]["left_invigilator"] = left_invigilator
+                            master_map[room][time_slot_key]["left_invigilator"] = left_invigilator
                         master_map[room][time_slot_key]["right_invigilator"] = right_invigilator
 
             elif left_invigilator is None:
@@ -376,10 +399,10 @@ def assign_invigilators(master_map, invigilator_list):
                     print(
                         f"****** ERROR: Could not allot secondary invigilator at '{room}' for '{left_course.code}'  ******")
                     continue
-
-                left_invigilator.duties.append(
-                    Duty(room, left_course, start, end))
-                master_map[room][time_slot_key]["left_invigilator"] = left_invigilator
+                if(hasattr(left_invigilator, 'duties')):
+                    left_invigilator.duties.append(
+                        Duty(room, left_course, start, end))
+                    master_map[room][time_slot_key]["left_invigilator"] = left_invigilator
 
             elif right_invigilator is None:
 
@@ -390,10 +413,10 @@ def assign_invigilators(master_map, invigilator_list):
                     print(
                         f"****** ERROR: Could not allot secondary invigilator at '{room}' for '{right_course.code}'  ******")
                     continue
-
-                right_invigilator.duties.append(
-                    Duty(room, right_course, start, end))
-                master_map[room][time_slot_key]["right_invigilator"] = right_invigilator
+                if(hasattr(right_invigilator, 'duties')):
+                    right_invigilator.duties.append(
+                        Duty(room, right_course, start, end))
+                    master_map[room][time_slot_key]["right_invigilator"] = right_invigilator
 
 
 def assign_ics(master_map):
@@ -643,16 +666,19 @@ def export_csv(invigilator_list, file_name):
     f.write(f"invigilator_psrn,invigilator_name,invigilator_type,invigilator_dept,room,course_code,course_name,date,start_time,end_time,invigilator_email,total_invigilator_duties,ic_psrn,ic_name,ic_email,ic_chamber\n")
 
     for invigilator in invigilator_list:
-        invigilator_type = "SCHOLAR" if invigilator.is_research_scholar else "FACULTY"
+        try:
+            invigilator_type = "SCHOLAR" if invigilator.is_research_scholar else "FACULTY"
 
-        for duty in invigilator.duties:
+            for duty in invigilator.duties:
 
-            date = duty.start_time.strftime("%d %B %Y")
-            start_time = duty.start_time.strftime("%H:%M:%S")
-            end_time = duty.end_time.strftime("%H:%M:%S")
+                date = duty.start_time.strftime("%d %B %Y")
+                start_time = duty.start_time.strftime("%H:%M:%S")
+                end_time = duty.end_time.strftime("%H:%M:%S")
 
-            f.write(
-                f"{invigilator.psrn},{invigilator.name},{invigilator_type},{invigilator.department},{duty.room},{duty.course.code},{duty.course.name},{date},{start_time},{end_time},{invigilator.email},{len(invigilator.duties)},{duty.course.ic.psrn},{duty.course.ic.name},{duty.course.ic.email},{duty.course.ic.chamber}\n")
+                f.write(
+                    f"{invigilator.psrn},{invigilator.name},{invigilator_type},{invigilator.department},{duty.room},{duty.course.code},{duty.course.name},{date},{start_time},{end_time},{invigilator.email},{len(invigilator.duties)},{duty.course.ic.psrn},{duty.course.ic.name},{duty.course.ic.email},{duty.course.ic.chamber}\n")
+        except:
+            print("Could not assign", invigilator)
 
     f.close()
 

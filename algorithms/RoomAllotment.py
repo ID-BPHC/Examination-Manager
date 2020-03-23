@@ -58,9 +58,9 @@ def get_rooms(file_name):
 def generate_map_key(time_slot):
     try:
         datetime.datetime.strptime(
-            time_slot[0] + " " + time_slot[1], "%d/%m/%y %H:%M")
+            time_slot[0] + " " + time_slot[1], "%d-%m-%y %H:%M")
         datetime.datetime.strptime(
-            time_slot[0] + " " + time_slot[2], "%d/%m/%y %H:%M")
+            time_slot[0] + " " + time_slot[2], "%d-%m-%y %H:%M")
 
     except Exception as e:
         print(e)
@@ -205,7 +205,7 @@ def post_process(rooms):
 
                 if allotment_1 is allotment_2:
                     continue
-                
+
                 if allotment_1.course is allotment_2.course:
 
                     allotment_1.seats_alloted += allotment_2.seats_alloted
@@ -237,13 +237,13 @@ def start_process(rooms_csv, exams_csv, is_double):
     # course_code, course_title, Enrolment_Count, time_slot (multiple cols)
     # Ensure no commas, DUPLICATES and BOM
     date_course_map = get_date_course_map(exams_csv)
-
+    print("After Get Rooms")
     if is_double:
         allot_rooms_double(rooms, date_course_map)
 
     else:
         allot_rooms_single(rooms, date_course_map)
-        
+
     post_process(rooms)
     export_csv(rooms, "./RoomAllotment.csv")
     print("Room Allotment file exported to ./RoomAllotment.csv")
