@@ -174,7 +174,6 @@ def get_populated_maps(room_map_csv, room_allotment_csv, registered_students_csv
         course = course_list.find_by_code(course_code)
 
         if course is not None:
-            # print(email)
             course.ic_email = email
 
     f.close()
@@ -265,14 +264,14 @@ def generate_seating_charts(room_map_csv, room_allotment_csv, registered_student
                                 count += 1
                                 left_out_students_count += 1
 
-
+            
     export_charts(room_map, course_list, final_solution)
     print("Number of students alloted after alloting consecutive seats where required",left_out_students_count)
     print("Number of students which are still not alloted ",not_alloted_students - left_out_students_count)
 
     print("Exporting Error file to error_file.csv ...")
 
-    with open('error_file.csv', 'w', newline="") as csv_file:
+    with open('error_file.csv', 'w', newline="") as csv_file:  
         writer = csv.writer(csv_file)
         for time_room, course_dict in left_out_students_copy.items():
             count = 0
@@ -285,7 +284,7 @@ def generate_seating_charts(room_map_csv, room_allotment_csv, registered_student
                     count += 1
 
     print("***** Done *****")
-
+        
 
 
 def export_charts(room_map, course_list, final_solution):
@@ -312,7 +311,6 @@ def export_charts(room_map, course_list, final_solution):
             continue
 
         if not os.path.exists(f"./Seating_Charts/{course.ic_email}"):
-            print("Folder created for ", course.ic_email)
             os.mkdir(f"./Seating_Charts/{course.ic_email}")
 
         wb = openpyxl.Workbook()
@@ -364,7 +362,7 @@ def export_charts(room_map, course_list, final_solution):
         del wb["Sheet"]
         try:
             path = os.path.join("Seating_Charts", course.ic_email,
-                            course.code.split("/")[0] + ".xlsx")
+                                course.code.split("/")[0] + ".xlsx")
             wb.save(path)
         except:
-            print("Course could not be allotted ", course.code)
+            print("Could not create ", course.ic_email, " ", course.code)

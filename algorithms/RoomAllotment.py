@@ -237,7 +237,7 @@ def start_process(rooms_csv, exams_csv, is_double):
     # course_code, course_title, Enrolment_Count, time_slot (multiple cols)
     # Ensure no commas, DUPLICATES and BOM
     date_course_map = get_date_course_map(exams_csv)
-    print("After Get Rooms")
+
     if is_double:
         allot_rooms_double(rooms, date_course_map)
 
