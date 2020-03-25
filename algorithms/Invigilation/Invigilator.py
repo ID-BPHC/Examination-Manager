@@ -1,4 +1,4 @@
-import datetime
+
 def do_dates_intersect(date_1_start, date_1_end, date_2_start, date_2_end):
 
     return date_1_start <= date_2_end and date_1_end >= date_2_start
@@ -112,7 +112,7 @@ class InvigilatorList:
 
         for invigilator in self.invigilators:
             if (not invigilator.is_research_scholar) and invigilator.is_available(start_time, end_time) and invigilator.get_reamining_duty_count() > remaining_duties_max:
-                #Considering no hrs and minutes in date therefore added a day to endtime
+                #   Considering no hrs and minutes in date therefore added a day to endtime
                 free_invigilator = invigilator
                 remaining_duties_max = invigilator.get_reamining_duty_count()
 

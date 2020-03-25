@@ -304,7 +304,7 @@ def assign_invigilators(master_map, invigilator_list):
 
             try:
                 start, end = get_dates_from_key(time_slot_key)
-                #print("$$$",start, end)
+
             except:
                 continue
 

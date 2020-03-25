@@ -37,14 +37,14 @@ def send_mails(subject, body, path):
                 continue
 
             email = get_email_from_path(_file)
-            # email = "f20160628@hyderabad.bits-pilani.ac.in"
 
             print(f"Sending {_file} to {email}")
+
             try:
 
                 message = create_message_with_attachment(
                     email, subject, body, os.path.join(root, _file))
-                # print("Hello")
+
                 # Call the Gmail API
                 (service.users().messages().send(userId="me", body=message)
                  .execute())
