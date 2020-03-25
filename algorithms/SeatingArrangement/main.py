@@ -9,9 +9,9 @@ def get_dates_from_key(key):
     splitted = key.split("|")
 
     start = datetime.datetime.strptime(
-        splitted[0].strip() + " " + splitted[1].strip(), "%d/%m/%y %H:%M")
+        splitted[0].strip() + " " + splitted[1].strip(), "%d-%m-%y %H:%M")
     end = datetime.datetime.strptime(
-        splitted[0].strip() + " " + splitted[2].strip(), "%d/%m/%y %H:%M")
+        splitted[0].strip() + " " + splitted[2].strip(), "%d-%m-%y %H:%M")
 
     return (start, end)
 
@@ -43,6 +43,7 @@ def get_course_list(file_name):
         code = splitted[1]
         name = splitted[2]
         student_count = int(splitted[4])
+        # course_strength=int(splitted[5])
         start, end = get_dates_from_key(splitted[6])
 
         course_list.add_if_not_exists(code, name, start, end)
@@ -131,16 +132,15 @@ def start_seating_arrangement_process(room_allotment_csv, students_csv):
     course_list.sort_entries()
 
     for course in course_list.courses:
-
         total = 0
 
         for room, student_count in course.rooms:
             total += student_count
-        
+
         if total != len(course.students):
             print(f"{course.code} Student count mismatch. Room Allotment -> {total} and Enrolments -> {len(course.students)}")
 
     export_xlsx(
         course_list, "./SeatingArrangement.xlsx")
-    
+
     print("Seating Arrangement exported to SeatingArrangement.xlsx")

@@ -8,4 +8,4 @@ class Duty:
         self.end_time = end_time
 
     def __repr__(self):
-        return self.room + " - " + self.course.code + " - " + datetime.datetime.strftime(self.start_time, "%d/%m/%Y %H:%M") + " TO " + datetime.datetime.strftime(self.end_time, "%d/%m/%Y %H:%M")
+        return self.room + " - " + self.course.code + " - " + datetime.datetime.strftime(self.start_time, "%d-%m-%Y %H:%M") + " TO " + datetime.datetime.strftime(self.end_time, "%d-%m-%Y %H:%M")

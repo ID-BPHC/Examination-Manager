@@ -101,6 +101,8 @@ def get_ic_reports(file_name):
 def generate_report_pdfs(reports, path):
 
     for report in reports:
+        if(not(report.recipent.email)):
+            print(report.recipent.name)
         doc = SimpleDocTemplate(os.path.join(
             path, report.recipent.email + ".pdf"))
         doc.pagesize = landscape(A4)

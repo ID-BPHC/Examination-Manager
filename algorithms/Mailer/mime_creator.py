@@ -38,8 +38,8 @@ def create_message_with_attachment(to, subject, message_text, file):
         fp = open(file, 'rb')
         msg = MIMEAudio(fp.read(), _subtype=sub_type)
         fp.close()
-    
-    elif main_type == "application" and sub_type == "zip":
+
+    elif main_type == "application" and (sub_type == "x-zip-compressed" or sub_type == "zip"):
         fp = open(file, 'rb')
         msg = MIMEBase('application', 'zip')
         msg.set_payload(fp.read())
