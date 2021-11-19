@@ -52,6 +52,7 @@ def get_rooms(file_name):
         rooms.append(Room(splitted[0], int(splitted[1])))
 
     f.close()
+
     return rooms
 
 
@@ -111,8 +112,10 @@ def get_date_course_map(file_name):
 
 
 def allot_rooms_single(rooms, date_course_map):
-
     for time_slot in date_course_map:
+        remaining_seats = {}
+        for room in rooms:
+            remaining_seats[room.number] = room.capacity
 
         room_pointer = 0
 
@@ -123,20 +126,24 @@ def allot_rooms_single(rooms, date_course_map):
             while total_seats_alloted < course.strength:
 
                 if room_pointer == len(rooms):
-                    print(f"ERROR: Could not allot {course.code}")
+                    print(f"ERROR: Could not allot {course.code} for {time_slot}... "
+                          f"No more rooms remaining for this time slot")
                     break
 
                 room = rooms[room_pointer]
 
-                seats_alloted = min(room.capacity,
+                seats_alloted = min(remaining_seats[room.number],
                                     course.strength - total_seats_alloted)
 
                 total_seats_alloted += seats_alloted
+                remaining_seats[room.number] -= seats_alloted
 
                 room.allotments.append(Allotment(
                     course, time_slot, seats_alloted, "FULL"))
 
-                room_pointer += 1
+                if room.capacity == seats_alloted or remaining_seats[room.number] == 0:
+                    room_pointer += 1
+
 
 
 def allot_rooms_double(rooms, date_course_map):
@@ -157,7 +164,6 @@ def allot_rooms_double(rooms, date_course_map):
                 if pointer[0] == len(rooms) - 1 and pointer[1] == len(rooms) - 1:
                     print(f"ERROR: Could not allot {course.code}")
                     break
-
                 elif pointer[active_pointer] == len(rooms) - 1:
                     active_pointer = 0 if pointer[0] < pointer[1] else 1
 
