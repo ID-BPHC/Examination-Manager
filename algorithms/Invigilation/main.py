@@ -444,26 +444,26 @@ def assign_ics(master_map):
             if (left_course is not None) and (left_course.code not in ic_assigned_set):
                 ic_assigned_set.add(left_course.code)
 
-                if left_course.ic is not None and left_course.ic.is_available(start, end):
+                if left_course.ic is not None:
                     master_map[room][time_slot_key]["left_invigilator"] = left_course.ic
                     left_course.ic.duties.append(
                         Duty(room, left_course, start, end))
 
                 else:
                     print(
-                        f"****** ERROR: IC not available at {left_course.code} timings ******")
+                        f"****** ERROR: IC is None for {left_course.code} ******")
 
             if (right_course is not None) and (right_course.code not in ic_assigned_set):
                 ic_assigned_set.add(right_course.code)
 
-                if right_course.ic is not None and right_course.ic.is_available(start, end):
+                if right_course.ic is not None:
                     master_map[room][time_slot_key]["right_invigilator"] = right_course.ic
                     right_course.ic.duties.append(
                         Duty(room, right_course, start, end))
 
                 else:
                     print(
-                        f"****** ERROR: IC not available at {right_course.code} timings ******")
+                        f"****** ERROR: IC is None for {right_course.code} ******")
 
 
 def assign_course_faculty(master_map):
