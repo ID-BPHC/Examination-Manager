@@ -25,6 +25,7 @@ def get_invigilator_reports(file_name):
         time = splitted[8] + " to " + splitted[9]
         email = splitted[10]
         ic_name = splitted[13]
+        ic_email = splitted[14]
         ic_chamber = splitted[15]
 
         if invigilator_psrn not in report_map:
@@ -32,7 +33,9 @@ def get_invigilator_reports(file_name):
                 Recipent(invigilator_name, email))
 
         report_map[invigilator_psrn].table.add_row(
-            [course_code, course_name, date, time, room, ic_name, ic_chamber])
+            [course_code, course_name, date, time, room, ic_name, ic_chamber, ic_email])
+                        
+
 
     f.close()
 
@@ -53,6 +56,7 @@ def get_ic_reports(file_name):
         course_name = splitted[6]
         date = splitted[7]
         time = splitted[8] + " to " + splitted[9]
+        invigilator_email = splitted[10]
         ic_psrn = splitted[12]
         ic_name = splitted[13]
         ic_email = splitted[14]
@@ -70,7 +74,10 @@ def get_ic_reports(file_name):
             }
 
         ic_map[ic_psrn]["courses"][course_code]["invigilators"].append(
-            (room, invigilator_name))
+            (room, invigilator_name, invigilator_email))
+            # ic_map[ic_psrn].table.add_row(
+            # [course_code, course_name, date, time, room, invigilator_name, invigilator_email])
+
 
     f.close()
 
@@ -87,11 +94,11 @@ def get_ic_reports(file_name):
             invigilators.sort()
 
             report.table.add_row(
-                [course_code, course["name"], course["date"], course["time"], invigilators[0][0], invigilators[0][1]])
+                [course_code, course["name"], course["date"], course["time"], invigilators[0][0], invigilators[0][1], invigilators[0][2]])
 
             for invigilator in invigilators[1:]:
                 report.table.add_row(
-                    ["", "", "", "", invigilator[0], invigilator[1]])
+                    ["", "", "", "", invigilator[0], invigilator[1], invigilator[2]])
 
         reports.append(report)
 
