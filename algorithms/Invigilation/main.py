@@ -253,13 +253,13 @@ def get_secondary_invigilator(course, invigilator_list, start, end):
     try:
         fns = [
             partial(course.get_available_scholar, start, end),
-            partial(course.get_available_faculty, start, end),
             partial(invigilator_list.get_available_department_scholar,
-                    course.ic.department, start, end),
-            partial(invigilator_list.get_available_department_faculty,
                     course.ic.department, start, end),
             partial(invigilator_list.get_available_scholar,
                     start, end),
+            partial(course.get_available_faculty, start, end),
+            partial(invigilator_list.get_available_department_faculty,
+                    course.ic.department, start, end),
             partial(invigilator_list.get_available_faculty,
                     start, end)
         ]
