@@ -10,10 +10,10 @@ class Table:
 class IC_Report_Table(Table):
     def __init__(self):
         super().__init__(["Course Code", "Course Title",
-                          "Date", "Time", "Room", "Invigilator"])
+                          "Date", "Time", "Room", "Invigilator", "Email"])
 
 
 class Invigilator_Report_Table(Table):
     def __init__(self):
         super().__init__(["Course Code", "Course Title",
-                          "Date", "Time", "Room", "IC Name", "IC Chamber"])
+                          "Date", "Time", "Room", "IC Name", "IC Chamber", "Email"])
