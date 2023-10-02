@@ -1,4 +1,3 @@
-
 import json
 import os
 import shutil
@@ -11,7 +10,6 @@ from openpyxl.styles import Font, PatternFill
 
 
 class Course:
-
     def __init__(self, code, title):
         self.code = code
         self.title = title
@@ -22,7 +20,6 @@ class Course:
         self.allotment_index = 0
 
     def get_next_student(self):
-
         if self.allotment_index >= len(self.students):
             return None
 
@@ -45,7 +42,6 @@ class CourseList:
 
     def find_by_code(self, code):
         for course in self.courses:
-
             if course.code == code:
                 return course
 
@@ -58,7 +54,6 @@ class CourseList:
         return None
 
     def sort_entries(self):
-
         for course in self.courses:
             course.rooms.sort()
             course.students.sort()
@@ -68,19 +63,18 @@ class CourseList:
 
 
 def get_matched_rooms(room_map, number):
-
     keys = []
 
     for key in room_map.keys():
-
         if number in key:
             keys.append(key)
 
     return keys
 
 
-def get_populated_maps(room_map_csv, room_allotment_csv, registered_students_csv, ic_csv):
-
+def get_populated_maps(
+    room_map_csv, room_allotment_csv, registered_students_csv  # , ic_csv
+):
     room_map = {}
     final_solution = {}
     course_list = CourseList()
@@ -90,12 +84,11 @@ def get_populated_maps(room_map_csv, room_allotment_csv, registered_students_csv
     f = open(room_map_csv)
 
     for line in f.readlines():
-
         line = line.strip()
         splitted = line.split(",")
         room_number = splitted[0]
         no_of_cols = int(splitted[1])
-        col_map = [int(x) for x in splitted[2: no_of_cols + 2]]
+        col_map = [int(x) for x in splitted[2 : no_of_cols + 2]]
 
         room_map[room_number] = col_map
 
@@ -104,13 +97,13 @@ def get_populated_maps(room_map_csv, room_allotment_csv, registered_students_csv
     f = open(room_allotment_csv)
 
     for line in f.readlines()[1:]:
-
         line = line.strip()
         splitted = line.split(",")
 
         room = splitted[0]
         code = splitted[1]
         title = splitted[2]
+        capacity = int(splitted[3])
         student_count = int(splitted[4])
         time = splitted[6]
         flag = splitted[7]
@@ -119,7 +112,7 @@ def get_populated_maps(room_map_csv, room_allotment_csv, registered_students_csv
         course = course_list.find_by_code(code)
 
         if course is not None:
-            course.rooms.append((room, flag, student_count))
+            course.rooms.append((room, flag, student_count, capacity))
             course.time = time
 
         if time not in final_solution:
@@ -129,11 +122,9 @@ def get_populated_maps(room_map_csv, room_allotment_csv, registered_students_csv
             matched_room_keys = get_matched_rooms(room_map, room)
 
             for key in matched_room_keys:
-
                 seating_map = []
 
                 for i in range(0, max(room_map[key])):
-
                     seating_map.append([])
 
                     for j in range(0, len(room_map[key])):
@@ -161,10 +152,9 @@ def get_populated_maps(room_map_csv, room_allotment_csv, registered_students_csv
 
     course_list.sort_entries()
 
-    f = open(ic_csv)
+    """ f = open(ic_csv)
 
     for line in f.readlines():
-
         line = line.strip()
         splitted = line.split(",")
 
@@ -177,47 +167,83 @@ def get_populated_maps(room_map_csv, room_allotment_csv, registered_students_csv
             course.ic_email = email
 
     f.close()
-
+    """
     return room_map, final_solution, course_list
 
 
-def generate_seating_charts(room_map_csv, room_allotment_csv, registered_students_csv, ic_csv):
-
+def generate_seating_charts(
+    room_map_csv, room_allotment_csv, registered_students_csv  # , ic_csv
+):
     print("Generating Seating Charts")
 
-    room_map, final_solution, course_list = get_populated_maps(room_map_csv, room_allotment_csv,
-                  registered_students_csv, ic_csv)
-    left_out_students = {};
-    left_out_students_copy = {};
+    room_map, final_solution, course_list = get_populated_maps(
+        room_map_csv, room_allotment_csv, registered_students_csv  # , ic_csv
+    )
+    left_out_students = {}
+    left_out_students_copy = {}
     not_alloted_students = 0
     for course in course_list.courses:
-
-        for room, remark, student_count in course.rooms:
-
+        for room, remark, student_count, capacity in course.rooms:
             keys = get_matched_rooms(room_map, room)
             seated = 0
 
             for key in keys:
-
                 chart = final_solution[course.time][key]
                 limits = room_map[key]
+                half_cap = int(int(capacity / 2))
                 start_point = 1 if remark == "LEFT" else 0
                 step_value = 1 if remark == "FULL" else 2
 
+                # Edit
                 for i in range(0, len(limits)):
+                    f = False  # flag to make sure first only the chessboard filling is done
+                    if (
+                        remark != "FULL" and student_count > half_cap
+                    ):  # check if uneven fill
+                        row = 0
+                        if seated < capacity - student_count:
+                            for j in range(
+                                start_point, limits[i], step_value
+                            ):  # fill in chessboard pattern for maximum possible students
+                                if seated >= capacity - student_count:
+                                    row = j - 1  # to continous fill from this point
+                                    break
+                                if j + step_value >= limits[i]:
+                                    f = True
+                                student = course.get_next_student()
+                                chart[len(chart) - j - 1][
+                                    i
+                                ] = f"{course.code} - {student}"
+                                seated += 1
 
-                    for j in range(start_point, limits[i], step_value):
+                        if f:
+                            start_point = start_point ^ 1
+                            continue
 
-                        if seated >= student_count:
-                            break
+                        while row < limits[i]:
+                            if seated >= student_count:
+                                break
+                            student = course.get_next_student()
+                            if chart[len(chart) - row - 1][i] == "":
+                                chart[len(chart) - row - 1][
+                                    i
+                                ] = f"{course.code} - {student}"
+                                seated += 1
+                            print(row)
+                            row += 1
 
-                        student = course.get_next_student()
-                        chart[len(chart) - j -
-                              1][i] = f"{course.code} - {student}"
-                        seated += 1
+                    else:
+                        for j in range(start_point, limits[i], step_value):
+                            if seated >= student_count:
+                                break
 
-                    if remark != "FULL":
-                        start_point = start_point ^ 1
+                            student = course.get_next_student()
+                            chart[len(chart) - j - 1][i] = f"{course.code} - {student}"
+                            seated += 1
+
+                        if remark != "FULL":
+                            start_point = start_point ^ 1
+            # Edit
 
             for i in range(seated, student_count):
                 key_dict = (room, course.time)
@@ -234,67 +260,70 @@ def generate_seating_charts(room_map_csv, room_allotment_csv, registered_student
 
         if course.allotment_index < len(course.students):
             print(
-                f"Seating Arrangement Discrepancy - {len(course.students) - course.allotment_index} students after {course.get_next_student()} for {course.code} - {course.title}")
+                f"Seating Arrangement Discrepancy - {len(course.students) - course.allotment_index} students after {course.get_next_student()} for {course.code} - {course.title}"
+            )
 
     left_out_students_count = 0
     for time_room, courses in left_out_students.items():
-
         room = time_room[0]
         for course_code in courses:
-
             count = 0
             course = course_list.find_by_code(course_code)
             keys = get_matched_rooms(room_map, room)
             for key in keys:
-
                 chart = final_solution[course.time][key]
                 limits = room_map[key]
                 for i in range(0, len(limits)):
-
                     for j in range(start_point, limits[i], step_value):
-
-                        if(count == len(left_out_students[time_room][course_code])):
+                        if count == len(left_out_students[time_room][course_code]):
                             break
 
                         student = left_out_students[time_room][course_code][count]
 
                         if chart[len(chart) - j - 1][i] == "":
-                                chart[len(chart) - j - 1][i] = f"{course.code} - {student}"
-                                left_out_students_copy[time_room][course_code].remove(student)
-                                count += 1
-                                left_out_students_count += 1
+                            chart[len(chart) - j - 1][i] = f"{course.code} - {student}"
+                            left_out_students_copy[time_room][course_code].remove(
+                                student
+                            )
+                            count += 1
+                            left_out_students_count += 1
 
-            
     export_charts(room_map, course_list, final_solution)
-    print("Number of students alloted after alloting consecutive seats where required",left_out_students_count)
-    print("Number of students which are still not alloted ",not_alloted_students - left_out_students_count)
+    print(
+        "Number of students alloted after alloting consecutive seats where required",
+        left_out_students_count,
+    )
+    print(
+        "Number of students which are still not alloted ",
+        not_alloted_students - left_out_students_count,
+    )
 
     print("Exporting Error file to error_file.csv ...")
 
-    with open('error_file.csv', 'w', newline="") as csv_file:  
+    with open("error_file.csv", "w", newline="") as csv_file:
         writer = csv.writer(csv_file)
         for time_room, course_dict in left_out_students_copy.items():
             count = 0
             for course, students in course_dict.items():
                 for student in students:
                     if count == 0:
-                        writer.writerow([time_room[0], time_room[1],  course, student])
+                        writer.writerow([time_room[0], time_room[1], course, student])
                     else:
                         writer.writerow(["", "", "", student])
                     count += 1
 
     print("***** Done *****")
-        
 
 
 def export_charts(room_map, course_list, final_solution):
-
     print("***** Starting Chart Generation *****")
 
-    thin_border = Border(left=Side(style='thin'),
-                         right=Side(style='thin'),
-                         top=Side(style='thin'),
-                         bottom=Side(style='thin'))
+    thin_border = Border(
+        left=Side(style="thin"),
+        right=Side(style="thin"),
+        top=Side(style="thin"),
+        bottom=Side(style="thin"),
+    )
 
     heading_font = Font(size=13, bold=True)
     sub_heading_font = Font(size=11, bold=True)
@@ -306,7 +335,6 @@ def export_charts(room_map, course_list, final_solution):
     os.mkdir("./Seating_Charts")
 
     for course in course_list.courses:
-
         if course.time is None:
             continue
 
@@ -315,12 +343,10 @@ def export_charts(room_map, course_list, final_solution):
 
         wb = openpyxl.Workbook()
 
-        for room, flag, student_count in course.rooms:
-
+        for room, flag, student_count, capacity in course.rooms:
             keys = get_matched_rooms(room_map, room)
 
             for key in keys:
-
                 print(f"Generating {course.code} - {key}")
 
                 wb.create_sheet(key)
@@ -328,7 +354,8 @@ def export_charts(room_map, course_list, final_solution):
                 ws.sheet_properties.pageSetUpPr.fitToPage = True
                 ws.page_setup.fitToHeight = False
                 openpyxl.worksheet.worksheet.Worksheet.set_printer_settings(
-                    ws, paper_size=ws.PAPERSIZE_A4, orientation='landscape')
+                    ws, paper_size=ws.PAPERSIZE_A4, orientation="landscape"
+                )
 
                 total_cols = len(room_map[key])
                 heading = f"{key} - {course.code} - {course.title}"
@@ -352,17 +379,32 @@ def export_charts(room_map, course_list, final_solution):
                 for row in ws.iter_rows():
                     for cell in row:
                         cell.alignment = openpyxl.styles.Alignment(
-                            wrap_text=True, horizontal='center', vertical='center')
+                            wrap_text=True, horizontal="center", vertical="center"
+                        )
                         cell.border = thin_border
 
-                        if cell.value is not None and cell.value.split("-")[0].strip() == course.code:
+                        if (
+                            cell.value is not None
+                            and cell.value.split("-")[0].strip() == course.code
+                        ):
                             cell.fill = PatternFill(
-                                start_color="E8E8E8", end_color="E8E8E8", fill_type="solid")
+                                start_color="E8E8E8",
+                                end_color="E8E8E8",
+                                fill_type="solid",
+                            )
 
         del wb["Sheet"]
         try:
-            path = os.path.join("Seating_Charts", course.ic_email,
-                                course.code.split("/")[0] + ".xlsx")
+            path = os.path.join(
+                "Seating_Charts", course.ic_email, course.code.split("/")[0] + ".xlsx"
+            )
             wb.save(path)
         except:
             print("Could not create ", course.ic_email, " ", course.code)
+
+
+generate_seating_charts(
+    r"C:\Users\Anirudh\Desktop\New folder\Examination-Manager\Test files\room_map.csv",
+    r"C:\Users\Anirudh\Desktop\New folder\Examination-Manager\Test files\RoomAllotment.csv",
+    r"C:\Users\Anirudh\Desktop\New folder\Examination-Manager\Test files\Studs.csv",
+)
