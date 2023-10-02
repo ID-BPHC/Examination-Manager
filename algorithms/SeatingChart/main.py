@@ -401,10 +401,3 @@ def export_charts(room_map, course_list, final_solution):
             wb.save(path)
         except:
             print("Could not create ", course.ic_email, " ", course.code)
-
-
-generate_seating_charts(
-    r"C:\Users\Anirudh\Desktop\New folder\Examination-Manager\Test files\room_map.csv",
-    r"C:\Users\Anirudh\Desktop\New folder\Examination-Manager\Test files\RoomAllotment.csv",
-    r"C:\Users\Anirudh\Desktop\New folder\Examination-Manager\Test files\Studs.csv",
-)
