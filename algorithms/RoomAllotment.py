@@ -238,6 +238,7 @@ def allot_rooms_double(rooms, date_course_map):
                                 .seats_alloted
                             )
                             rooms[pointer[1 - smaller_pointer] - 1].allotments.pop()
+                            pointer[1 - smaller_pointer] -= 1
                         elif (
                             rooms[pointer[1 - smaller_pointer] - 1]
                             .allotments[-1]
@@ -260,10 +261,7 @@ def allot_rooms_double(rooms, date_course_map):
                                 .seats_alloted
                             )
                             rooms[pointer[1 - smaller_pointer] - 1].allotments.pop()
-
-                            rooms[pointer[1 - smaller_pointer] - 2].allotments[
-                                -1
-                            ].seats_alloted -= remaining_seats
+                            pointer[1 - smaller_pointer] -= 1
 
                     elif (
                         allotment2.seats_alloted
