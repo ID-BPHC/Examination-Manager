@@ -73,7 +73,7 @@ def get_matched_rooms(room_map, number):
 
 
 def get_populated_maps(
-    room_map_csv, room_allotment_csv, registered_students_csv  # , ic_csv
+    room_map_csv, room_allotment_csv, registered_students_csv, ic_csv
 ):
     room_map = {}
     final_solution = {}
@@ -152,7 +152,7 @@ def get_populated_maps(
 
     course_list.sort_entries()
 
-    """ f = open(ic_csv)
+    f = open(ic_csv)
 
     for line in f.readlines():
         line = line.strip()
@@ -167,17 +167,17 @@ def get_populated_maps(
             course.ic_email = email
 
     f.close()
-    """
+
     return room_map, final_solution, course_list
 
 
 def generate_seating_charts(
-    room_map_csv, room_allotment_csv, registered_students_csv  # , ic_csv
+    room_map_csv, room_allotment_csv, registered_students_csv, ic_csv
 ):
     print("Generating Seating Charts")
 
     room_map, final_solution, course_list = get_populated_maps(
-        room_map_csv, room_allotment_csv, registered_students_csv  # , ic_csv
+        room_map_csv, room_allotment_csv, registered_students_csv, ic_csv
     )
     left_out_students = {}
     left_out_students_copy = {}
@@ -229,7 +229,6 @@ def generate_seating_charts(
                                     i
                                 ] = f"{course.code} - {student}"
                                 seated += 1
-                            print(row)
                             row += 1
 
                     else:
