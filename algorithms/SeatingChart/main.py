@@ -140,13 +140,14 @@ def get_populated_maps(
         line = line.strip()
         splitted = line.split(",")
 
-        id_number = splitted[0]
-        course_code = splitted[1]
+        name = splitted[0]
+        id_number = splitted[1]
+        course_code = splitted[2]
 
         course = course_list.find_by_code(course_code)
 
         if course is not None:
-            course.students.append(id_number)
+            course.students.append(f"{id_number} - {name}")
 
     f.close()
 
@@ -357,7 +358,7 @@ def export_charts(room_map, course_list, final_solution):
             keys = get_matched_rooms(room_map, room)
 
             for key in keys:
-                serial = 1
+                list_students = []
                 print(f"Generating {course.code} - {key}")
 
                 wb_seating.create_sheet(key)
@@ -387,7 +388,7 @@ def export_charts(room_map, course_list, final_solution):
                 ws_seating.merge_cells(f"A1:{end_char}1")
                 ws_seating.merge_cells(f"A2:{end_char}2")
 
-                ws_attendance.merge_cells(f"A1:C1")
+                ws_attendance.merge_cells(f"A1:D1")
 
                 ws_seating["A1"] = heading
                 ws_seating["A1"].font = heading_font
@@ -399,11 +400,26 @@ def export_charts(room_map, course_list, final_solution):
                 ws_seating["A2"].font = sub_heading_font
 
                 for row in final_solution[course.time][key]:
-                    ws_seating.append(row)
+                    ws_seating.append(
+                        [
+                            "-".join([x.split("-")[0], x.split("-")[1]])
+                            if x != ""
+                            else x
+                            for x in row
+                        ]
+                    )
                     for x in row:
                         if x.split("-")[0].strip() == course.code:
-                            ws_attendance.append([serial, x.split("-")[1], ""])
-                            serial += 1
+                            list_students.append(
+                                x.split("-")[1] + "-" + x.split("-")[2]
+                            )
+                print(list_students)
+                list_students.sort()
+                print(list_students)
+                for i, stud in enumerate(list_students):
+                    ws_attendance.append(
+                        [i + 1, stud.split("-")[0], stud.split("-")[1], ""]
+                    )
 
                 for col in range(65, 90):
                     ws_seating.column_dimensions[chr(col)].width = 15
