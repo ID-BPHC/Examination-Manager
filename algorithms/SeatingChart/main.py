@@ -333,6 +333,12 @@ def export_charts(room_map, course_list, final_solution):
 
     os.mkdir("./Seating_Charts")
 
+    if os.path.exists("./Attendace_Sheets") and os.path.isdir("./Attendace_Sheets"):
+        shutil.rmtree("./Attendace_Sheets")
+        time.sleep(0.5)
+
+    os.mkdir("./Attendace_Sheets")
+
     for course in course_list.courses:
         if course.time is None:
             continue
@@ -340,42 +346,72 @@ def export_charts(room_map, course_list, final_solution):
         if not os.path.exists(f"./Seating_Charts/{course.ic_email}"):
             os.mkdir(f"./Seating_Charts/{course.ic_email}")
 
-        wb = openpyxl.Workbook()
+        if not os.path.exists(f"./Attendace_Sheets/{course.ic_email}"):
+            os.mkdir(f"./Attendace_Sheets/{course.ic_email}")
+
+        wb_seating = openpyxl.Workbook()
+
+        wb_attendance = openpyxl.Workbook()
 
         for room, flag, student_count, capacity in course.rooms:
             keys = get_matched_rooms(room_map, room)
 
             for key in keys:
+                serial = 1
                 print(f"Generating {course.code} - {key}")
 
-                wb.create_sheet(key)
-                ws = wb[key]
-                ws.sheet_properties.pageSetUpPr.fitToPage = True
-                ws.page_setup.fitToHeight = False
+                wb_seating.create_sheet(key)
+                wb_attendance.create_sheet(key)
+                ws_seating = wb_seating[key]
+                ws_attendance = wb_attendance[key]
+                ws_seating.sheet_properties.pageSetUpPr.fitToPage = True
+                ws_seating.page_setup.fitToHeight = False
                 openpyxl.worksheet.worksheet.Worksheet.set_printer_settings(
-                    ws, paper_size=ws.PAPERSIZE_A4, orientation="landscape"
+                    ws_seating,
+                    paper_size=ws_seating.PAPERSIZE_A4,
+                    orientation="landscape",
+                )
+
+                ws_attendance.sheet_properties.pageSetUpPr.fitToPage = True
+                ws_attendance.page_setup.fitToHeight = False
+                openpyxl.worksheet.worksheet.Worksheet.set_printer_settings(
+                    ws_attendance,
+                    paper_size=ws_attendance.PAPERSIZE_A4,
+                    orientation="landscape",
                 )
 
                 total_cols = len(room_map[key])
                 heading = f"{key} - {course.code} - {course.title}"
 
                 end_char = chr(64 + total_cols)
-                ws.merge_cells(f"A1:{end_char}1")
-                ws.merge_cells(f"A2:{end_char}2")
+                ws_seating.merge_cells(f"A1:{end_char}1")
+                ws_seating.merge_cells(f"A2:{end_char}2")
 
-                ws["A1"] = heading
-                ws["A1"].font = heading_font
+                ws_attendance.merge_cells(f"A1:C1")
 
-                ws["A2"] = "***** Blackboard Here *****"
-                ws["A2"].font = sub_heading_font
+                ws_seating["A1"] = heading
+                ws_seating["A1"].font = heading_font
+
+                ws_attendance["A1"] = heading
+                ws_attendance["A1"].font = heading_font
+
+                ws_seating["A2"] = "***** Blackboard Here *****"
+                ws_seating["A2"].font = sub_heading_font
 
                 for row in final_solution[course.time][key]:
-                    ws.append(row)
+                    ws_seating.append(row)
+                    for x in row:
+                        if x.split("-")[0].strip() == course.code:
+                            ws_attendance.append([serial, x.split("-")[1], ""])
+                            serial += 1
 
                 for col in range(65, 90):
-                    ws.column_dimensions[chr(col)].width = 15
+                    ws_seating.column_dimensions[chr(col)].width = 15
 
-                for row in ws.iter_rows():
+                for col in range(66, 90):
+                    ws_attendance.column_dimensions[chr(col)].width = 20
+
+                for row in ws_seating.iter_rows():
                     for cell in row:
                         cell.alignment = openpyxl.styles.Alignment(
                             wrap_text=True, horizontal="center", vertical="center"
@@ -392,11 +428,26 @@ def export_charts(room_map, course_list, final_solution):
                                 fill_type="solid",
                             )
 
-        del wb["Sheet"]
+                for row in ws_attendance.iter_rows():
+                    for cell in row:
+                        cell.alignment = openpyxl.styles.Alignment(
+                            horizontal="center", vertical="center"
+                        )
+                        cell.border = thin_border
+
+        del wb_seating["Sheet"]
+        del wb_attendance["Sheet"]
+
         try:
             path = os.path.join(
                 "Seating_Charts", course.ic_email, course.code.split("/")[0] + ".xlsx"
             )
-            wb.save(path)
+
+            path1 = os.path.join(
+                "Attendace_Sheets", course.ic_email, course.code.split("/")[0] + ".xlsx"
+            )
+
+            wb_seating.save(path)
+            wb_attendance.save(path1)
         except:
             print("Could not create ", course.ic_email, " ", course.code)
