@@ -79,15 +79,14 @@ def get_date_course_map(file_name):
         name = splitted[1]
         strength = int(splitted[2])
         time_slot_key = None
-
         try:
             time_slot_key = generate_map_key(splitted[3:])
         except:
             print(f"Invalid date format for course {code}")
             print(
-                "Ensure that the format is Date (DD/MM/YY), Start time (HH:MM), End time"
+                "Ensure that the format is Date (DD-MM-YYYY), Start time (HH:MM), End time"
             )
-            print("Example: 29/08/19,15:00,18:00")
+            print("Example: 29-08-2019,15:00,18:00")
             return
 
         if strength <= 0:
@@ -167,7 +166,6 @@ def allot_rooms_double(rooms, date_course_map):
                 )
 
                 total_seats_alloted += seats_alloted
-
                 room.allotments.append(
                     Allotment(
                         course,
@@ -183,144 +181,125 @@ def allot_rooms_double(rooms, date_course_map):
             smaller_pointer = (
                 0 if pointer[0] < pointer[1] else 1
             )  # look for the last room filled
+            if pointer[0] == pointer[1]:
+                former_room = rooms[pointer[0] - 2]
+                later_room = rooms[pointer[1] - 1]
+            else:
+                former_room = rooms[pointer[smaller_pointer] - 1]
+                later_room = rooms[pointer[1 - smaller_pointer] - 1]
 
             if (
-                len(rooms[pointer[smaller_pointer] - 1].allotments)
+                len(former_room.allotments)
                 > 1  # to check if both the courses are alloted
                 and pointer[smaller_pointer]
-                != len(rooms) - 1  # leave the last room cause no more students left
+                != len(rooms) - 1  # leave the last room cause no more rooms left
             ):
-                [allotment1, allotment2] = rooms[
-                    pointer[smaller_pointer] - 1
-                ].allotments[-2:]
+                [allotment1, allotment2] = former_room.allotments[-2:]
                 if (
                     allotment2.time_slot == allotment1.time_slot == time_slot
                 ):  # working on only on the same slot courses
+
                     remaining_seats = (
-                        rooms[pointer[smaller_pointer] - 1].capacity
+                        former_room.capacity
                         - allotment2.seats_alloted
                         - allotment1.seats_alloted
                     )
                     # cases for which course seats can be filled
-                    if (
-                        allotment1.seats_alloted
-                        < rooms[pointer[smaller_pointer] - 1].get_half_capacity()
-                    ):
+                    if allotment1.seats_alloted < allotment2.seats_alloted:
                         # cases for relation between seats in last room for the course and required seats to fill current room
                         if (
-                            rooms[pointer[1 - smaller_pointer] - 1]
-                            .allotments[-1]  # last room with this course
-                            .seats_alloted
+                            later_room.allotments[
+                                -1
+                            ].seats_alloted  # last room with this course
                             > remaining_seats
                             and allotment2.course
-                            == rooms[pointer[1 - smaller_pointer] - 1]
-                            .allotments[-1]
-                            .course  # check if course for both the courses is same
+                            == later_room.allotments[
+                                -1
+                            ].course  # check if course for both the courses is same
                         ):
                             allotment2.seats_alloted += remaining_seats
-                            rooms[pointer[1 - smaller_pointer] - 1].allotments[
-                                -1
-                            ].seats_alloted -= remaining_seats
+                            later_room.allotments[-1].seats_alloted -= remaining_seats
 
                         elif (
-                            rooms[pointer[1 - smaller_pointer] - 1]
-                            .allotments[-1]
-                            .seats_alloted
-                            == remaining_seats
-                            and allotment2.course
-                            == rooms[pointer[1 - smaller_pointer] - 1]
-                            .allotments[-1]
-                            .course
+                            later_room.allotments[-1].seats_alloted <= remaining_seats
+                            and allotment2.course == later_room.allotments[-1].course
                         ):
-                            allotment2.seats_alloted += (
-                                rooms[pointer[1 - smaller_pointer] - 1]
-                                .allotments[-1]
-                                .seats_alloted
-                            )
-                            rooms[pointer[1 - smaller_pointer] - 1].allotments.pop()
+                            allotment2.seats_alloted += later_room.allotments[
+                                -1
+                            ].seats_alloted
+                            later_room.allotments.pop()
                             pointer[1 - smaller_pointer] -= 1
-                        elif (
-                            rooms[pointer[1 - smaller_pointer] - 1]
+                        """ elif (
+                            later_room
                             .allotments[-1]
                             .seats_alloted
                             < remaining_seats
                             and allotment2.course
-                            == rooms[pointer[1 - smaller_pointer] - 1]
+                            == later_room
                             .allotments[-1]
                             .course
                         ):
                             allotment2.seats_alloted += (
-                                rooms[pointer[1 - smaller_pointer] - 1]
+                                later_room
                                 .allotments[-1]
                                 .seats_alloted
                             )
 
                             remaining_seats -= (
-                                rooms[pointer[1 - smaller_pointer] - 1]
+                                later_room
                                 .allotments[-1]
                                 .seats_alloted
                             )
-                            rooms[pointer[1 - smaller_pointer] - 1].allotments.pop()
-                            pointer[1 - smaller_pointer] -= 1
+                            if course.code == "BITS F219":
+                                print(
+                                    later_room, course.code
+                                )
+                            later_room.allotments.pop()
+                            pointer[1 - smaller_pointer] -= 1 """
 
-                    elif (
-                        allotment2.seats_alloted
-                        < rooms[pointer[smaller_pointer] - 1].get_half_capacity()
-                    ):
+                    elif allotment2.seats_alloted < allotment1.seats_alloted:
                         if (
-                            rooms[pointer[1 - smaller_pointer] - 1]
-                            .allotments[-1]
-                            .seats_alloted
-                            > remaining_seats
-                            and allotment1.course
-                            == rooms[pointer[1 - smaller_pointer] - 1]
-                            .allotments[-1]
-                            .course
+                            later_room.allotments[-1].seats_alloted > remaining_seats
+                            and allotment1.course == later_room.allotments[-1].course
                         ):
                             allotment1.seats_alloted += remaining_seats
-                            rooms[pointer[1 - smaller_pointer] - 1].allotments[
-                                -1
-                            ].seats_alloted -= remaining_seats
+                            later_room.allotments[-1].seats_alloted -= remaining_seats
 
                         elif (
-                            rooms[pointer[1 - smaller_pointer] - 1]
-                            .allotments[-1]
-                            .seats_alloted
-                            == remaining_seats
-                            and allotment1.course
-                            == rooms[pointer[1 - smaller_pointer] - 1]
-                            .allotments[-1]
-                            .course
+                            later_room.allotments[-1].seats_alloted <= remaining_seats
+                            and allotment1.course == later_room.allotments[-1].course
                         ):
-                            allotment1.seats_alloted += (
-                                rooms[pointer[1 - smaller_pointer] - 1]
-                                .allotments[-1]
-                                .seats_alloted
-                            )
-                            rooms[pointer[1 - smaller_pointer] - 1].allotments.pop()
+                            allotment1.seats_alloted += later_room.allotments[
+                                -1
+                            ].seats_alloted
+                            later_room.allotments.pop()
                             pointer[1 - smaller_pointer] -= 1
-                        elif (
-                            rooms[pointer[1 - smaller_pointer] - 1]
+                        """ elif (
+                            later_room
                             .allotments[-1]
                             .seats_alloted
                             < remaining_seats
                             and allotment1.course
-                            == rooms[pointer[1 - smaller_pointer] - 1]
+                            == later_room
                             .allotments[-1]
                             .course
                         ):
                             allotment1.seats_alloted += (
-                                rooms[pointer[1 - smaller_pointer] - 1]
+                                later_room
                                 .allotments[-1]
                                 .seats_alloted
                             )
                             remaining_seats -= (
-                                rooms[pointer[1 - smaller_pointer] - 1]
+                                later_room
                                 .allotments[-1]
                                 .seats_alloted
                             )
-                            rooms[pointer[1 - smaller_pointer] - 1].allotments.pop()
-                            pointer[1 - smaller_pointer] -= 1
+                            if course.code == "BITS F219":
+                                print(
+                                    later_room, course.code
+                                )
+                            later_room.allotments.pop()
+                            pointer[1 - smaller_pointer] -= 1 """
         # Edit
 
         if pointer[0] != pointer[1]:
@@ -397,3 +376,11 @@ def start_process(rooms_csv, exams_csv, is_double):
     post_process(rooms)
     export_csv(rooms, "./RoomAllotment.csv")
     print("Room Allotment file exported to ./RoomAllotment.csv")
+
+
+if __name__ == "__main__":
+    start_process(
+        r"C:\Users\Anirudh\Desktop\TTDdata\23-24 sem2\ROOM.csv",
+        r"C:\Users\Anirudh\Desktop\MID SEM EXAM DATES final.csv",
+        True,
+    )
