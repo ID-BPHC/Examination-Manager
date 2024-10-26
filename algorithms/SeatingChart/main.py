@@ -198,11 +198,8 @@ def generate_seating_charts(
 
                 # Edit
 
-                if chart[len(chart) - start_point - 1][0] != "":
-                    start_point = start_point ^ 1
-                count += start_point
                 for i in range(0, len(limits)):
-                    if chart[len(chart) - start_point - 1][i] != "":
+                    if chart[limits[i] - start_point - 1][i] != "":
                         start_point = start_point ^ 1
                     count += start_point
                     f = False  # flag to make sure first only the chessboard filling is done
@@ -219,21 +216,17 @@ def generate_seating_charts(
                             ):  # fill in chessboard pattern for maximum possible students
                                 if count >= capacity - student_count:
                                     row = j
-                                    """ if count < capacity - student_count:
-                                        count += 1
-                                        row += 1 """
-
                                     # to continous fill from this point
                                     break
                                 if j + step_value >= limits[i]:
                                     f = True
-                                if chart[len(chart) - j - 1][i] == "":
+                                if chart[limits[i] - j - 1][i] == "":
                                     student = course.get_next_student()
-                                    chart[len(chart) - j - 1][
+                                    chart[limits[i] - j - 1][
                                         i
                                     ] = f"{course.code} - {student}"
                                     seated += 1
-                                    if len(chart) - j - 2 >= 0:
+                                    if limits[i] - j - 2 >= 0:
                                         count += 1
 
                         if f:
@@ -241,24 +234,25 @@ def generate_seating_charts(
                             continue
 
                         while row < limits[i]:
+
                             start_point = 0
                             if seated >= student_count:
                                 break
-                            if chart[len(chart) - row - 1][i] == "":
+                            if chart[limits[i] - row - 1][i] == "":
                                 student = course.get_next_student()
-                                chart[len(chart) - row - 1][
+                                chart[limits[i] - row - 1][
                                     i
                                 ] = f"{course.code} - {student}"
                                 seated += 1
                             else:
-                                while chart[len(chart) - row - 1][i] != "":
+                                while chart[limits[i] - row - 1][i] != "":
                                     if row < limits[i]:
                                         row += 1
                                     else:
                                         break
                                 if row < limits[i]:
                                     student = course.get_next_student()
-                                    chart[len(chart) - row - 1][
+                                    chart[limits[i] - row - 1][
                                         i
                                     ] = f"{course.code} - {student}"
                                     seated += 1
@@ -267,9 +261,9 @@ def generate_seating_charts(
                         for j in range(start_point, limits[i], step_value):
                             if seated >= student_count:
                                 break
-                            if chart[len(chart) - j - 1][i] == "":
+                            if chart[limits[i] - j - 1][i] == "":
                                 student = course.get_next_student()
-                                chart[len(chart) - j - 1][
+                                chart[limits[i] - j - 1][
                                     i
                                 ] = f"{course.code} - {student}"
                                 seated += 1
@@ -313,8 +307,8 @@ def generate_seating_charts(
 
                         student = left_out_students[time_room][course_code][count]
 
-                        if chart[len(chart) - j - 1][i] == "":
-                            chart[len(chart) - j - 1][i] = f"{course.code} - {student}"
+                        if chart[limits[i] - j - 1][i] == "":
+                            chart[limits[i] - j - 1][i] = f"{course.code} - {student}"
                             left_out_students_copy[time_room][course_code].remove(
                                 student
                             )
