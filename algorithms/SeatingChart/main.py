@@ -1,10 +1,11 @@
-import json
+import json, sys
 import os
 import shutil
 import openpyxl
 import time
 import csv
 
+from openpyxl.drawing.image import Image
 from openpyxl.styles.borders import Border, Side
 from openpyxl.styles import Font, PatternFill
 
@@ -99,7 +100,6 @@ def get_populated_maps(
     for line in f.readlines()[1:]:
         line = line.strip()
         splitted = line.split(",")
-
         room = splitted[0]
         code = splitted[1]
         title = splitted[2]
@@ -176,7 +176,6 @@ def generate_seating_charts(
     room_map_csv, room_allotment_csv, registered_students_csv, ic_csv
 ):
     print("Generating Seating Charts")
-
     room_map, final_solution, course_list = get_populated_maps(
         room_map_csv, room_allotment_csv, registered_students_csv, ic_csv
     )
@@ -187,59 +186,93 @@ def generate_seating_charts(
         for room, remark, student_count, capacity in course.rooms:
             keys = get_matched_rooms(room_map, room)
             seated = 0
-
+            count = 0
             for key in keys:
+
                 chart = final_solution[course.time][key]
+
                 limits = room_map[key]
                 half_cap = int(int(capacity / 2))
-                start_point = 1 if remark == "LEFT" else 0
+                start_point = 1 if student_count <= half_cap else 0
                 step_value = 1 if remark == "FULL" else 2
 
                 # Edit
+
+                if chart[len(chart) - start_point - 1][0] != "":
+                    start_point = start_point ^ 1
+                count += start_point
                 for i in range(0, len(limits)):
+                    if chart[len(chart) - start_point - 1][i] != "":
+                        start_point = start_point ^ 1
+                    count += start_point
                     f = False  # flag to make sure first only the chessboard filling is done
                     if (
                         remark != "FULL" and student_count > half_cap
                     ):  # check if uneven fill
-                        row = 0
-                        if seated < capacity - student_count:
+                        if count == capacity - student_count:
+                            row = start_point
+                        elif count > capacity - student_count:
+                            row = 0
+                        elif count < capacity - student_count:
                             for j in range(
                                 start_point, limits[i], step_value
                             ):  # fill in chessboard pattern for maximum possible students
-                                if seated >= capacity - student_count:
-                                    row = j - 1  # to continous fill from this point
+                                if count >= capacity - student_count:
+                                    row = j
+                                    """ if count < capacity - student_count:
+                                        count += 1
+                                        row += 1 """
+
+                                    # to continous fill from this point
                                     break
                                 if j + step_value >= limits[i]:
                                     f = True
-                                student = course.get_next_student()
-                                chart[len(chart) - j - 1][
-                                    i
-                                ] = f"{course.code} - {student}"
-                                seated += 1
+                                if chart[len(chart) - j - 1][i] == "":
+                                    student = course.get_next_student()
+                                    chart[len(chart) - j - 1][
+                                        i
+                                    ] = f"{course.code} - {student}"
+                                    seated += 1
+                                    if len(chart) - j - 2 >= 0:
+                                        count += 1
 
                         if f:
                             start_point = start_point ^ 1
                             continue
 
                         while row < limits[i]:
+                            start_point = 0
                             if seated >= student_count:
                                 break
-                            student = course.get_next_student()
                             if chart[len(chart) - row - 1][i] == "":
+                                student = course.get_next_student()
                                 chart[len(chart) - row - 1][
                                     i
                                 ] = f"{course.code} - {student}"
                                 seated += 1
-                            row += 1
+                            else:
+                                while chart[len(chart) - row - 1][i] != "":
+                                    if row < limits[i]:
+                                        row += 1
+                                    else:
+                                        break
+                                if row < limits[i]:
+                                    student = course.get_next_student()
+                                    chart[len(chart) - row - 1][
+                                        i
+                                    ] = f"{course.code} - {student}"
+                                    seated += 1
 
                     else:
                         for j in range(start_point, limits[i], step_value):
                             if seated >= student_count:
                                 break
-
-                            student = course.get_next_student()
-                            chart[len(chart) - j - 1][i] = f"{course.code} - {student}"
-                            seated += 1
+                            if chart[len(chart) - j - 1][i] == "":
+                                student = course.get_next_student()
+                                chart[len(chart) - j - 1][
+                                    i
+                                ] = f"{course.code} - {student}"
+                                seated += 1
 
                         if remark != "FULL":
                             start_point = start_point ^ 1
@@ -287,7 +320,6 @@ def generate_seating_charts(
                             )
                             count += 1
                             left_out_students_count += 1
-
     export_charts(room_map, course_list, final_solution)
     print(
         "Number of students alloted after alloting consecutive seats where required",
@@ -328,27 +360,27 @@ def export_charts(room_map, course_list, final_solution):
     heading_font = Font(size=13, bold=True)
     sub_heading_font = Font(size=11, bold=True)
 
-    if os.path.exists("./Seating_Charts") and os.path.isdir("./Seating_Charts"):
-        shutil.rmtree("./Seating_Charts")
+    if os.path.exists("./Charts_and_Sheets") and os.path.isdir("./Charts_and_Sheets"):
+        shutil.rmtree("./Charts_and_Sheets")
         time.sleep(0.5)
 
-    os.mkdir("./Seating_Charts")
+    os.mkdir("./Charts_and_Sheets")
 
-    if os.path.exists("./Attendace_Sheets") and os.path.isdir("./Attendace_Sheets"):
-        shutil.rmtree("./Attendace_Sheets")
+    if os.path.exists("./Charts_and_Sheets") and os.path.isdir("./Charts_and_Sheets"):
+        shutil.rmtree("./Charts_and_Sheets")
         time.sleep(0.5)
 
-    os.mkdir("./Attendace_Sheets")
+    os.mkdir("./Charts_and_Sheets")
 
     for course in course_list.courses:
         if course.time is None:
             continue
 
-        if not os.path.exists(f"./Seating_Charts/{course.ic_email}"):
-            os.mkdir(f"./Seating_Charts/{course.ic_email}")
+        if not os.path.exists(f"./Charts_and_Sheets/{course.ic_email}"):
+            os.mkdir(f"./Charts_and_Sheets/{course.ic_email}")
 
-        if not os.path.exists(f"./Attendace_Sheets/{course.ic_email}"):
-            os.mkdir(f"./Attendace_Sheets/{course.ic_email}")
+        if not os.path.exists(f"./Charts_and_Sheets/{course.ic_email}"):
+            os.mkdir(f"./Charts_and_Sheets/{course.ic_email}")
 
         wb_seating = openpyxl.Workbook()
 
@@ -378,7 +410,7 @@ def export_charts(room_map, course_list, final_solution):
                 openpyxl.worksheet.worksheet.Worksheet.set_printer_settings(
                     ws_attendance,
                     paper_size=ws_attendance.PAPERSIZE_A4,
-                    orientation="landscape",
+                    orientation="portrait",
                 )
 
                 total_cols = len(room_map[key])
@@ -389,33 +421,58 @@ def export_charts(room_map, course_list, final_solution):
                 ws_seating.merge_cells(f"A2:{end_char}2")
 
                 ws_attendance.merge_cells(f"A1:D1")
+                ws_attendance.merge_cells(f"A2:D2")
+                ws_attendance.merge_cells(f"A3:D3")
 
                 ws_seating["A1"] = heading
                 ws_seating["A1"].font = heading_font
 
-                ws_attendance["A1"] = heading
-                ws_attendance["A1"].font = heading_font
+                img = Image("./logo.png")
+
+                img.width = 450
+                img.height = 100
+                img.left = 20
+                ws_attendance.add_image(img, "B1")
+                with open("./examHeading.txt") as f:
+                    data = f.read()
+                ws_attendance["A2"].font = heading_font
+                ws_attendance["A2"] = data
+                ws_attendance["A3"] = heading
+                ws_attendance["A3"].font = heading_font
+                ws_attendance["A4"] = "S.NO"
+                ws_attendance["A4"].font = sub_heading_font
+                ws_attendance["B4"] = "ID NUMBER"
+                ws_attendance["B4"].font = sub_heading_font
+                ws_attendance["C4"] = "NAME"
+                ws_attendance["C4"].font = sub_heading_font
+                ws_attendance["D4"] = "SIGNATURE"
+                ws_attendance["D4"].font = sub_heading_font
 
                 ws_seating["A2"] = "***** Blackboard Here *****"
                 ws_seating["A2"].font = sub_heading_font
+                ws_attendance.print_title_rows = "1:4"
+                ws_attendance.print_options.horizontalCentered = True
 
                 for row in final_solution[course.time][key]:
                     ws_seating.append(
                         [
-                            "-".join([x.split("-")[0], x.split("-")[1]])
-                            if x != ""
-                            else x
+                            (
+                                "-".join([x.split("-")[0], x.split("-")[1]])
+                                if x != ""
+                                else x
+                            )
                             for x in row
                         ]
                     )
                     for x in row:
                         if x.split("-")[0].strip() == course.code:
-                            list_students.append(
-                                x.split("-")[1] + "-" + x.split("-")[2]
-                            )
-                print(list_students)
+                            try:
+                                list_students.append(
+                                    x.split("-")[1] + "-" + x.split("-")[2]
+                                )
+                            except:
+                                print(course.code, x)
                 list_students.sort()
-                print(list_students)
                 for i, stud in enumerate(list_students):
                     ws_attendance.append(
                         [i + 1, stud.split("-")[0], stud.split("-")[1], ""]
@@ -424,8 +481,10 @@ def export_charts(room_map, course_list, final_solution):
                 for col in range(65, 90):
                     ws_seating.column_dimensions[chr(col)].width = 15
 
-                for col in range(66, 90):
-                    ws_attendance.column_dimensions[chr(col)].width = 20
+                ws_attendance.row_dimensions[1].height = 20
+                ws_attendance.column_dimensions["B"].width = 15
+                for col in range(67, 90):
+                    ws_attendance.column_dimensions[chr(col)].width = 35
 
                 for row in ws_seating.iter_rows():
                     for cell in row:
@@ -445,25 +504,49 @@ def export_charts(room_map, course_list, final_solution):
                             )
 
                 for row in ws_attendance.iter_rows():
+                    ws_attendance.row_dimensions[row[0].row].height = 25
+
                     for cell in row:
-                        cell.alignment = openpyxl.styles.Alignment(
-                            horizontal="center", vertical="center"
-                        )
-                        cell.border = thin_border
+                        if cell.column == 3:
+                            cell.alignment = openpyxl.styles.Alignment(
+                                wrap_text=False, horizontal="left", vertical="center"
+                            )
+                        else:
+                            cell.alignment = openpyxl.styles.Alignment(
+                                wrap_text=False, horizontal="center", vertical="center"
+                            )
+                        if cell.row > 2:
+                            cell.border = thin_border
+                ws_attendance.row_dimensions[1].height = 80
+                ws_attendance.row_dimensions[2].height = 40
 
         del wb_seating["Sheet"]
         del wb_attendance["Sheet"]
 
         try:
             path = os.path.join(
-                "Seating_Charts", course.ic_email, course.code.split("/")[0] + ".xlsx"
+                "Charts_and_Sheets",
+                course.ic_email,
+                course.code.split("/")[0] + " Seating Charts" + ".xlsx",
             )
 
             path1 = os.path.join(
-                "Attendace_Sheets", course.ic_email, course.code.split("/")[0] + ".xlsx"
+                "Charts_and_Sheets",
+                course.ic_email,
+                course.code.split("/")[0] + " Attendance Sheets" + ".xlsx",
             )
 
             wb_seating.save(path)
             wb_attendance.save(path1)
-        except:
+        except Exception as e:
+            print(e)
             print("Could not create ", course.ic_email, " ", course.code)
+
+
+if __name__ == "__main__":
+    generate_seating_charts(
+        r"C:\Users\Anirudh\Desktop\TTDdata\24-25 sem 1\room_map.csv",
+        r"C:\Users\Anirudh\Desktop\TTDdata\24-25 sem 1\ROOM ALLOTMENT.csv",
+        r"C:\Users\Anirudh\Desktop\TTDdata\24-25 sem 1\Attendance sheet.csv",
+        r"C:\Users\Anirudh\Desktop\TTDdata\24-25 sem 1\IC DETAILS.csv",
+    )
