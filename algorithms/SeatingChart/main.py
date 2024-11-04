@@ -56,7 +56,6 @@ class CourseList:
 
     def sort_entries(self):
         for course in self.courses:
-            course.rooms.sort()
             course.students.sort()
 
     def __repr__(self):
