@@ -198,7 +198,7 @@ def generate_seating_charts(
                 # Edit
 
                 for i in range(0, len(limits)):
-                    if chart[limits[i] - start_point - 1][i] != "":
+                    if chart[len(chart) - start_point - 1][i] != "":
                         start_point = start_point ^ 1
                     count += start_point
                     f = False  # flag to make sure first only the chessboard filling is done
@@ -219,9 +219,9 @@ def generate_seating_charts(
                                     break
                                 if j + step_value >= limits[i]:
                                     f = True
-                                if chart[limits[i] - j - 1][i] == "":
+                                if chart[len(chart) - j - 1][i] == "":
                                     student = course.get_next_student()
-                                    chart[limits[i] - j - 1][
+                                    chart[len(chart) - j - 1][
                                         i
                                     ] = f"{course.code} - {student}"
                                     seated += 1
@@ -237,21 +237,21 @@ def generate_seating_charts(
                             start_point = 0
                             if seated >= student_count:
                                 break
-                            if chart[limits[i] - row - 1][i] == "":
+                            if chart[len(chart) - row - 1][i] == "":
                                 student = course.get_next_student()
                                 chart[limits[i] - row - 1][
                                     i
                                 ] = f"{course.code} - {student}"
                                 seated += 1
                             else:
-                                while chart[limits[i] - row - 1][i] != "":
+                                while chart[len(chart) - row - 1][i] != "":
                                     if row < limits[i]:
                                         row += 1
                                     else:
                                         break
                                 if row < limits[i]:
                                     student = course.get_next_student()
-                                    chart[limits[i] - row - 1][
+                                    chart[len(chart) - row - 1][
                                         i
                                     ] = f"{course.code} - {student}"
                                     seated += 1
@@ -260,9 +260,9 @@ def generate_seating_charts(
                         for j in range(start_point, limits[i], step_value):
                             if seated >= student_count:
                                 break
-                            if chart[limits[i] - j - 1][i] == "":
+                            if chart[len(chart) - j - 1][i] == "":
                                 student = course.get_next_student()
-                                chart[limits[i] - j - 1][
+                                chart[len(chart) - j - 1][
                                     i
                                 ] = f"{course.code} - {student}"
                                 seated += 1
@@ -538,8 +538,8 @@ def export_charts(room_map, course_list, final_solution):
 
 if __name__ == "__main__":
     generate_seating_charts(
-        r"C:\Users\Anirudh\Desktop\TTDdata\24-25 sem 1\room_map.csv",
-        r"C:\Users\Anirudh\Desktop\TTDdata\24-25 sem 1\ROOM ALLOTMENT.csv",
-        r"C:\Users\Anirudh\Desktop\TTDdata\24-25 sem 1\Attendance sheet.csv",
-        r"C:\Users\Anirudh\Desktop\TTDdata\24-25 sem 1\IC DETAILS.csv",
+        r"C:\Users\Anirudh\Desktop\New folder\TTDdata\24-25 sem 1\compre\room_map.csv",
+        r"C:\Users\Anirudh\Desktop\New folder\TTDdata\24-25 sem 1\compre\RoomAllotment 123.csv",
+        r"C:\Users\Anirudh\Desktop\New folder\TTDdata\24-25 sem 1\compre\NAME ATTENDANCE STUDENT.csv",
+        r"C:\Users\Anirudh\Desktop\New folder\TTDdata\24-25 sem 1\compre\IC DETAILS.csv",
     )
