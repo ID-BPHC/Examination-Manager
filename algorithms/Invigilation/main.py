@@ -797,6 +797,7 @@ def start_invigilation_process(
     room_allotment_csv,
     reserve_duties,
     big_course_cutoffs,
+    big_rooms_3,
 ):
     print("Starting....")
 
