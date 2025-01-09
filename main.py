@@ -42,6 +42,7 @@ def invig_generate_btn_clicked(event):
     reserve_duties = int(frame.invig_reserve_duties_box.GetValue())
     cutoffs = [int(x)
                for x in frame.invig_big_course_cutoffs_box.GetValue().split(",")]
+    big_rooms_3 = [x.strip() for x in frame.invig_big_rooms_box.GetValue().strip().split(",")]
     thread = threading.Thread(target=start_invigilation_process, args=(
         frame.invig_faculty_csv_picker.GetPath(),
         frame.invig_scholar_csv_picker.GetPath(),
@@ -51,7 +52,8 @@ def invig_generate_btn_clicked(event):
         frame.invig_duties_csv_picker.GetPath(),
         frame.invig_room_csv_picker.GetPath(),
         reserve_duties,
-        cutoffs
+        cutoffs,
+        big_rooms_3
     ))
     thread.start()
 
