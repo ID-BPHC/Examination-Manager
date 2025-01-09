@@ -238,8 +238,16 @@ class MainFrame ( wx.Frame ):
 		self.invig_big_course_cutoffs_box = wx.TextCtrl( self.m_panel5, wx.ID_ANY, u"150,300,500,1000", wx.DefaultPosition, wx.DefaultSize, 0 )
 		gbSizer211.Add( self.invig_big_course_cutoffs_box, wx.GBPosition( 8, 1 ), wx.GBSpan( 1, 1 ), wx.ALL|wx.EXPAND, 5 )
 
+		self.m_staticText211 = wx.StaticText( self.m_panel5, wx.ID_ANY, u"Big Rooms - 3", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText211.Wrap( -1 )
+
+		gbSizer211.Add( self.m_staticText211, wx.GBPosition( 9, 0 ), wx.GBSpan( 1, 1 ), wx.ALL, 5 )
+
+		self.invig_big_rooms_3_box = wx.TextCtrl( self.m_panel5, wx.ID_ANY, u"F103,F104,F106", wx.DefaultPosition, wx.DefaultSize, 0 )
+		gbSizer211.Add( self.invig_big_rooms_3_box, wx.GBPosition( 9, 1 ), wx.GBSpan( 1, 1 ), wx.ALL|wx.EXPAND, 5 )
+
 		self.invig_generate_btn = wx.Button( self.m_panel5, wx.ID_ANY, u"Generate", wx.DefaultPosition, wx.DefaultSize, 0 )
-		gbSizer211.Add( self.invig_generate_btn, wx.GBPosition( 9, 0 ), wx.GBSpan( 1, 2 ), wx.ALIGN_CENTER|wx.ALL, 5 )
+		gbSizer211.Add( self.invig_generate_btn, wx.GBPosition( 10, 0 ), wx.GBSpan( 1, 2 ), wx.ALIGN_CENTER|wx.ALL, 5 )
 
 		self.invig_error_box = wx.stc.StyledTextCtrl(self.m_panel5, wx.ID_ANY, wx.DefaultPosition, wx.Size( -1,-1 ), 0)
 		self.invig_error_box.SetUseTabs ( True )
@@ -271,7 +279,7 @@ class MainFrame ( wx.Frame ):
 		self.invig_error_box.MarkerDefine( wx.stc.STC_MARKNUM_FOLDERTAIL, wx.stc.STC_MARK_EMPTY )
 		self.invig_error_box.SetSelBackground( True, wx.SystemSettings.GetColour(wx.SYS_COLOUR_HIGHLIGHT ) )
 		self.invig_error_box.SetSelForeground( True, wx.SystemSettings.GetColour(wx.SYS_COLOUR_HIGHLIGHTTEXT ) )
-		gbSizer211.Add( self.invig_error_box, wx.GBPosition( 10, 0 ), wx.GBSpan( 1, 2 ), wx.EXPAND |wx.ALL, 5 )
+		gbSizer211.Add( self.invig_error_box, wx.GBPosition( 11, 0 ), wx.GBSpan( 1, 2 ), wx.EXPAND |wx.ALL, 5 )
 
 
 		gbSizer211.AddGrowableCol( 0 )
