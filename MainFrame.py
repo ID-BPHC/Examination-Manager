@@ -19,7 +19,7 @@ import wx.adv
 class MainFrame ( wx.Frame ):
 
 	def __init__( self, parent ):
-		wx.Frame.__init__ ( self, parent, id = wx.ID_ANY, title = wx.EmptyString, pos = wx.DefaultPosition, size = wx.Size( 994,600 ), style = wx.DEFAULT_FRAME_STYLE|wx.TAB_TRAVERSAL )
+		wx.Frame.__init__ ( self, parent, id = wx.ID_ANY, title = wx.EmptyString, pos = wx.DefaultPosition, size = wx.Size( 994,700 ), style = wx.DEFAULT_FRAME_STYLE|wx.TAB_TRAVERSAL )
 
 		self.SetSizeHints( wx.DefaultSize, wx.DefaultSize )
 
@@ -284,7 +284,7 @@ class MainFrame ( wx.Frame ):
 
 		gbSizer211.AddGrowableCol( 0 )
 		gbSizer211.AddGrowableCol( 1 )
-		gbSizer211.AddGrowableRow( 10 )
+		gbSizer211.AddGrowableRow( 11 )
 
 		self.m_panel5.SetSizer( gbSizer211 )
 		self.m_panel5.Layout()
