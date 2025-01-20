@@ -6,6 +6,7 @@ from MainFrame import MainFrame
 from algorithms import RoomAllotment
 from algorithms.SeatingArrangement.main import start_seating_arrangement_process
 from algorithms.Invigilation.main import start_invigilation_process
+from algorithms.StaffDuties.main import start_staff_duties_generation
 from algorithms.InvigilationReports.main import start_invig_report_generation
 from algorithms.SeatingChart.main import generate_seating_charts
 from algorithms.Mailer.main import send_mails
@@ -68,6 +69,20 @@ def invig_generate_btn_clicked(event):
             reserve_duties,
             cutoffs,
             big_rooms_3,
+        ),
+    )
+    thread.start()
+
+
+def staff_duties_generate_btn_clicked(event):
+    sys.stdout = frame.staff_duties_error_box
+    sys.stderr = frame.staff_duties_error_box
+    frame.staff_duties_error_box.ClearAll()
+    thread = threading.Thread(
+        target=start_staff_duties_generation,
+        args=(
+            frame.staff_duties_staff_details_excel_picker.GetPath(),
+            frame.staff_duties_staff_leaves_excel_picker.GetPath(),
         ),
     )
     thread.start()
@@ -138,6 +153,9 @@ if __name__ == "__main__":
     frame.room_generate_btn.Bind(wx.EVT_BUTTON, room_generate_btn_clicked)
     frame.seating_generate_btn.Bind(wx.EVT_BUTTON, seating_generate_btn_clicked)
     frame.invig_generate_btn.Bind(wx.EVT_BUTTON, invig_generate_btn_clicked)
+    frame.staff_duties_generate_btn.Bind(
+        wx.EVT_BUTTON, staff_duties_generate_btn_clicked
+    )
     frame.report_config_btn.Bind(wx.EVT_BUTTON, report_config_clicked)
     frame.report_invig_generate_btn.Bind(
         wx.EVT_BUTTON, report_invig_generate_btn_clicked
