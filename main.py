@@ -99,7 +99,10 @@ def report_invig_generate_btn_clicked(event):
     frame.report_error_box.ClearAll()
     thread = threading.Thread(
         target=start_invig_report_generation,
-        args=(frame.report_invig_csv_picker.GetPath(),),
+        args=(
+            frame.report_invig_csv_picker.GetPath(),
+            frame.report_staff_csv_picker.GetPath(),
+        ),
     )
     thread.start()
 
