@@ -373,51 +373,59 @@ class MainFrame ( wx.Frame ):
 		self.report_config_btn = wx.Button( self.m_panel7, wx.ID_ANY, u"Update Configuration (Application Restart Required)", wx.DefaultPosition, wx.DefaultSize, 0 )
 		gbSizer212.Add( self.report_config_btn, wx.GBPosition( 0, 0 ), wx.GBSpan( 1, 3 ), wx.ALL|wx.EXPAND, 5 )
 
-		self.m_staticText112 = wx.StaticText( self.m_panel7, wx.ID_ANY, u"Invigilation CSV File", wx.DefaultPosition, wx.DefaultSize, 0 )
-		self.m_staticText112.Wrap( -1 )
+		self.m_staticText117 = wx.StaticText( self.m_panel7, wx.ID_ANY, u"Invigilation CSV File", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText117.Wrap( -1 )
 
-		gbSizer212.Add( self.m_staticText112, wx.GBPosition( 1, 0 ), wx.GBSpan( 1, 1 ), wx.ALIGN_CENTER_VERTICAL|wx.ALL, 5 )
+		gbSizer212.Add( self.m_staticText117, wx.GBPosition( 1, 0 ), wx.GBSpan( 1, 1 ), wx.ALIGN_CENTER_VERTICAL|wx.ALL, 5 )
 
 		self.report_invig_csv_picker = wx.FilePickerCtrl( self.m_panel7, wx.ID_ANY, wx.EmptyString, u"Select a file", u"*.csv", wx.DefaultPosition, wx.DefaultSize, wx.FLP_DEFAULT_STYLE )
 		gbSizer212.Add( self.report_invig_csv_picker, wx.GBPosition( 1, 1 ), wx.GBSpan( 1, 1 ), wx.ALL|wx.EXPAND, 5 )
+		
+		self.m_staticText112 = wx.StaticText( self.m_panel7, wx.ID_ANY, u"Staff CSV File", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText112.Wrap( -1 )
+
+		gbSizer212.Add( self.m_staticText112, wx.GBPosition( 2, 0 ), wx.GBSpan( 1, 1 ), wx.ALIGN_CENTER_VERTICAL|wx.ALL, 5 )
+
+		self.report_staff_csv_picker = wx.FilePickerCtrl( self.m_panel7, wx.ID_ANY, wx.EmptyString, u"Select a file", u"*.csv", wx.DefaultPosition, wx.DefaultSize, wx.FLP_DEFAULT_STYLE )
+		gbSizer212.Add( self.report_staff_csv_picker, wx.GBPosition( 2, 1 ), wx.GBSpan( 1, 1 ), wx.ALL|wx.EXPAND, 5 )
 
 		self.report_invig_generate_btn = wx.Button( self.m_panel7, wx.ID_ANY, u"Generate Invigilation PDFs", wx.DefaultPosition, wx.DefaultSize, 0 )
-		gbSizer212.Add( self.report_invig_generate_btn, wx.GBPosition( 1, 2 ), wx.GBSpan( 1, 1 ), wx.ALL, 5 )
+		gbSizer212.Add( self.report_invig_generate_btn, wx.GBPosition( 1, 2 ), wx.GBSpan( 2, 1 ), wx.ALL|wx.EXPAND, 5 )
 
 		self.m_staticText213 = wx.StaticText( self.m_panel7, wx.ID_ANY, u"Room Allotment CSV", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_staticText213.Wrap( 350 )
 
-		gbSizer212.Add( self.m_staticText213, wx.GBPosition( 2, 0 ), wx.GBSpan( 1, 1 ), wx.ALIGN_CENTER_VERTICAL|wx.ALL, 5 )
+		gbSizer212.Add( self.m_staticText213, wx.GBPosition( 3, 0 ), wx.GBSpan( 1, 1 ), wx.ALIGN_CENTER_VERTICAL|wx.ALL, 5 )
 
 		self.report_room_csv_picker = wx.FilePickerCtrl( self.m_panel7, wx.ID_ANY, wx.EmptyString, u"Select a file", u"*.csv", wx.DefaultPosition, wx.DefaultSize, wx.FLP_DEFAULT_STYLE )
-		gbSizer212.Add( self.report_room_csv_picker, wx.GBPosition( 2, 1 ), wx.GBSpan( 1, 1 ), wx.ALL|wx.EXPAND, 5 )
+		gbSizer212.Add( self.report_room_csv_picker, wx.GBPosition( 3, 1 ), wx.GBSpan( 1, 1 ), wx.ALL|wx.EXPAND, 5 )
 
 		self.m_staticText31 = wx.StaticText( self.m_panel7, wx.ID_ANY, u"Registered Students CSV File\n-student_id, course_code", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_staticText31.Wrap( -1 )
 
-		gbSizer212.Add( self.m_staticText31, wx.GBPosition( 3, 0 ), wx.GBSpan( 1, 1 ), wx.ALL, 5 )
+		gbSizer212.Add( self.m_staticText31, wx.GBPosition( 4, 0 ), wx.GBSpan( 1, 1 ), wx.ALL, 5 )
 
 		self.report_students_csv_picker = wx.FilePickerCtrl( self.m_panel7, wx.ID_ANY, wx.EmptyString, u"Select a file", u"*.csv", wx.DefaultPosition, wx.DefaultSize, wx.FLP_DEFAULT_STYLE )
-		gbSizer212.Add( self.report_students_csv_picker, wx.GBPosition( 3, 1 ), wx.GBSpan( 1, 1 ), wx.ALL|wx.EXPAND, 5 )
+		gbSizer212.Add( self.report_students_csv_picker, wx.GBPosition( 4, 1 ), wx.GBSpan( 1, 1 ), wx.ALL|wx.EXPAND, 5 )
 
 		self.m_staticText32 = wx.StaticText( self.m_panel7, wx.ID_ANY, u"IC Email Course CSV\ncourse_code, ic_email", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_staticText32.Wrap( -1 )
 
-		gbSizer212.Add( self.m_staticText32, wx.GBPosition( 4, 0 ), wx.GBSpan( 1, 1 ), wx.ALL, 5 )
+		gbSizer212.Add( self.m_staticText32, wx.GBPosition( 5, 0 ), wx.GBSpan( 1, 1 ), wx.ALL, 5 )
 
 		self.report_ic_csv_picker = wx.FilePickerCtrl( self.m_panel7, wx.ID_ANY, wx.EmptyString, u"Select a file", u"*.csv", wx.DefaultPosition, wx.DefaultSize, wx.FLP_DEFAULT_STYLE )
-		gbSizer212.Add( self.report_ic_csv_picker, wx.GBPosition( 4, 1 ), wx.GBSpan( 1, 1 ), wx.ALL|wx.EXPAND, 5 )
+		gbSizer212.Add( self.report_ic_csv_picker, wx.GBPosition( 5, 1 ), wx.GBSpan( 1, 1 ), wx.ALL|wx.EXPAND, 5 )
 
 		self.report_room_map_csv_picker = wx.FilePickerCtrl( self.m_panel7, wx.ID_ANY, wx.EmptyString, u"Select a file", u"*.*", wx.DefaultPosition, wx.DefaultSize, wx.FLP_DEFAULT_STYLE )
-		gbSizer212.Add( self.report_room_map_csv_picker, wx.GBPosition( 5, 1 ), wx.GBSpan( 1, 1 ), wx.ALL|wx.EXPAND, 5 )
+		gbSizer212.Add( self.report_room_map_csv_picker, wx.GBPosition( 6, 1 ), wx.GBSpan( 1, 1 ), wx.ALL|wx.EXPAND, 5 )
 
 		self.m_staticText214 = wx.StaticText( self.m_panel7, wx.ID_ANY, u"Room Map", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_staticText214.Wrap( -1 )
 
-		gbSizer212.Add( self.m_staticText214, wx.GBPosition( 5, 0 ), wx.GBSpan( 1, 1 ), wx.ALL, 5 )
+		gbSizer212.Add( self.m_staticText214, wx.GBPosition( 6, 0 ), wx.GBSpan( 1, 1 ), wx.ALL, 5 )
 
 		self.report_generate_seat_charts_btn = wx.Button( self.m_panel7, wx.ID_ANY, u"Generate Seating Charts", wx.DefaultPosition, wx.DefaultSize, 0 )
-		gbSizer212.Add( self.report_generate_seat_charts_btn, wx.GBPosition( 2, 2 ), wx.GBSpan( 4, 1 ), wx.ALL|wx.EXPAND, 5 )
+		gbSizer212.Add( self.report_generate_seat_charts_btn, wx.GBPosition( 3, 2 ), wx.GBSpan( 4, 1 ), wx.ALL|wx.EXPAND, 5 )
 
 		self.report_error_box = wx.stc.StyledTextCtrl(self.m_panel7, wx.ID_ANY, wx.DefaultPosition, wx.Size( -1,-1 ), 0)
 		self.report_error_box.SetUseTabs ( True )
@@ -449,12 +457,12 @@ class MainFrame ( wx.Frame ):
 		self.report_error_box.MarkerDefine( wx.stc.STC_MARKNUM_FOLDERTAIL, wx.stc.STC_MARK_EMPTY )
 		self.report_error_box.SetSelBackground( True, wx.SystemSettings.GetColour(wx.SYS_COLOUR_HIGHLIGHT ) )
 		self.report_error_box.SetSelForeground( True, wx.SystemSettings.GetColour(wx.SYS_COLOUR_HIGHLIGHTTEXT ) )
-		gbSizer212.Add( self.report_error_box, wx.GBPosition( 6, 0 ), wx.GBSpan( 1, 3 ), wx.EXPAND |wx.ALL, 5 )
+		gbSizer212.Add( self.report_error_box, wx.GBPosition( 7, 0 ), wx.GBSpan( 1, 3 ), wx.EXPAND |wx.ALL, 5 )
 
 
 		gbSizer212.AddGrowableCol( 0 )
 		gbSizer212.AddGrowableCol( 1 )
-		gbSizer212.AddGrowableRow( 6 )
+		gbSizer212.AddGrowableRow( 7 )
 
 		self.m_panel7.SetSizer( gbSizer212 )
 		self.m_panel7.Layout()
