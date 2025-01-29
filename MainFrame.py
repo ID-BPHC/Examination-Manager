@@ -312,8 +312,16 @@ class MainFrame ( wx.Frame ):
 		self.staff_duties_staff_leaves_excel_picker = wx.FilePickerCtrl( self.m_panel6, wx.ID_ANY, wx.EmptyString, u"Select a file", u"*.xlsx;*.xlsm;*.xlsb;*.xls", wx.DefaultPosition, wx.DefaultSize, wx.FLP_DEFAULT_STYLE )
 		gbSizer213.Add( self.staff_duties_staff_leaves_excel_picker, wx.GBPosition( 1, 1 ), wx.GBSpan( 1, 1 ), wx.ALL|wx.EXPAND, 5 )
 
+		self.m_staticText217 = wx.StaticText( self.m_panel6, wx.ID_ANY, u"Staff Leaves\n-name, dept, psrn, email_id, reason, start_date, end_date", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText217.Wrap( 350 )
+
+		gbSizer213.Add( self.m_staticText217, wx.GBPosition( 2, 0 ), wx.GBSpan( 1, 1 ), wx.ALIGN_CENTER_VERTICAL|wx.ALL, 5 )
+
+		self.staff_duties_staff_max_duties_excel_picker = wx.FilePickerCtrl( self.m_panel6, wx.ID_ANY, wx.EmptyString, u"Select a file", u"*.xlsx;*.xlsm;*.xlsb;*.xls", wx.DefaultPosition, wx.DefaultSize, wx.FLP_DEFAULT_STYLE )
+		gbSizer213.Add( self.staff_duties_staff_max_duties_excel_picker, wx.GBPosition( 2, 1 ), wx.GBSpan( 1, 1 ), wx.ALL|wx.EXPAND, 5 )
+
 		self.staff_duties_generate_btn = wx.Button( self.m_panel6, wx.ID_ANY, u"Generate", wx.DefaultPosition, wx.DefaultSize, 0 )
-		gbSizer213.Add( self.staff_duties_generate_btn, wx.GBPosition( 2, 0 ), wx.GBSpan( 1, 2 ), wx.ALIGN_CENTER|wx.ALL, 5 )
+		gbSizer213.Add( self.staff_duties_generate_btn, wx.GBPosition( 3, 0 ), wx.GBSpan( 1, 2 ), wx.ALIGN_CENTER|wx.ALL, 5 )
 
 		self.staff_duties_error_box = wx.stc.StyledTextCtrl(self.m_panel6, wx.ID_ANY, wx.DefaultPosition, wx.Size( -1,-1 ), 0)
 		self.staff_duties_error_box.SetUseTabs ( True )
@@ -345,12 +353,12 @@ class MainFrame ( wx.Frame ):
 		self.staff_duties_error_box.MarkerDefine( wx.stc.STC_MARKNUM_FOLDERTAIL, wx.stc.STC_MARK_EMPTY )
 		self.staff_duties_error_box.SetSelBackground( True, wx.SystemSettings.GetColour(wx.SYS_COLOUR_HIGHLIGHT ) )
 		self.staff_duties_error_box.SetSelForeground( True, wx.SystemSettings.GetColour(wx.SYS_COLOUR_HIGHLIGHTTEXT ) )
-		gbSizer213.Add( self.staff_duties_error_box, wx.GBPosition( 3, 0 ), wx.GBSpan( 1, 2 ), wx.EXPAND |wx.ALL, 5 )
+		gbSizer213.Add( self.staff_duties_error_box, wx.GBPosition( 4, 0 ), wx.GBSpan( 1, 2 ), wx.EXPAND |wx.ALL, 5 )
 
 
 		gbSizer213.AddGrowableCol( 0 )
 		gbSizer213.AddGrowableCol( 1 )
-		gbSizer213.AddGrowableRow( 3 )
+		gbSizer213.AddGrowableRow( 4 )
 
 		self.m_panel6.SetSizer( gbSizer213 )
 		self.m_panel6.Layout()
