@@ -15,6 +15,7 @@
       <note>In case of any problems, contact Office C317 Extn. 802</note>
     </notes>
   </invigilator>
+  
   <ic>
     <greeting>Instructor-in-charge Prof./ Dr./ Mr./ Ms.</greeting>
     <intro>Details of rooms and invigilators for your course(s) :</intro>
@@ -23,4 +24,23 @@
       <note>In case of any problems, contact Office C317 Extn. 802</note>
     </notes>
   </ic>
+
+  <room_captain>
+  <greeting>Room Captain Prof./ Dr./ Mr./ Ms.</greeting>
+  <intro>Details of rooms for your duties(s) :</intro>
+  <notes>
+    <note>Please report at least 15 min. before the commencement of examination to the Instructor-in-charge at his/her chamber</note>
+    <note>In case of RESERVE duty, please report at TIMETABLE &amp; EXAMS Office (C317)</note>
+    <note>If you have invigilation duty for Engineering Graphics, the reporting time will be communicated by the Course IC</note>
+    <note>In courses with less strength, the Instructor-In-Charge is the only invigilator</note>
+    <note>In case of any problems, contact Office C317 Extn. 802</note>
+  </room_captain>
+
+  <group_captain>
+  <greeting>Group Captain Prof./ Dr./ Mr./ Ms.</greeting>
+  <intro>Details of room Captains for your duties(s) :</intro>
+  <notes>
+  <note>insert note</note>
+  </notes>
+  </group_captain>
 </report>
