@@ -83,6 +83,7 @@ def staff_duties_generate_btn_clicked(event):
         args=(
             frame.staff_duties_staff_details_excel_picker.GetPath(),
             frame.staff_duties_staff_leaves_excel_picker.GetPath(),
+            frame.staff_duties_staff_max_duties_excel_picker.GetPath(),
         ),
     )
     thread.start()
