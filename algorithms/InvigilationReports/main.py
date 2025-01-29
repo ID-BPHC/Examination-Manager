@@ -1,4 +1,9 @@
-from algorithms.InvigilationReports.Report import Invigilator_Report, IC_Report
+from algorithms.InvigilationReports.Report import (
+    Invigilator_Report,
+    IC_Report,
+    Room_Captain_Report,
+    Group_Captain_Report,
+)
 from algorithms.InvigilationReports.Recipent import Recipent
 from algorithms.InvigilationReports import styles
 
@@ -30,12 +35,12 @@ def get_invigilator_reports(file_name):
 
         if invigilator_psrn not in report_map:
             report_map[invigilator_psrn] = Invigilator_Report(
-                Recipent(invigilator_name, email))
+                Recipent(invigilator_name, email)
+            )
 
         report_map[invigilator_psrn].table.add_row(
-            [course_code, course_name, date, time, room, ic_name, ic_chamber, ic_email])
-                        
-
+            [course_code, course_name, date, time, room, ic_name, ic_chamber, ic_email]
+        )
 
     f.close()
 
@@ -62,22 +67,21 @@ def get_ic_reports(file_name):
         ic_email = splitted[14]
 
         if ic_psrn not in ic_map:
-            ic_map[ic_psrn] = {"name": ic_name,
-                               "email":  ic_email, "courses": {}}
+            ic_map[ic_psrn] = {"name": ic_name, "email": ic_email, "courses": {}}
 
         if course_code not in ic_map[ic_psrn]["courses"]:
             ic_map[ic_psrn]["courses"][course_code] = {
                 "name": course_name,
                 "date": date,
                 "time": time,
-                "invigilators": []
+                "invigilators": [],
             }
 
         ic_map[ic_psrn]["courses"][course_code]["invigilators"].append(
-            (room, invigilator_name, invigilator_email))
-            # ic_map[ic_psrn].table.add_row(
-            # [course_code, course_name, date, time, room, invigilator_name, invigilator_email])
-
+            (room, invigilator_name, invigilator_email)
+        )
+        # ic_map[ic_psrn].table.add_row(
+        # [course_code, course_name, date, time, room, invigilator_name, invigilator_email])
 
     f.close()
 
@@ -94,12 +98,153 @@ def get_ic_reports(file_name):
             invigilators.sort()
 
             report.table.add_row(
-                [course_code, course["name"], course["date"], course["time"], invigilators[0][0], invigilators[0][1], invigilators[0][2]])
+                [
+                    course_code,
+                    course["name"],
+                    course["date"],
+                    course["time"],
+                    invigilators[0][0],
+                    invigilators[0][1],
+                    invigilators[0][2],
+                ]
+            )
 
             for invigilator in invigilators[1:]:
                 report.table.add_row(
-                    ["", "", "", "", invigilator[0], invigilator[1], invigilator[2]])
+                    ["", "", "", "", invigilator[0], invigilator[1], invigilator[2]]
+                )
 
+        reports.append(report)
+
+    return reports
+
+
+def get_room_captains_report(file_name):
+    report_map = {}
+    f = open(file_name)
+
+    for line in f.readlines():
+
+        splitted = line.strip().split(",")
+        room = splitted[0]
+        date = splitted[1]
+        start_time = splitted[2]
+        end_time = splitted[3]
+        period = splitted[4]
+        floor = splitted[5]
+        room_captain_psrn = splitted[6]
+        room_captain_name = splitted[7]
+        room_captain_email = splitted[8]
+        room_captain_phone = splitted[9]
+        room_captain_branch = splitted[10]
+        group_captain_psrn = splitted[11]
+        group_captain_name = splitted[12]
+        group_captain_email = splitted[13]
+        group_captain_phone = splitted[14]
+
+        if room_captain_psrn not in report_map:
+            report_map[room_captain_psrn] = Room_Captain_Report(
+                Recipent(room_captain_name, room_captain_email)
+            )
+
+        report_map[room_captain_psrn].table.add_row(
+            [
+                room,
+                date,
+                start_time + " to " + end_time,
+                group_captain_name,
+                group_captain_email,
+                group_captain_phone,
+            ]
+        )
+
+    f.close()
+
+    return [report for report in report_map.values()]
+
+
+def get_group_captains_report(file_name):
+    group_captain_map = {}
+    f = open(file_name)
+
+    for line in f.readlines():
+
+        splitted = line.strip().split(",")
+        room = splitted[0]
+        date = splitted[1]
+        start_time = splitted[2]
+        end_time = splitted[3]
+        period = splitted[4]
+        floor = splitted[5]
+        room_captain_psrn = splitted[6]
+        room_captain_name = splitted[7]
+        room_captain_email = splitted[8]
+        room_captain_phone = splitted[9]
+        room_captain_branch = splitted[10]
+        group_captain_psrn = splitted[11]
+        group_captain_name = splitted[12]
+        group_captain_email = splitted[13]
+        group_captain_phone = splitted[14]
+
+        if group_captain_psrn not in group_captain_map:
+            group_captain_map[group_captain_psrn] = {
+                "name": group_captain_name,
+                "email": group_captain_email,
+                "timeslots": {},
+            }
+
+        date_time = date + "|" + start_time + "|" + end_time
+        if date_time not in group_captain_map[group_captain_psrn]["timeslots"]:
+            group_captain_map[group_captain_psrn]["timeslots"][date_time] = {
+                "date": date,
+                "start_time": start_time,
+                "end_time": end_time,
+                "room_captains": [],
+            }
+
+        group_captain_map[group_captain_psrn]["timeslots"][date_time][
+            "room_captains"
+        ].append((room, room_captain_name, room_captain_email, room_captain_phone))
+
+    f.close()
+
+    reports = []
+
+    for group_captain in group_captain_map:
+
+        report = Group_Captain_Report(
+            Recipent(
+                group_captain_map[group_captain]["name"],
+                group_captain_map[group_captain]["email"],
+            )
+        )
+        for date_time in group_captain_map[group_captain]["timeslots"]:
+            timeslot = group_captain_map[group_captain]["timeslots"][date_time]
+            room_captains = timeslot["room_captains"]
+            room_captains.sort()
+
+            report.table.add_row(
+                [
+                    timeslot["date"],
+                    timeslot["start_time"] + " to " + timeslot["end_time"],
+                    room_captains[0][0],
+                    room_captains[0][1],
+                    room_captains[0][2],
+                    room_captains[0][3],
+                ]
+            )
+
+            for room_captain in room_captains[1:]:
+                report.table.add_row(
+                    [
+                        "",
+                        "",
+                        room_captain[0],
+                        room_captain[1],
+                        room_captain[2],
+                        room_captain[3],
+                    ]
+                )
         reports.append(report)
 
     return reports
@@ -108,10 +253,9 @@ def get_ic_reports(file_name):
 def generate_report_pdfs(reports, path):
 
     for report in reports:
-        if(not(report.recipent.email)):
+        if not (report.recipent.email):
             print(report.recipent.name)
-        doc = SimpleDocTemplate(os.path.join(
-            path, report.recipent.email + ".pdf"))
+        doc = SimpleDocTemplate(os.path.join(path, report.recipent.email + ".pdf"))
         doc.pagesize = landscape(A4)
 
         flowables = []
@@ -144,8 +288,7 @@ def generate_report_pdfs(reports, path):
         signature_1 = Paragraph(report.signature, styles.get_signature_style())
         flowables.append(signature_1)
 
-        signature_2 = Paragraph(
-            report.office_name, styles.get_signature_style())
+        signature_2 = Paragraph(report.office_name, styles.get_signature_style())
         flowables.append(signature_2)
 
         flowables.append(Spacer(1, 20))
@@ -157,24 +300,35 @@ def generate_report_pdfs(reports, path):
         doc.build(flowables)
 
 
-def start_invig_report_generation(invig_csv):
+def start_invig_report_generation(invig_csv, staff_csv):
 
     print("***** Starting Report Generation *****")
 
-    if os.path.exists("./Invigilation_Reports") and os.path.isdir("./Invigilation_Reports"):
+    if os.path.exists("./Invigilation_Reports") and os.path.isdir(
+        "./Invigilation_Reports"
+    ):
         shutil.rmtree("./Invigilation_Reports")
 
     os.mkdir("./Invigilation_Reports")
     os.mkdir("./Invigilation_Reports/IC")
     os.mkdir("./Invigilation_Reports/Instructor")
+    os.mkdir("./Invigilation_Reports/Room_Captains")
+    os.mkdir("./Invigilation_Reports/Group_Captains")
 
     print("******** Generating Instructor PDFs ********")
     invigilator_reports = get_invigilator_reports(invig_csv)
-    generate_report_pdfs(invigilator_reports,
-                         "./Invigilation_Reports/Instructor")
+    generate_report_pdfs(invigilator_reports, "./Invigilation_Reports/Instructor")
 
     print("******** Generating IC PDFs ********")
     ic_reports = get_ic_reports(invig_csv)
     generate_report_pdfs(ic_reports, "./Invigilation_Reports/IC")
+
+    print("******** Generating Room Captain PDFs ********")
+    room_captain_reports = get_room_captains_report(staff_csv)
+    generate_report_pdfs(room_captain_reports, "./Invigilation_Reports/Room_Captains")
+
+    print("******** Generating Group Captain PDFs ********")
+    group_captain_reports = get_group_captains_report(staff_csv)
+    generate_report_pdfs(group_captain_reports, "./Invigilation_Reports/Group_Captains")
 
     print("******** Done ********")
