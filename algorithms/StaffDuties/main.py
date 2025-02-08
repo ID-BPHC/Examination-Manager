@@ -8,7 +8,8 @@ pd.set_option("display.max_columns", None)  # Show all columns
 
 def get_room_data(staff_duties):
     try:
-        room_data = pd.read_excel(staff_duties, sheet_name="ROOM")
+        room_data = pd.read_excel(staff_duties, sheet_name="ROOM", header=None)
+        room_data.columns = ["Room", "Time"]
     except:
         print("Error: Sheet 'ROOM' not found in the excel file")
 
@@ -17,8 +18,8 @@ def get_room_data(staff_duties):
         "|", expand=True
     )
     room_data = room_data.drop(columns=["Time"])
-    room_data["Period"] = room_data["Start Time"].apply(
-        lambda x: "AN" if x == "09:30" else "FN" if x == "14:00" else ""
+    room_data["Period"] = room_data["End Time"].apply(
+        lambda x: "FN" if x < "14:00" else "AN" if x >= "14:00" else ""
     )
     room_data["Floor"] = room_data["Room"].apply(get_floor)
 
@@ -33,7 +34,6 @@ def get_staff_data(staff_duties):
 
     # Cleaning the data
     staff_data.columns = [
-        "SNO",
         "ID",
         "Name",
         "Branch",
@@ -46,7 +46,8 @@ def get_staff_data(staff_duties):
 
 
 def get_leave_data(staff_leave):
-    leave_data = pd.read_excel(staff_leave)
+    leave_data = pd.read_excel(staff_leave, header=None)
+    leave_data.columns = ["ID", "email", "start_date", "end_date"]
     return leave_data
 
 
@@ -58,8 +59,8 @@ def get_floor(room_name):
 
 
 def get_duty_limits(max_duties):
-    duty_limits_data = pd.read_excel(max_duties)
-    duty_limits_data.columns = ["ID", "Name", "Max Duties"]
+    duty_limits_data = pd.read_excel(max_duties, header=None)
+    duty_limits_data.columns = ["ID", "Max Duties"]
     duty_limits = dict(zip(duty_limits_data["ID"], duty_limits_data["Max Duties"]))
 
     return duty_limits
@@ -70,8 +71,8 @@ def main_allot(room_data, staff_data, leave_data, duty_limits):
     # Merging Data (staff data and leave data)
     merged_data = pd.merge(
         staff_data,
-        leave_data[["Name", "ID", "end_date"]],
-        on=["ID", "Name"],
+        leave_data[["ID", "end_date"]],
+        on=["ID"],
         how="left",
     )
 
@@ -85,8 +86,9 @@ def main_allot(room_data, staff_data, leave_data, duty_limits):
     room_data = room_data.drop_duplicates()
 
     # Allotment Logic
-
-    room_data["Date"] = pd.to_datetime(room_data["Date"], format="%d-%m-%y")
+    room_data["Date"] = pd.to_datetime(
+        room_data["Date"], format="%d-%m-%y", errors="coerce", dayfirst=True
+    )
     room_captains.loc[:, "end_date"] = pd.to_datetime(
         room_captains["end_date"], format="%d-%m-%y", errors="coerce"
     )
@@ -152,7 +154,7 @@ def main_allot(room_data, staff_data, leave_data, duty_limits):
     merged_df = room_data_1.merge(room_captains, on="Room Captain ID", how="inner")
 
     merged_df.drop(
-        ["SNO", "Room Captain Name_y", "Role", "Mobile Number", "Email", "end_date"],
+        ["Room Captain Name_y", "Role", "Mobile Number", "Email", "end_date"],
         axis=1,
         inplace=True,
     )
@@ -166,7 +168,6 @@ def main_allot(room_data, staff_data, leave_data, duty_limits):
     )
 
     merged_df.drop(["Room Captain", "Group Captain"], axis=1, inplace=True)
-    merged_df.fillna(method="ffill", inplace=True)
 
     cols = [
         "Room",
@@ -192,6 +193,7 @@ def main_allot(room_data, staff_data, leave_data, duty_limits):
 
 # Allotment of room captains
 def allot_room_captains(room_data, room_captains, duty_limits):
+    print("Allotting Room Captains....")
     room_data["Room Captain"] = None
     duties = {captain: [] for captain in room_captains["ID"]}
     branch_duty_count = {}
@@ -218,8 +220,8 @@ def allot_room_captains(room_data, room_captains, duty_limits):
             # Check branch constraint and max duties
             branch_total = len(room_captains[room_captains["Branch"] == branch])
             if (
-                branch_duty_count[(row["Date"], branch)] < branch_total // 2
-                and len(duties[captain_id]) < max_duties
+                len(duties[captain_id]) < max_duties
+                and room_data.loc[idx, "Room Captain"] is None
                 and not any(
                     duty_date == row["Date"] and duty_period != row["Period"]
                     for duty_date, duty_period in duties[captain_id]
@@ -237,30 +239,31 @@ def allot_room_captains(room_data, room_captains, duty_limits):
                 else:
                     break
 
-        room_data.at[idx, "Room Captain"] = ", ".join(assigned_captains)
+        if len(assigned_captains) == 0:
+            continue
+        room_data.loc[
+            (room_data["Date"] == row["Date"])
+            & (room_data["Period"] == row["Period"])
+            & (room_data["Room"] == row["Room"]),
+            "Room Captain",
+        ] = ", ".join(assigned_captains)
 
     # Convert date back to desired format for display
     room_data["Date"] = room_data["Date"].dt.strftime("%d-%m-%Y")
-
     return room_data
 
 
 # Allotment of group captains
 def allot_group_captains(room_data, group_captains, duty_limits):
+    print("Allotting Group Captains....")
     room_data["Group Captain"] = None
     duties = {captain: [] for captain in group_captains["ID"]}
-    branch_duty_count = {}
-
+    allotted_duties = {}
     for floor in room_data["Floor"].unique():
         floor_rooms = room_data[room_data["Floor"] == floor]
 
         for idx, row in floor_rooms.iterrows():
-            available_captains = group_captains[
-                group_captains["end_date"].isna()
-                | (group_captains["end_date"] != row["Date"])
-            ]
-
-            for _, captain_row in available_captains.iterrows():
+            for _, captain_row in group_captains.iterrows():
                 captain_id = captain_row["ID"]
                 captain_name = captain_row["Name"]
                 branch = captain_row["Branch"]
@@ -270,26 +273,28 @@ def allot_group_captains(room_data, group_captains, duty_limits):
                     captain_id, 10
                 )  # Default to 10 if not found
 
-                # Initialize branch count for the date if not present
-                if (row["Date"], branch) not in branch_duty_count:
-                    branch_duty_count[(row["Date"], branch)] = 0
-
-                # Check branch constraint and max duties
-                branch_total = len(group_captains[group_captains["Branch"] == branch])
                 if (
-                    branch_duty_count[(row["Date"], branch)] < branch_total // 2
-                    and len(duties[captain_id]) < max_duties
+                    len(duties[captain_id]) < max_duties
+                    and not allotted_duties.get(
+                        f"{row['Date']}|{row['Period']}|{row['Floor']}", False
+                    )
                     and not any(
-                        duty_date == row["Date"] and duty_period != row["Period"]
-                        for duty_date, duty_period in duties[captain_id]
+                        duty_date == row["Date"]
+                        and (duty_period != row["Period"] or duty_floor != floor)
+                        for duty_date, duty_period, duty_floor in duties[captain_id]
                     )
                 ):
 
-                    room_data.at[idx, "Group Captain"] = (
-                        f"{captain_id} - {captain_name} - {mobile_number} - {email_id}"
+                    room_data.loc[
+                        (room_data["Date"] == row["Date"])
+                        & (room_data["Period"] == row["Period"])
+                        & (room_data["Floor"] == row["Floor"]),
+                        "Group Captain",
+                    ] = f"{captain_id} - {captain_name} - {mobile_number} - {email_id}"
+                    allotted_duties[f"{row['Date']}|{row['Period']}|{row['Floor']}"] = (
+                        True
                     )
-                    duties[captain_id].append((row["Date"], row["Period"]))
-                    branch_duty_count[(row["Date"], branch)] += 1
+                    duties[captain_id].append((row["Date"], row["Period"], floor))
                     break
 
     return room_data
@@ -314,7 +319,9 @@ def start_staff_duties_generation(staff_duties, staff_leave, max_duties):
 
 
 if __name__ == "__main__":
-    staff_duties = r"C:\Users\Anirudh\Documents\staff duties.xlsx"
-    staff_leave = r"C:\Users\Anirudh\Documents\staff leave.xlsx"
-    max_duties = r"C:\Users\Anirudh\Desktop\max.xlsx"
+    # staff_duties = r"C:\Users\Anirudh\Documents\staff duties.xlsx"
+
+    staff_duties = r"C:\Users\Anirudh\Documents\ROOM STAFF.xlsx"
+    staff_leave = r"C:\Users\Anirudh\Documents\LEAVES (2).xlsx"
+    max_duties = r"C:\Users\Anirudh\Documents\MAX.xlsx"
     start_staff_duties_generation(staff_duties, staff_leave, max_duties)
