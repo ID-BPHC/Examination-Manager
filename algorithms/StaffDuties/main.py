@@ -223,7 +223,7 @@ def allot_room_captains(room_data, room_captains, duty_limits):
                 len(duties[captain_id]) < max_duties
                 and room_data.loc[idx, "Room Captain"] is None
                 and not any(
-                    duty_date == row["Date"] and duty_period != row["Period"]
+                    (duty_date == row["Date"] and duty_period == row["Period"])
                     for duty_date, duty_period in duties[captain_id]
                 )
             ):
