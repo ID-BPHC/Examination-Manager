@@ -296,7 +296,7 @@ class MainFrame ( wx.Frame ):
 		gbSizer213.SetNonFlexibleGrowMode( wx.FLEX_GROWMODE_SPECIFIED )
 
 		#Edit
-		self.m_staticText113 = wx.StaticText( self.m_panel6, wx.ID_ANY, u"Staff Duties\n-ROOM: Room, Time\n-STAFF: s.no, , psrn, name, dept, designation, mobile no., email_id(no header)", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText113 = wx.StaticText( self.m_panel6, wx.ID_ANY, u"Staff Duties\n-ROOM: Room, Time\n-STAFF:psrn, name, dept, designation, mobile no., email_id", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_staticText113.Wrap( -1 )
 
 		gbSizer213.Add( self.m_staticText113, wx.GBPosition( 0, 0 ), wx.GBSpan( 1, 1 ), wx.ALIGN_CENTER_VERTICAL|wx.ALL, 5 )
@@ -312,7 +312,7 @@ class MainFrame ( wx.Frame ):
 		self.staff_duties_staff_leaves_excel_picker = wx.FilePickerCtrl( self.m_panel6, wx.ID_ANY, wx.EmptyString, u"Select a file", u"*.xlsx;*.xlsm;*.xlsb;*.xls", wx.DefaultPosition, wx.DefaultSize, wx.FLP_DEFAULT_STYLE )
 		gbSizer213.Add( self.staff_duties_staff_leaves_excel_picker, wx.GBPosition( 1, 1 ), wx.GBSpan( 1, 1 ), wx.ALL|wx.EXPAND, 5 )
 
-		self.m_staticText217 = wx.StaticText( self.m_panel6, wx.ID_ANY, u"Staff Leaves\n-name, dept, psrn, email_id, reason, start_date, end_date", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText217 = wx.StaticText( self.m_panel6, wx.ID_ANY, u"Max duties\n-psrn, max_duties", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_staticText217.Wrap( 350 )
 
 		gbSizer213.Add( self.m_staticText217, wx.GBPosition( 2, 0 ), wx.GBSpan( 1, 1 ), wx.ALIGN_CENTER_VERTICAL|wx.ALL, 5 )
