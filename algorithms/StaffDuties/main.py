@@ -22,6 +22,7 @@ def get_room_data(staff_duties):
         lambda x: "FN" if x < "14:00" else "AN" if x >= "14:00" else ""
     )
     room_data["Floor"] = room_data["Room"].apply(get_floor)
+    room_data["Block"] = room_data["Room"].str.strip().str[0]
 
     return room_data
 
@@ -276,25 +277,45 @@ def allot_group_captains(room_data, group_captains, duty_limits):
                 if (
                     len(duties[captain_id]) < max_duties
                     and not allotted_duties.get(
-                        f"{row['Date']}|{row['Period']}|{row['Floor']}", False
+                        f"{row['Date']}|{row['Period']}|{row['Floor']}|{row['Block']}",
+                        False,
                     )
                     and not any(
                         duty_date == row["Date"]
-                        and (duty_period != row["Period"] or duty_floor != floor)
-                        for duty_date, duty_period, duty_floor in duties[captain_id]
+                        and (
+                            duty_period != row["Period"]
+                            or duty_floor != floor
+                            or duty_block != row["Block"]
+                        )
+                        for duty_date, duty_period, duty_floor, duty_block in duties[
+                            captain_id
+                        ]
                     )
                 ):
 
                     room_data.loc[
                         (room_data["Date"] == row["Date"])
                         & (room_data["Period"] == row["Period"])
-                        & (room_data["Floor"] == row["Floor"]),
+                        & (room_data["Floor"] == row["Floor"])
+                        & (room_data["Block"] == row["Block"]),
                         "Group Captain",
                     ] = f"{captain_id} - {captain_name} - {mobile_number} - {email_id}"
-                    allotted_duties[f"{row['Date']}|{row['Period']}|{row['Floor']}"] = (
-                        True
+                    timeslots = len(
+                        room_data.loc[
+                            (room_data["Date"] == row["Date"])
+                            & (room_data["Period"] == row["Period"])
+                            & (room_data["Floor"] == row["Floor"])
+                            & (room_data["Block"] == row["Block"]),
+                            "Start Time",
+                        ].unique()
                     )
-                    duties[captain_id].append((row["Date"], row["Period"], floor))
+                    allotted_duties[
+                        f"{row['Date']}|{row['Period']}|{row['Floor']}|{row['Block']}"
+                    ] = True
+                    for i in range(timeslots):
+                        duties[captain_id].append(
+                            (row["Date"], row["Period"], floor, row["Block"])
+                        )
                     break
 
     return room_data
