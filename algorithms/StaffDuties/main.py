@@ -221,18 +221,31 @@ def allot_room_captains(room_data, room_captains, duty_limits):
             # Check branch constraint and max duties
             branch_total = len(room_captains[room_captains["Branch"] == branch])
             if (
-                len(duties[captain_id]) < max_duties
+                branch_duty_count[(row["Date"], branch)] < branch_total
+                and len(duties[captain_id]) < max_duties
                 and room_data.loc[idx, "Room Captain"] is None
                 and not any(
-                    (duty_date == row["Date"] and duty_period == row["Period"])
-                    for duty_date, duty_period in duties[captain_id]
+                    (
+                        duty_date == row["Date"]
+                        and (duty_period != row["Period"] or duty_room != row["Room"])
+                    )
+                    for duty_date, duty_period, duty_room in duties[captain_id]
                 )
             ):
 
+                timeslots = len(
+                    room_data.loc[
+                        (room_data["Date"] == row["Date"])
+                        & (room_data["Period"] == row["Period"])
+                        & (room_data["Room"] == row["Room"]),
+                        "Start Time",
+                    ].unique()
+                )
                 assigned_captains.append(
                     f"{captain_id} - {captain_name} - {mobile_number} - {email_id}"
                 )
-                duties[captain_id].append((row["Date"], row["Period"]))
+                for i in range(timeslots):
+                    duties[captain_id].append((row["Date"], row["Period"], row["Room"]))
                 branch_duty_count[(row["Date"], branch)] += 1
 
                 if row["Room"] in ["F102", "F105"] and len(assigned_captains) < 2:
