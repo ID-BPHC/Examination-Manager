@@ -605,7 +605,6 @@ def assign_big_course_invigilators(master_map, invigilator_list, big_course_cuto
 
     for room in master_map:
         for time_slot_key in master_map[room]:
-            flag = True
             start = None
             end = None
 
@@ -628,40 +627,33 @@ def assign_big_course_invigilators(master_map, invigilator_list, big_course_cuto
                             left_course, invigilator_list, start, end
                         )
 
-                        if flag:
-                            for duty in left_course.ic.duties:
-                                if duty.course == left_course:
-                                    flag = False
-                                    if right_invigilator.is_research_scholar:
-                                        extra_invigilator = get_primary_invigilator(
-                                            left_course, invigilator_list, start, end
-                                        )
-                                    elif (
-                                        not right_invigilator.is_research_scholar
-                                        or extra_invigilator is None
-                                    ):
-                                        extra_invigilator = get_secondary_invigilator(
-                                            left_course, invigilator_list, start, end
-                                        )
-
-                                    left_invigilator = extra_invigilator
-
-                                    extra_invigilator.duties.append(
-                                        Duty(duty.room, left_course, start, end)
+                        for duty in left_course.ic.duties:
+                            if duty.course == left_course:
+                                if right_invigilator.is_research_scholar:
+                                    extra_invigilator = get_primary_invigilator(
+                                        left_course, invigilator_list, start, end
                                     )
-                                    master_map[room][time_slot_key][
-                                        "left_invigilator"
-                                    ] = extra_invigilator
-                                    duty.room = "TBA"
-                                    break
+                                elif (
+                                    not right_invigilator.is_research_scholar
+                                    or extra_invigilator is None
+                                ):
+                                    extra_invigilator = get_secondary_invigilator(
+                                        left_course, invigilator_list, start, end
+                                    )
 
-                        extra_invigilator.duties.append(
-                            Duty("TBA", left_course, start, end)
-                        )
+                                left_invigilator = extra_invigilator
+
+                                extra_invigilator.duties.append(
+                                    Duty(duty.room, left_course, start, end)
+                                )
+                                master_map[room][time_slot_key][
+                                    "left_invigilator"
+                                ] = extra_invigilator
+                                duty.room = "TBA"
+                                break
 
                 extra_assigned_set.add(left_course.code)
 
-            flag = True
             if right_course.code not in extra_assigned_set:
                 for value in intervals:
                     if right_course.enrolment_count >= value:
@@ -675,35 +667,28 @@ def assign_big_course_invigilators(master_map, invigilator_list, big_course_cuto
                             )
                             continue
 
-                        if flag:
-                            for duty in right_course.ic.duties:
-                                if duty.course == right_course:
-                                    flag = False
-                                    if left_invigilator.is_research_scholar:
-                                        extra_invigilator = get_primary_invigilator(
-                                            right_course, invigilator_list, start, end
-                                        )
-                                    elif (
-                                        not left_invigilator.is_research_scholar
-                                        or extra_invigilator is None
-                                    ):
-                                        extra_invigilator = get_secondary_invigilator(
-                                            right_course, invigilator_list, start, end
-                                        )
-
-                                    master_map[room][time_slot_key][
-                                        "right_invigilator"
-                                    ] = extra_invigilator
-                                    extra_invigilator.duties.append(
-                                        Duty(duty.room, right_course, start, end)
+                        for duty in right_course.ic.duties:
+                            if duty.course == right_course:
+                                if left_invigilator.is_research_scholar:
+                                    extra_invigilator = get_primary_invigilator(
+                                        right_course, invigilator_list, start, end
                                     )
-                                    duty.room = "TBA"
-                                    break
-                            if not flag:
-                                continue
-                        extra_invigilator.duties.append(
-                            Duty("TBA", right_course, start, end)
-                        )
+                                elif (
+                                    not left_invigilator.is_research_scholar
+                                    or extra_invigilator is None
+                                ):
+                                    extra_invigilator = get_secondary_invigilator(
+                                        right_course, invigilator_list, start, end
+                                    )
+
+                                master_map[room][time_slot_key][
+                                    "right_invigilator"
+                                ] = extra_invigilator
+                                extra_invigilator.duties.append(
+                                    Duty(duty.room, right_course, start, end)
+                                )
+                                duty.room = "TBA"
+                                break
 
                 extra_assigned_set.add(right_course.code)
 
@@ -898,13 +883,13 @@ def start_invigilation_process(
 
 if __name__ == "__main__":
     start_invigilation_process(
-        r"C:\Users\Anirudh\Desktop\New folder\TTDdata\24-25 sem 1\compre\faculty list (1).csv",
-        r"C:\Users\Anirudh\Desktop\New folder\TTDdata\24-25 sem 1\compre\RS (1).csv",
-        r"C:\Users\Anirudh\Desktop\New folder\TTDdata\24-25 sem 1\compre\CHAMBER (1).csv",
-        r"C:\Users\Anirudh\Desktop\New folder\TTDdata\24-25 sem 1\compre\BITS_TIME_TABLE_WITHFACILITY_23102024.csv",
-        r"C:\Users\Anirudh\Desktop\New folder\TTDdata\24-25 sem 1\compre\PhD_Leave_Data (1).csv",
-        r"C:\Users\Anirudh\Desktop\New folder\TTDdata\24-25 sem 1\compre\MAX (1).csv",
-        r"C:\Users\Anirudh\Desktop\New folder\TTDdata\24-25 sem 1\compre\RoomAllotment 123.csv",
+        r"C:\Users\Anirudh\Desktop\New folder\TTDdata\24-25 sem2\compre\FACULTY.csv",
+        r"C:\Users\Anirudh\Desktop\New folder\TTDdata\24-25 sem2\compre\PHD.csv",
+        r"C:\Users\Anirudh\Desktop\New folder\TTDdata\24-25 sem2\compre\chamber.csv",
+        r"C:\Users\Anirudh\Desktop\New folder\TTDdata\24-25 sem2\compre\For TT.csv",
+        r"C:\Users\Anirudh\Desktop\New folder\TTDdata\24-25 sem2\compre\PhD_Leave_Data (2).csv",
+        r"C:\Users\Anirudh\Desktop\New folder\TTDdata\24-25 sem2\compre\MAX.csv",
+        r"C:\Users\Anirudh\Desktop\New folder\TTDdata\24-25 sem2\compre\RoomAllotment.csv",
         6,
         [40, 150, 300, 500, 1000],
         ["F103", "F104", "F106"],
