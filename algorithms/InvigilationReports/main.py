@@ -44,7 +44,12 @@ def get_invigilator_reports(file_name):
 
     f.close()
 
-    return [report for report in report_map.values()]
+    for report in report_map.values():
+        report.table.rows[1:] = sorted(
+            report.table.rows[1:], key=lambda x: x[2] + " " + x[3]
+        )
+    reports = [report for report in report_map.values()]
+    return reports
 
 
 def get_ic_reports(file_name):
@@ -115,6 +120,9 @@ def get_ic_reports(file_name):
                 )
 
         reports.append(report)
+    reports.sort(
+        key=lambda report: report.table.rows[0][0] + " " + report.table.rows[0][1]
+    )
 
     return reports
 
@@ -159,8 +167,12 @@ def get_room_captains_report(file_name):
         )
 
     f.close()
-
-    return [report for report in report_map.values()]
+    for report in report_map.values():
+        report.table.rows[1:] = sorted(
+            report.table.rows[1:], key=lambda x: x[1] + " " + x[2]
+        )
+    reports = [report for report in report_map.values()]
+    return reports
 
 
 def get_group_captains_report(file_name):
@@ -218,7 +230,10 @@ def get_group_captains_report(file_name):
                 group_captain_map[group_captain]["email"],
             )
         )
-        for date_time in group_captain_map[group_captain]["timeslots"]:
+
+        sorted_timeslots = sorted(group_captain_map[group_captain]["timeslots"].keys())
+
+        for date_time in sorted_timeslots:
             timeslot = group_captain_map[group_captain]["timeslots"][date_time]
             room_captains = timeslot["room_captains"]
             room_captains.sort()
@@ -245,58 +260,112 @@ def get_group_captains_report(file_name):
                         room_captain[3],
                     ]
                 )
+
         reports.append(report)
 
+    reports.sort(
+        key=lambda report: report.table.rows[0][0] + " " + report.table.rows[0][1]
+    )
     return reports
 
 
+import os
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
+from reportlab.lib.pagesizes import landscape, A4
+from reportlab.lib.styles import ParagraphStyle
+from reportlab.lib import colors
+from reportlab.pdfbase import pdfmetrics
+
+
 def generate_report_pdfs(reports, path):
+    # 1) Define the font and the Paragraph style for table cells
+    font_name = "Helvetica"
+    font_size = 10
+    cell_style = ParagraphStyle(
+        name="CellStyle",
+        fontName=font_name,
+        fontSize=font_size,
+        leading=font_size + 2,
+        alignment=0,  # LEFT
+    )
 
     for report in reports:
-        if not (report.recipent.email):
+        if not report.recipent.email:
             print(report.recipent.name)
-        doc = SimpleDocTemplate(os.path.join(path, report.recipent.email + ".pdf"))
-        doc.pagesize = landscape(A4)
+        out_path = os.path.join(path, report.recipent.email + ".pdf")
+
+        # 2) Set up the document in landscape A4 with reasonable margins
+        doc = SimpleDocTemplate(
+            out_path,
+            pagesize=landscape(A4),
+            leftMargin=30,
+            rightMargin=30,
+            topMargin=30,
+            bottomMargin=30,
+        )
 
         flowables = []
-
-        title = Paragraph(report.college_name, styles.get_title_style())
-        flowables.append(title)
-
-        office_name = Paragraph(report.office_name, styles.get_title_style())
-        flowables.append(office_name)
-
-        semester = Paragraph(report.semester, styles.get_semester_style())
-        flowables.append(semester)
-
-        date = Paragraph(report.date, styles.get_date_style())
-        flowables.append(date)
-
-        greeting = Paragraph(report.greeting, styles.get_greeting_style())
-        flowables.append(greeting)
-
-        intro = Paragraph(report.intro, styles.get_intro_style())
-        flowables.append(intro)
-
+        # 3) Add your header content
+        flowables.append(Paragraph(report.college_name, styles.get_title_style()))
+        flowables.append(Paragraph(report.office_name, styles.get_title_style()))
+        flowables.append(Paragraph(report.semester, styles.get_semester_style()))
+        flowables.append(Paragraph(report.date, styles.get_date_style()))
+        flowables.append(Paragraph(report.greeting, styles.get_greeting_style()))
+        flowables.append(Paragraph(report.intro, styles.get_intro_style()))
         flowables.append(Spacer(1, 15))
 
-        table = Table(report.table.rows, style=styles.get_table_style())
+        # 4) Prepare table data
+        data = report.table.rows
+        cols = len(data[0])
+        usable_width = landscape(A4)[0] - doc.leftMargin - doc.rightMargin
+
+        # 5) Measure max text width in each column
+        max_widths = []
+        for c in range(cols):
+            mw = 0
+            for row in data:
+                txt = str(row[c])
+                w = pdfmetrics.stringWidth(txt, font_name, font_size)
+                mw = max(mw, w)
+            max_widths.append(mw + 30)  # + small padding
+
+        # 6) Scale all column widths to exactly fill the usable width
+        total = sum(max_widths)
+        if total > 0:
+            factor = usable_width / total
+            col_widths = [w * factor for w in max_widths]
+        else:
+            col_widths = [usable_width / cols] * cols
+
+        # 7) Wrap every cell in a Paragraph so long text will line‑break
+        wrapped = [[Paragraph(str(cell), cell_style) for cell in row] for row in data]
+
+        # 8) Build the Table with those exact colWidths
+        table = Table(wrapped, colWidths=col_widths, repeatRows=1, splitByRow=1)
+        table.setStyle(
+            TableStyle(
+                [
+                    ("GRID", (0, 0), (-1, -1), 0.5, colors.black),
+                    ("BACKGROUND", (0, 0), (-1, 0), colors.lightgrey),
+                    ("VALIGN", (0, 0), (-1, -1), "TOP"),
+                    ("ALIGN", (0, 0), (-1, -1), "LEFT"),
+                ]
+            )
+        )
+
         flowables.append(table)
-
         flowables.append(Spacer(1, 20))
 
-        signature_1 = Paragraph(report.signature, styles.get_signature_style())
-        flowables.append(signature_1)
-
-        signature_2 = Paragraph(report.office_name, styles.get_signature_style())
-        flowables.append(signature_2)
-
+        # 9) Footer / signature
+        flowables.append(Paragraph(report.signature, styles.get_signature_style()))
+        flowables.append(Paragraph(report.office_name, styles.get_signature_style()))
         flowables.append(Spacer(1, 20))
 
-        for index, note in enumerate(report.notes):
-            item = Paragraph(f"{index + 1}. {note}", styles.get_intro_style())
-            flowables.append(item)
+        # 10) Notes list
+        for i, note in enumerate(report.notes, 1):
+            flowables.append(Paragraph(f"{i}. {note}", styles.get_intro_style()))
 
+        # 11) Build the PDF
         doc.build(flowables)
 
 
