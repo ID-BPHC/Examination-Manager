@@ -109,7 +109,6 @@ def get_populated_maps(
 
         course_list.add_if_not_exists(code, title)
         course = course_list.find_by_code(code)
-
         if course is not None:
             course.rooms.append((room, flag, student_count, capacity))
             course.time = time
@@ -187,10 +186,9 @@ def generate_seating_charts(
             seated = 0
             count = 0
             for key in keys:
-
                 chart = final_solution[course.time][key]
-
                 limits = room_map[key]
+
                 half_cap = int(int(capacity / 2))
                 start_point = 1 if student_count <= half_cap else 0
                 step_value = 1 if remark == "FULL" else 2
@@ -232,7 +230,7 @@ def generate_seating_charts(
                             start_point = start_point ^ 1
                             continue
 
-                        while row < limits[i]:
+                        while row <= limits[i]:
 
                             start_point = 0
                             if seated >= student_count:
@@ -242,6 +240,7 @@ def generate_seating_charts(
                                 chart[limits[i] - row - 1][
                                     i
                                 ] = f"{course.code} - {student}"
+
                                 seated += 1
                             else:
                                 while chart[len(chart) - row - 1][i] != "":
@@ -251,10 +250,13 @@ def generate_seating_charts(
                                         break
                                 if row < limits[i]:
                                     student = course.get_next_student()
+
                                     chart[len(chart) - row - 1][
                                         i
                                     ] = f"{course.code} - {student}"
+
                                     seated += 1
+                            row += 1
 
                     else:
                         for j in range(start_point, limits[i], step_value):
@@ -262,9 +264,11 @@ def generate_seating_charts(
                                 break
                             if chart[len(chart) - j - 1][i] == "":
                                 student = course.get_next_student()
+
                                 chart[len(chart) - j - 1][
                                     i
                                 ] = f"{course.code} - {student}"
+
                                 seated += 1
 
                         if remark != "FULL":
@@ -520,13 +524,13 @@ def export_charts(room_map, course_list, final_solution):
             path = os.path.join(
                 "Charts_and_Sheets",
                 course.ic_email,
-                course.code.split("/")[0] + " Seating Charts" + ".xlsx",
+                course.code.replace("/", "_") + " Seating Charts" + ".xlsx",
             )
 
             path1 = os.path.join(
                 "Charts_and_Sheets",
                 course.ic_email,
-                course.code.split("/")[0] + " Attendance Sheets" + ".xlsx",
+                course.code.replace("/", "_") + " Attendance Sheets" + ".xlsx",
             )
 
             wb_seating.save(path)
