@@ -304,7 +304,7 @@ class MainFrame ( wx.Frame ):
 		self.staff_duties_staff_details_excel_picker = wx.FilePickerCtrl( self.m_panel6, wx.ID_ANY, wx.EmptyString, u"Select a file", u"*.xlsx;*.xlsm;*.xlsb;*.xls", wx.DefaultPosition, wx.DefaultSize, wx.FLP_DEFAULT_STYLE )
 		gbSizer213.Add( self.staff_duties_staff_details_excel_picker, wx.GBPosition( 0, 1 ), wx.GBSpan( 1, 1 ), wx.ALL|wx.EXPAND, 5 )
 
-		self.m_staticText215 = wx.StaticText( self.m_panel6, wx.ID_ANY, u"Staff Leaves\n-name, dept, psrn, email_id, reason, start_date, end_date", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText215 = wx.StaticText( self.m_panel6, wx.ID_ANY, u"Staff Leaves\n-psrn, email_id, start_date, end_date", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_staticText215.Wrap( 350 )
 
 		gbSizer213.Add( self.m_staticText215, wx.GBPosition( 1, 0 ), wx.GBSpan( 1, 1 ), wx.ALIGN_CENTER_VERTICAL|wx.ALL, 5 )
