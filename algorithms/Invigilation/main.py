@@ -243,6 +243,7 @@ def get_secondary_invigilator(course, invigilator_list, start, end):
     # Get other invigilator after one faculty has been assigned
     try:
         fns = [
+            partial(course.get_available_scholar, start, end),
             partial(
                 invigilator_list.get_available_department_scholar,
                 course.ic.department,
@@ -548,6 +549,7 @@ def assign_ics(master_map):
 
 
 def assign_course_faculty(master_map):
+    flag = True
     for room in master_map:
         for time_slot_key in master_map[room]:
             start = None
@@ -581,23 +583,39 @@ def assign_course_faculty(master_map):
                 faculty.duties.append(Duty(room, left_course, start, end))
                 continue
 
-            if master_map[room][time_slot_key]["left_invigilator"] is None:
-                faculty = left_course.get_available_faculty(start, end)
+            # Alternate assignment order based on flag
+            if flag:
+                # Flag = True: Try left course first, then right course
+                if master_map[room][time_slot_key]["left_invigilator"] is None:
+                    faculty = left_course.get_available_faculty(start, end)
 
-                if faculty is None:
-                    continue
+                    if faculty is not None:
+                        master_map[room][time_slot_key]["left_invigilator"] = faculty
+                        faculty.duties.append(Duty(room, left_course, start, end))
 
-                master_map[room][time_slot_key]["left_invigilator"] = faculty
-                faculty.duties.append(Duty(room, left_course, start, end))
+                if master_map[room][time_slot_key]["right_invigilator"] is None:
+                    faculty = right_course.get_available_faculty(start, end)
 
-            if master_map[room][time_slot_key]["right_invigilator"] is None:
-                faculty = right_course.get_available_faculty(start, end)
+                    if faculty is not None:
+                        master_map[room][time_slot_key]["right_invigilator"] = faculty
+                        faculty.duties.append(Duty(room, right_course, start, end))
+            else:
+                # Flag = False: Try right course first, then left course
+                if master_map[room][time_slot_key]["right_invigilator"] is None:
+                    faculty = right_course.get_available_faculty(start, end)
 
-                if faculty is None:
-                    continue
+                    if faculty is not None:
+                        master_map[room][time_slot_key]["right_invigilator"] = faculty
+                        faculty.duties.append(Duty(room, right_course, start, end))
 
-                master_map[room][time_slot_key]["right_invigilator"] = faculty
-                faculty.duties.append(Duty(room, right_course, start, end))
+                if master_map[room][time_slot_key]["left_invigilator"] is None:
+                    faculty = left_course.get_available_faculty(start, end)
+
+                    if faculty is not None:
+                        master_map[room][time_slot_key]["left_invigilator"] = faculty
+                        faculty.duties.append(Duty(room, left_course, start, end))
+
+        flag = not flag
 
 
 def assign_big_course_invigilators(master_map, invigilator_list, big_course_cutoffs):
@@ -866,11 +884,11 @@ def start_invigilation_process(
 
     assign_ics(master_map)
 
+    assign_course_faculty(master_map)
+
     assign_invigilators(master_map, invigilator_list)
 
     assign_big_course_invigilators(master_map, invigilator_list, big_course_cutoffs)
-
-    assign_course_faculty(master_map)
 
     assign_big_room_4_invigilators(master_map, invigilator_list, ["F102", "F105"])
 
