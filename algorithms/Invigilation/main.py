@@ -592,6 +592,7 @@ def assign_course_faculty(master_map):
                     if faculty is not None:
                         master_map[room][time_slot_key]["left_invigilator"] = faculty
                         faculty.duties.append(Duty(room, left_course, start, end))
+                        continue
 
                 if master_map[room][time_slot_key]["right_invigilator"] is None:
                     faculty = right_course.get_available_faculty(start, end)
@@ -599,6 +600,7 @@ def assign_course_faculty(master_map):
                     if faculty is not None:
                         master_map[room][time_slot_key]["right_invigilator"] = faculty
                         faculty.duties.append(Duty(room, right_course, start, end))
+                        continue
             else:
                 # Flag = False: Try right course first, then left course
                 if master_map[room][time_slot_key]["right_invigilator"] is None:
@@ -607,6 +609,7 @@ def assign_course_faculty(master_map):
                     if faculty is not None:
                         master_map[room][time_slot_key]["right_invigilator"] = faculty
                         faculty.duties.append(Duty(room, right_course, start, end))
+                        continue
 
                 if master_map[room][time_slot_key]["left_invigilator"] is None:
                     faculty = left_course.get_available_faculty(start, end)
@@ -614,6 +617,7 @@ def assign_course_faculty(master_map):
                     if faculty is not None:
                         master_map[room][time_slot_key]["left_invigilator"] = faculty
                         faculty.duties.append(Duty(room, left_course, start, end))
+                        continue
 
         flag = not flag
 
