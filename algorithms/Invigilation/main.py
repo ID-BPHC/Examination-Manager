@@ -920,14 +920,13 @@ def start_invigilation_process(
     assign_ics(master_map)
 
     assign_course_faculty(master_map)
+    
     assign_big_course_invigilators(master_map, invigilator_list, big_course_cutoffs)
 
     assign_invigilators(master_map, invigilator_list)
 
-    assign_big_course_invigilators(master_map, invigilator_list, big_course_cutoffs)
-
     assign_big_room_4_invigilators(master_map, invigilator_list, ["F102", "F105"])
-
+    
     assign_big_room_3_invigilators(master_map, invigilator_list, big_rooms_3)
 
     assign_reserved_duties(master_map, invigilator_list, reserve_duties)
