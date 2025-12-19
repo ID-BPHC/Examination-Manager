@@ -237,7 +237,7 @@ def generate_seating_charts(
                                 break
                             if chart[len(chart) - row - 1][i] == "":
                                 student = course.get_next_student()
-                                chart[limits[i] - row - 1][
+                                chart[len(chart) - row - 1][
                                     i
                                 ] = f"{course.code} - {student}"
 
