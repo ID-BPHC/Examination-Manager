@@ -417,9 +417,9 @@ def export_charts(room_map, course_list, final_solution):
                 ws_seating.merge_cells(f"A1:{end_char}1")
                 ws_seating.merge_cells(f"A2:{end_char}2")
 
-                ws_attendance.merge_cells(f"A1:D1")
-                ws_attendance.merge_cells(f"A2:D2")
-                ws_attendance.merge_cells(f"A3:D3")
+                ws_attendance.merge_cells(f"A1:E1")
+                ws_attendance.merge_cells(f"A2:E2")
+                ws_attendance.merge_cells(f"A3:E3")
 
                 ws_seating["A1"] = heading
                 ws_seating["A1"].font = heading_font
@@ -444,6 +444,8 @@ def export_charts(room_map, course_list, final_solution):
                 ws_attendance["C4"].font = sub_heading_font
                 ws_attendance["D4"] = "SIGNATURE"
                 ws_attendance["D4"].font = sub_heading_font
+                ws_attendance["E4"] = "SUPPL. SHEETS USED"
+                ws_attendance["E4"].font = sub_heading_font
 
                 ws_seating["A2"] = "***** Blackboard Here *****"
                 ws_seating["A2"].font = sub_heading_font
@@ -482,6 +484,8 @@ def export_charts(room_map, course_list, final_solution):
                 ws_attendance.column_dimensions["B"].width = 15
                 for col in range(67, 90):
                     ws_attendance.column_dimensions[chr(col)].width = 35
+                ws_attendance.column_dimensions["E"].width = 18
+                ws_attendance.column_dimensions["D"].width = 30
 
                 for row in ws_seating.iter_rows():
                     for cell in row:
