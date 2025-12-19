@@ -532,7 +532,6 @@ def assign_invigilators(master_map, invigilator_list):
                     ] = right_invigilator
         flag = not flag
 
-
 def assign_ics(master_map):
     ic_assigned_set = set()
 
@@ -810,16 +809,14 @@ def assign_big_room_3_invigilators(master_map, invigilator_list, big_rooms_3):
             right_invigilator = master_map[room][time_slot_key]["right_invigilator"]
             invigilator = None
 
-            if left_invigilator.is_research_scholar:
-                invigilator = get_secondary_invigilator(
+            invigilator = get_secondary_invigilator(
+                left_course, invigilator_list, start, end
+            )
+            if invigilator is None:
+                invigilator = get_primary_invigilator(
                     left_course, invigilator_list, start, end
                 )
-                invigilator.duties.append(Duty(room, left_course, start, end))
-            else:
-                invigilator = get_secondary_invigilator(
-                    left_course, invigilator_list, start, end
-                )
-                invigilator.duties.append(Duty(room, right_course, start, end))
+            invigilator.duties.append(Duty(room, right_course, start, end))
 
 
 def assign_reserved_duties(master_map, invigilator_list, reserve_duties):
@@ -923,6 +920,7 @@ def start_invigilation_process(
     assign_ics(master_map)
 
     assign_course_faculty(master_map)
+    assign_big_course_invigilators(master_map, invigilator_list, big_course_cutoffs)
 
     assign_invigilators(master_map, invigilator_list)
 
