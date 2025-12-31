@@ -19,7 +19,7 @@ import wx.adv
 class MainFrame ( wx.Frame ):
 
 	def __init__( self, parent ):
-		wx.Frame.__init__ ( self, parent, id = wx.ID_ANY, title = wx.EmptyString, pos = wx.DefaultPosition, size = wx.Size( 994,600 ), style = wx.DEFAULT_FRAME_STYLE|wx.TAB_TRAVERSAL )
+		wx.Frame.__init__ ( self, parent, id = wx.ID_ANY, title = wx.EmptyString, pos = wx.DefaultPosition, size = wx.Size( 994,700 ), style = wx.DEFAULT_FRAME_STYLE|wx.TAB_TRAVERSAL )
 
 		self.SetSizeHints( wx.DefaultSize, wx.DefaultSize )
 
@@ -238,8 +238,16 @@ class MainFrame ( wx.Frame ):
 		self.invig_big_course_cutoffs_box = wx.TextCtrl( self.m_panel5, wx.ID_ANY, u"150,300,500,1000", wx.DefaultPosition, wx.DefaultSize, 0 )
 		gbSizer211.Add( self.invig_big_course_cutoffs_box, wx.GBPosition( 8, 1 ), wx.GBSpan( 1, 1 ), wx.ALL|wx.EXPAND, 5 )
 
+		self.m_staticText211 = wx.StaticText( self.m_panel5, wx.ID_ANY, u"Big Rooms - 3", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText211.Wrap( -1 )
+
+		gbSizer211.Add( self.m_staticText211, wx.GBPosition( 9, 0 ), wx.GBSpan( 1, 1 ), wx.ALL, 5 )
+
+		self.invig_big_rooms_3_box = wx.TextCtrl( self.m_panel5, wx.ID_ANY, u"F103,F104,F106", wx.DefaultPosition, wx.DefaultSize, 0 )
+		gbSizer211.Add( self.invig_big_rooms_3_box, wx.GBPosition( 9, 1 ), wx.GBSpan( 1, 1 ), wx.ALL|wx.EXPAND, 5 )
+
 		self.invig_generate_btn = wx.Button( self.m_panel5, wx.ID_ANY, u"Generate", wx.DefaultPosition, wx.DefaultSize, 0 )
-		gbSizer211.Add( self.invig_generate_btn, wx.GBPosition( 9, 0 ), wx.GBSpan( 1, 2 ), wx.ALIGN_CENTER|wx.ALL, 5 )
+		gbSizer211.Add( self.invig_generate_btn, wx.GBPosition( 10, 0 ), wx.GBSpan( 1, 2 ), wx.ALIGN_CENTER|wx.ALL, 5 )
 
 		self.invig_error_box = wx.stc.StyledTextCtrl(self.m_panel5, wx.ID_ANY, wx.DefaultPosition, wx.Size( -1,-1 ), 0)
 		self.invig_error_box.SetUseTabs ( True )
@@ -271,72 +279,155 @@ class MainFrame ( wx.Frame ):
 		self.invig_error_box.MarkerDefine( wx.stc.STC_MARKNUM_FOLDERTAIL, wx.stc.STC_MARK_EMPTY )
 		self.invig_error_box.SetSelBackground( True, wx.SystemSettings.GetColour(wx.SYS_COLOUR_HIGHLIGHT ) )
 		self.invig_error_box.SetSelForeground( True, wx.SystemSettings.GetColour(wx.SYS_COLOUR_HIGHLIGHTTEXT ) )
-		gbSizer211.Add( self.invig_error_box, wx.GBPosition( 10, 0 ), wx.GBSpan( 1, 2 ), wx.EXPAND |wx.ALL, 5 )
+		gbSizer211.Add( self.invig_error_box, wx.GBPosition( 11, 0 ), wx.GBSpan( 1, 2 ), wx.EXPAND |wx.ALL, 5 )
 
 
 		gbSizer211.AddGrowableCol( 0 )
 		gbSizer211.AddGrowableCol( 1 )
-		gbSizer211.AddGrowableRow( 10 )
+		gbSizer211.AddGrowableRow( 11 )
 
 		self.m_panel5.SetSizer( gbSizer211 )
 		self.m_panel5.Layout()
 		gbSizer211.Fit( self.m_panel5 )
 		self.m_notebook2.AddPage( self.m_panel5, u"Invigilation", False )
 		self.m_panel6 = wx.Panel( self.m_notebook2, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
+		gbSizer213 = wx.GridBagSizer( 20, 20 )
+		gbSizer213.SetFlexibleDirection( wx.BOTH )
+		gbSizer213.SetNonFlexibleGrowMode( wx.FLEX_GROWMODE_SPECIFIED )
+
+		#Edit
+		self.m_staticText113 = wx.StaticText( self.m_panel6, wx.ID_ANY, u"Staff Duties\n-ROOM: Room, Time\n-STAFF:psrn, name, dept, designation, mobile no., email_id", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText113.Wrap( -1 )
+
+		gbSizer213.Add( self.m_staticText113, wx.GBPosition( 0, 0 ), wx.GBSpan( 1, 1 ), wx.ALIGN_CENTER_VERTICAL|wx.ALL, 5 )
+
+		self.staff_duties_staff_details_excel_picker = wx.FilePickerCtrl( self.m_panel6, wx.ID_ANY, wx.EmptyString, u"Select a file", u"*.xlsx;*.xlsm;*.xlsb;*.xls", wx.DefaultPosition, wx.DefaultSize, wx.FLP_DEFAULT_STYLE )
+		gbSizer213.Add( self.staff_duties_staff_details_excel_picker, wx.GBPosition( 0, 1 ), wx.GBSpan( 1, 1 ), wx.ALL|wx.EXPAND, 5 )
+
+		self.m_staticText215 = wx.StaticText( self.m_panel6, wx.ID_ANY, u"Staff Leaves\n-psrn, email_id, start_date, end_date", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText215.Wrap( 350 )
+
+		gbSizer213.Add( self.m_staticText215, wx.GBPosition( 1, 0 ), wx.GBSpan( 1, 1 ), wx.ALIGN_CENTER_VERTICAL|wx.ALL, 5 )
+
+		self.staff_duties_staff_leaves_excel_picker = wx.FilePickerCtrl( self.m_panel6, wx.ID_ANY, wx.EmptyString, u"Select a file", u"*.xlsx;*.xlsm;*.xlsb;*.xls", wx.DefaultPosition, wx.DefaultSize, wx.FLP_DEFAULT_STYLE )
+		gbSizer213.Add( self.staff_duties_staff_leaves_excel_picker, wx.GBPosition( 1, 1 ), wx.GBSpan( 1, 1 ), wx.ALL|wx.EXPAND, 5 )
+
+		self.m_staticText217 = wx.StaticText( self.m_panel6, wx.ID_ANY, u"Max duties\n-psrn, max_duties", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText217.Wrap( 350 )
+
+		gbSizer213.Add( self.m_staticText217, wx.GBPosition( 2, 0 ), wx.GBSpan( 1, 1 ), wx.ALIGN_CENTER_VERTICAL|wx.ALL, 5 )
+
+		self.staff_duties_staff_max_duties_excel_picker = wx.FilePickerCtrl( self.m_panel6, wx.ID_ANY, wx.EmptyString, u"Select a file", u"*.xlsx;*.xlsm;*.xlsb;*.xls", wx.DefaultPosition, wx.DefaultSize, wx.FLP_DEFAULT_STYLE )
+		gbSizer213.Add( self.staff_duties_staff_max_duties_excel_picker, wx.GBPosition( 2, 1 ), wx.GBSpan( 1, 1 ), wx.ALL|wx.EXPAND, 5 )
+
+		self.staff_duties_generate_btn = wx.Button( self.m_panel6, wx.ID_ANY, u"Generate", wx.DefaultPosition, wx.DefaultSize, 0 )
+		gbSizer213.Add( self.staff_duties_generate_btn, wx.GBPosition( 3, 0 ), wx.GBSpan( 1, 2 ), wx.ALIGN_CENTER|wx.ALL, 5 )
+
+		self.staff_duties_error_box = wx.stc.StyledTextCtrl(self.m_panel6, wx.ID_ANY, wx.DefaultPosition, wx.Size( -1,-1 ), 0)
+		self.staff_duties_error_box.SetUseTabs ( True )
+		self.staff_duties_error_box.SetTabWidth ( 4 )
+		self.staff_duties_error_box.SetIndent ( 4 )
+		self.staff_duties_error_box.SetTabIndents( True )
+		self.staff_duties_error_box.SetBackSpaceUnIndents( True )
+		self.staff_duties_error_box.SetViewEOL( False )
+		self.staff_duties_error_box.SetViewWhiteSpace( False )
+		self.staff_duties_error_box.SetMarginWidth( 2, 0 )
+		self.staff_duties_error_box.SetIndentationGuides( True )
+		self.staff_duties_error_box.SetMarginWidth( 1, 0 )
+		self.staff_duties_error_box.SetMarginType( 0, wx.stc.STC_MARGIN_NUMBER );
+		self.staff_duties_error_box.SetMarginWidth( 0, self.staff_duties_error_box.TextWidth( wx.stc.STC_STYLE_LINENUMBER, "_99999" ) )
+		self.staff_duties_error_box.MarkerDefine( wx.stc.STC_MARKNUM_FOLDER, wx.stc.STC_MARK_BOXPLUS )
+		self.staff_duties_error_box.MarkerSetBackground( wx.stc.STC_MARKNUM_FOLDER, wx.BLACK)
+		self.staff_duties_error_box.MarkerSetForeground( wx.stc.STC_MARKNUM_FOLDER, wx.WHITE)
+		self.staff_duties_error_box.MarkerDefine( wx.stc.STC_MARKNUM_FOLDEROPEN, wx.stc.STC_MARK_BOXMINUS )
+		self.staff_duties_error_box.MarkerSetBackground( wx.stc.STC_MARKNUM_FOLDEROPEN, wx.BLACK )
+		self.staff_duties_error_box.MarkerSetForeground( wx.stc.STC_MARKNUM_FOLDEROPEN, wx.WHITE )
+		self.staff_duties_error_box.MarkerDefine( wx.stc.STC_MARKNUM_FOLDERSUB, wx.stc.STC_MARK_EMPTY )
+		self.staff_duties_error_box.MarkerDefine( wx.stc.STC_MARKNUM_FOLDEREND, wx.stc.STC_MARK_BOXPLUS )
+		self.staff_duties_error_box.MarkerSetBackground( wx.stc.STC_MARKNUM_FOLDEREND, wx.BLACK )
+		self.staff_duties_error_box.MarkerSetForeground( wx.stc.STC_MARKNUM_FOLDEREND, wx.WHITE )
+		self.staff_duties_error_box.MarkerDefine( wx.stc.STC_MARKNUM_FOLDEROPENMID, wx.stc.STC_MARK_BOXMINUS )
+		self.staff_duties_error_box.MarkerSetBackground( wx.stc.STC_MARKNUM_FOLDEROPENMID, wx.BLACK)
+		self.staff_duties_error_box.MarkerSetForeground( wx.stc.STC_MARKNUM_FOLDEROPENMID, wx.WHITE)
+		self.staff_duties_error_box.MarkerDefine( wx.stc.STC_MARKNUM_FOLDERMIDTAIL, wx.stc.STC_MARK_EMPTY )
+		self.staff_duties_error_box.MarkerDefine( wx.stc.STC_MARKNUM_FOLDERTAIL, wx.stc.STC_MARK_EMPTY )
+		self.staff_duties_error_box.SetSelBackground( True, wx.SystemSettings.GetColour(wx.SYS_COLOUR_HIGHLIGHT ) )
+		self.staff_duties_error_box.SetSelForeground( True, wx.SystemSettings.GetColour(wx.SYS_COLOUR_HIGHLIGHTTEXT ) )
+		gbSizer213.Add( self.staff_duties_error_box, wx.GBPosition( 4, 0 ), wx.GBSpan( 1, 2 ), wx.EXPAND |wx.ALL, 5 )
+
+
+		gbSizer213.AddGrowableCol( 0 )
+		gbSizer213.AddGrowableCol( 1 )
+		gbSizer213.AddGrowableRow( 4 )
+
+		self.m_panel6.SetSizer( gbSizer213 )
+		self.m_panel6.Layout()
+		gbSizer213.Fit( self.m_panel6 )
+		self.m_notebook2.AddPage( self.m_panel6, u"Staff Duties", False )
+		self.m_panel7 = wx.Panel( self.m_notebook2, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
 		gbSizer212 = wx.GridBagSizer( 20, 20 )
 		gbSizer212.SetFlexibleDirection( wx.BOTH )
-		gbSizer212.SetNonFlexibleGrowMode( wx.FLEX_GROWMODE_SPECIFIED )
+		gbSizer212.SetNonFlexibleGrowMode( wx.FLEX_GROWMODE_SPECIFIED )      
+		#Edit
 
-		self.report_config_btn = wx.Button( self.m_panel6, wx.ID_ANY, u"Update Configuration (Application Restart Required)", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.report_config_btn = wx.Button( self.m_panel7, wx.ID_ANY, u"Update Configuration (Application Restart Required)", wx.DefaultPosition, wx.DefaultSize, 0 )
 		gbSizer212.Add( self.report_config_btn, wx.GBPosition( 0, 0 ), wx.GBSpan( 1, 3 ), wx.ALL|wx.EXPAND, 5 )
 
-		self.m_staticText112 = wx.StaticText( self.m_panel6, wx.ID_ANY, u"Invigilation CSV File", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText117 = wx.StaticText( self.m_panel7, wx.ID_ANY, u"Invigilation CSV File", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText117.Wrap( -1 )
+
+		gbSizer212.Add( self.m_staticText117, wx.GBPosition( 1, 0 ), wx.GBSpan( 1, 1 ), wx.ALIGN_CENTER_VERTICAL|wx.ALL, 5 )
+
+		self.report_invig_csv_picker = wx.FilePickerCtrl( self.m_panel7, wx.ID_ANY, wx.EmptyString, u"Select a file", u"*.csv", wx.DefaultPosition, wx.DefaultSize, wx.FLP_DEFAULT_STYLE )
+		gbSizer212.Add( self.report_invig_csv_picker, wx.GBPosition( 1, 1 ), wx.GBSpan( 1, 1 ), wx.ALL|wx.EXPAND, 5 )
+		
+		self.m_staticText112 = wx.StaticText( self.m_panel7, wx.ID_ANY, u"Staff CSV File", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_staticText112.Wrap( -1 )
 
-		gbSizer212.Add( self.m_staticText112, wx.GBPosition( 1, 0 ), wx.GBSpan( 1, 1 ), wx.ALIGN_CENTER_VERTICAL|wx.ALL, 5 )
+		gbSizer212.Add( self.m_staticText112, wx.GBPosition( 2, 0 ), wx.GBSpan( 1, 1 ), wx.ALIGN_CENTER_VERTICAL|wx.ALL, 5 )
 
-		self.report_invig_csv_picker = wx.FilePickerCtrl( self.m_panel6, wx.ID_ANY, wx.EmptyString, u"Select a file", u"*.csv", wx.DefaultPosition, wx.DefaultSize, wx.FLP_DEFAULT_STYLE )
-		gbSizer212.Add( self.report_invig_csv_picker, wx.GBPosition( 1, 1 ), wx.GBSpan( 1, 1 ), wx.ALL|wx.EXPAND, 5 )
+		self.report_staff_csv_picker = wx.FilePickerCtrl( self.m_panel7, wx.ID_ANY, wx.EmptyString, u"Select a file", u"*.csv", wx.DefaultPosition, wx.DefaultSize, wx.FLP_DEFAULT_STYLE )
+		gbSizer212.Add( self.report_staff_csv_picker, wx.GBPosition( 2, 1 ), wx.GBSpan( 1, 1 ), wx.ALL|wx.EXPAND, 5 )
 
-		self.report_invig_generate_btn = wx.Button( self.m_panel6, wx.ID_ANY, u"Generate Invigilation PDFs", wx.DefaultPosition, wx.DefaultSize, 0 )
-		gbSizer212.Add( self.report_invig_generate_btn, wx.GBPosition( 1, 2 ), wx.GBSpan( 1, 1 ), wx.ALL, 5 )
+		self.report_invig_generate_btn = wx.Button( self.m_panel7, wx.ID_ANY, u"Generate Invigilation PDFs", wx.DefaultPosition, wx.DefaultSize, 0 )
+		gbSizer212.Add( self.report_invig_generate_btn, wx.GBPosition( 1, 2 ), wx.GBSpan( 2, 1 ), wx.ALL|wx.EXPAND, 5 )
 
-		self.m_staticText213 = wx.StaticText( self.m_panel6, wx.ID_ANY, u"Room Allotment CSV", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText213 = wx.StaticText( self.m_panel7, wx.ID_ANY, u"Room Allotment CSV", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_staticText213.Wrap( 350 )
 
-		gbSizer212.Add( self.m_staticText213, wx.GBPosition( 2, 0 ), wx.GBSpan( 1, 1 ), wx.ALIGN_CENTER_VERTICAL|wx.ALL, 5 )
+		gbSizer212.Add( self.m_staticText213, wx.GBPosition( 3, 0 ), wx.GBSpan( 1, 1 ), wx.ALIGN_CENTER_VERTICAL|wx.ALL, 5 )
 
-		self.report_room_csv_picker = wx.FilePickerCtrl( self.m_panel6, wx.ID_ANY, wx.EmptyString, u"Select a file", u"*.csv", wx.DefaultPosition, wx.DefaultSize, wx.FLP_DEFAULT_STYLE )
-		gbSizer212.Add( self.report_room_csv_picker, wx.GBPosition( 2, 1 ), wx.GBSpan( 1, 1 ), wx.ALL|wx.EXPAND, 5 )
+		self.report_room_csv_picker = wx.FilePickerCtrl( self.m_panel7, wx.ID_ANY, wx.EmptyString, u"Select a file", u"*.csv", wx.DefaultPosition, wx.DefaultSize, wx.FLP_DEFAULT_STYLE )
+		gbSizer212.Add( self.report_room_csv_picker, wx.GBPosition( 3, 1 ), wx.GBSpan( 1, 1 ), wx.ALL|wx.EXPAND, 5 )
 
-		self.m_staticText31 = wx.StaticText( self.m_panel6, wx.ID_ANY, u"Registered Students CSV File\n-student_id, course_code", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText31 = wx.StaticText( self.m_panel7, wx.ID_ANY, u"Registered Students CSV File\n-student_id, course_code", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_staticText31.Wrap( -1 )
 
-		gbSizer212.Add( self.m_staticText31, wx.GBPosition( 3, 0 ), wx.GBSpan( 1, 1 ), wx.ALL, 5 )
+		gbSizer212.Add( self.m_staticText31, wx.GBPosition( 4, 0 ), wx.GBSpan( 1, 1 ), wx.ALL, 5 )
 
-		self.report_students_csv_picker = wx.FilePickerCtrl( self.m_panel6, wx.ID_ANY, wx.EmptyString, u"Select a file", u"*.csv", wx.DefaultPosition, wx.DefaultSize, wx.FLP_DEFAULT_STYLE )
-		gbSizer212.Add( self.report_students_csv_picker, wx.GBPosition( 3, 1 ), wx.GBSpan( 1, 1 ), wx.ALL|wx.EXPAND, 5 )
+		self.report_students_csv_picker = wx.FilePickerCtrl( self.m_panel7, wx.ID_ANY, wx.EmptyString, u"Select a file", u"*.csv", wx.DefaultPosition, wx.DefaultSize, wx.FLP_DEFAULT_STYLE )
+		gbSizer212.Add( self.report_students_csv_picker, wx.GBPosition( 4, 1 ), wx.GBSpan( 1, 1 ), wx.ALL|wx.EXPAND, 5 )
 
-		self.m_staticText32 = wx.StaticText( self.m_panel6, wx.ID_ANY, u"IC Email Course CSV\ncourse_code, ic_email", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText32 = wx.StaticText( self.m_panel7, wx.ID_ANY, u"IC Email Course CSV\ncourse_code, ic_email", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_staticText32.Wrap( -1 )
 
-		gbSizer212.Add( self.m_staticText32, wx.GBPosition( 4, 0 ), wx.GBSpan( 1, 1 ), wx.ALL, 5 )
+		gbSizer212.Add( self.m_staticText32, wx.GBPosition( 5, 0 ), wx.GBSpan( 1, 1 ), wx.ALL, 5 )
 
-		self.report_ic_csv_picker = wx.FilePickerCtrl( self.m_panel6, wx.ID_ANY, wx.EmptyString, u"Select a file", u"*.csv", wx.DefaultPosition, wx.DefaultSize, wx.FLP_DEFAULT_STYLE )
-		gbSizer212.Add( self.report_ic_csv_picker, wx.GBPosition( 4, 1 ), wx.GBSpan( 1, 1 ), wx.ALL|wx.EXPAND, 5 )
+		self.report_ic_csv_picker = wx.FilePickerCtrl( self.m_panel7, wx.ID_ANY, wx.EmptyString, u"Select a file", u"*.csv", wx.DefaultPosition, wx.DefaultSize, wx.FLP_DEFAULT_STYLE )
+		gbSizer212.Add( self.report_ic_csv_picker, wx.GBPosition( 5, 1 ), wx.GBSpan( 1, 1 ), wx.ALL|wx.EXPAND, 5 )
 
-		self.report_room_map_csv_picker = wx.FilePickerCtrl( self.m_panel6, wx.ID_ANY, wx.EmptyString, u"Select a file", u"*.*", wx.DefaultPosition, wx.DefaultSize, wx.FLP_DEFAULT_STYLE )
-		gbSizer212.Add( self.report_room_map_csv_picker, wx.GBPosition( 5, 1 ), wx.GBSpan( 1, 1 ), wx.ALL|wx.EXPAND, 5 )
+		self.report_room_map_csv_picker = wx.FilePickerCtrl( self.m_panel7, wx.ID_ANY, wx.EmptyString, u"Select a file", u"*.*", wx.DefaultPosition, wx.DefaultSize, wx.FLP_DEFAULT_STYLE )
+		gbSizer212.Add( self.report_room_map_csv_picker, wx.GBPosition( 6, 1 ), wx.GBSpan( 1, 1 ), wx.ALL|wx.EXPAND, 5 )
 
-		self.m_staticText214 = wx.StaticText( self.m_panel6, wx.ID_ANY, u"Room Map", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText214 = wx.StaticText( self.m_panel7, wx.ID_ANY, u"Room Map", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_staticText214.Wrap( -1 )
 
-		gbSizer212.Add( self.m_staticText214, wx.GBPosition( 5, 0 ), wx.GBSpan( 1, 1 ), wx.ALL, 5 )
+		gbSizer212.Add( self.m_staticText214, wx.GBPosition( 6, 0 ), wx.GBSpan( 1, 1 ), wx.ALL, 5 )
 
-		self.report_generate_seat_charts_btn = wx.Button( self.m_panel6, wx.ID_ANY, u"Generate Seating Charts", wx.DefaultPosition, wx.DefaultSize, 0 )
-		gbSizer212.Add( self.report_generate_seat_charts_btn, wx.GBPosition( 2, 2 ), wx.GBSpan( 4, 1 ), wx.ALL|wx.EXPAND, 5 )
+		self.report_generate_seat_charts_btn = wx.Button( self.m_panel7, wx.ID_ANY, u"Generate Seating Charts", wx.DefaultPosition, wx.DefaultSize, 0 )
+		gbSizer212.Add( self.report_generate_seat_charts_btn, wx.GBPosition( 3, 2 ), wx.GBSpan( 4, 1 ), wx.ALL|wx.EXPAND, 5 )
 
-		self.report_error_box = wx.stc.StyledTextCtrl(self.m_panel6, wx.ID_ANY, wx.DefaultPosition, wx.Size( -1,-1 ), 0)
+		self.report_error_box = wx.stc.StyledTextCtrl(self.m_panel7, wx.ID_ANY, wx.DefaultPosition, wx.Size( -1,-1 ), 0)
 		self.report_error_box.SetUseTabs ( True )
 		self.report_error_box.SetTabWidth ( 4 )
 		self.report_error_box.SetIndent ( 4 )
@@ -366,39 +457,39 @@ class MainFrame ( wx.Frame ):
 		self.report_error_box.MarkerDefine( wx.stc.STC_MARKNUM_FOLDERTAIL, wx.stc.STC_MARK_EMPTY )
 		self.report_error_box.SetSelBackground( True, wx.SystemSettings.GetColour(wx.SYS_COLOUR_HIGHLIGHT ) )
 		self.report_error_box.SetSelForeground( True, wx.SystemSettings.GetColour(wx.SYS_COLOUR_HIGHLIGHTTEXT ) )
-		gbSizer212.Add( self.report_error_box, wx.GBPosition( 6, 0 ), wx.GBSpan( 1, 3 ), wx.EXPAND |wx.ALL, 5 )
+		gbSizer212.Add( self.report_error_box, wx.GBPosition( 7, 0 ), wx.GBSpan( 1, 3 ), wx.EXPAND |wx.ALL, 5 )
 
 
 		gbSizer212.AddGrowableCol( 0 )
 		gbSizer212.AddGrowableCol( 1 )
-		gbSizer212.AddGrowableRow( 6 )
+		gbSizer212.AddGrowableRow( 7 )
 
-		self.m_panel6.SetSizer( gbSizer212 )
-		self.m_panel6.Layout()
-		gbSizer212.Fit( self.m_panel6 )
-		self.m_notebook2.AddPage( self.m_panel6, u"Reports", False )
-		self.m_panel7 = wx.Panel( self.m_notebook2, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
+		self.m_panel7.SetSizer( gbSizer212 )
+		self.m_panel7.Layout()
+		gbSizer212.Fit( self.m_panel7 )
+		self.m_notebook2.AddPage( self.m_panel7, u"Reports", False )
+		self.m_panel8 = wx.Panel( self.m_notebook2, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
 		gbSizer15 = wx.GridBagSizer( 0, 0 )
 		gbSizer15.SetFlexibleDirection( wx.BOTH )
 		gbSizer15.SetNonFlexibleGrowMode( wx.FLEX_GROWMODE_SPECIFIED )
 
-		self.mailer_login_btn = wx.Button( self.m_panel7, wx.ID_ANY, u"Login with Gmail", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.mailer_login_btn = wx.Button( self.m_panel8, wx.ID_ANY, u"Login with Gmail", wx.DefaultPosition, wx.DefaultSize, 0 )
 		gbSizer15.Add( self.mailer_login_btn, wx.GBPosition( 0, 0 ), wx.GBSpan( 1, 2 ), wx.ALIGN_CENTER|wx.ALL|wx.EXPAND, 5 )
 
-		self.m_staticText28 = wx.StaticText( self.m_panel7, wx.ID_ANY, u"Subject", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText28 = wx.StaticText( self.m_panel8, wx.ID_ANY, u"Subject", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_staticText28.Wrap( -1 )
 
 		gbSizer15.Add( self.m_staticText28, wx.GBPosition( 1, 0 ), wx.GBSpan( 1, 1 ), wx.ALIGN_CENTER_VERTICAL|wx.ALL, 5 )
 
-		self.mailer_subject_box = wx.TextCtrl( self.m_panel7, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.mailer_subject_box = wx.TextCtrl( self.m_panel8, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
 		gbSizer15.Add( self.mailer_subject_box, wx.GBPosition( 1, 1 ), wx.GBSpan( 1, 1 ), wx.ALL|wx.EXPAND, 5 )
 
-		self.m_staticText29 = wx.StaticText( self.m_panel7, wx.ID_ANY, u"Body", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText29 = wx.StaticText( self.m_panel8, wx.ID_ANY, u"Body", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_staticText29.Wrap( -1 )
 
 		gbSizer15.Add( self.m_staticText29, wx.GBPosition( 2, 0 ), wx.GBSpan( 1, 1 ), wx.ALIGN_CENTER_VERTICAL|wx.ALL, 5 )
 
-		self.mailer_body_box = wx.stc.StyledTextCtrl(self.m_panel7, wx.ID_ANY, wx.DefaultPosition, wx.Size( -1,225 ), 0)
+		self.mailer_body_box = wx.stc.StyledTextCtrl(self.m_panel8, wx.ID_ANY, wx.DefaultPosition, wx.Size( -1,225 ), 0)
 		self.mailer_body_box.SetUseTabs ( True )
 		self.mailer_body_box.SetTabWidth ( 4 )
 		self.mailer_body_box.SetIndent ( 4 )
@@ -429,18 +520,18 @@ class MainFrame ( wx.Frame ):
 		self.mailer_body_box.SetSelForeground( True, wx.SystemSettings.GetColour(wx.SYS_COLOUR_HIGHLIGHTTEXT ) )
 		gbSizer15.Add( self.mailer_body_box, wx.GBPosition( 2, 1 ), wx.GBSpan( 1, 1 ), wx.EXPAND |wx.ALL, 5 )
 
-		self.m_staticText30 = wx.StaticText( self.m_panel7, wx.ID_ANY, u"Directory", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText30 = wx.StaticText( self.m_panel8, wx.ID_ANY, u"Directory", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_staticText30.Wrap( -1 )
 
 		gbSizer15.Add( self.m_staticText30, wx.GBPosition( 3, 0 ), wx.GBSpan( 1, 1 ), wx.ALIGN_CENTER_VERTICAL|wx.ALL, 5 )
 
-		self.mailer_dir_picker = wx.DirPickerCtrl( self.m_panel7, wx.ID_ANY, wx.EmptyString, u"Select a folder", wx.DefaultPosition, wx.DefaultSize, wx.DIRP_DEFAULT_STYLE )
+		self.mailer_dir_picker = wx.DirPickerCtrl( self.m_panel8, wx.ID_ANY, wx.EmptyString, u"Select a folder", wx.DefaultPosition, wx.DefaultSize, wx.DIRP_DEFAULT_STYLE )
 		gbSizer15.Add( self.mailer_dir_picker, wx.GBPosition( 3, 1 ), wx.GBSpan( 1, 1 ), wx.ALL|wx.EXPAND, 5 )
 
-		self.mailer_send_btn = wx.Button( self.m_panel7, wx.ID_ANY, u"Send Mails", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.mailer_send_btn = wx.Button( self.m_panel8, wx.ID_ANY, u"Send Mails", wx.DefaultPosition, wx.DefaultSize, 0 )
 		gbSizer15.Add( self.mailer_send_btn, wx.GBPosition( 4, 0 ), wx.GBSpan( 1, 2 ), wx.ALL|wx.EXPAND, 5 )
 
-		self.mailer_error_box = wx.stc.StyledTextCtrl(self.m_panel7, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, 0)
+		self.mailer_error_box = wx.stc.StyledTextCtrl(self.m_panel8, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, 0)
 		self.mailer_error_box.SetUseTabs ( True )
 		self.mailer_error_box.SetTabWidth ( 4 )
 		self.mailer_error_box.SetIndent ( 4 )
@@ -482,27 +573,27 @@ class MainFrame ( wx.Frame ):
 		gbSizer15.AddGrowableCol( 1 )
 		gbSizer15.AddGrowableRow( 5 )
 
-		self.m_panel7.SetSizer( gbSizer15 )
-		self.m_panel7.Layout()
-		gbSizer15.Fit( self.m_panel7 )
-		self.m_notebook2.AddPage( self.m_panel7, u"Mailer", False )
-		self.m_panel61 = wx.Panel( self.m_notebook2, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
+		self.m_panel8.SetSizer( gbSizer15 )
+		self.m_panel8.Layout()
+		gbSizer15.Fit( self.m_panel8 )
+		self.m_notebook2.AddPage( self.m_panel8, u"Mailer", False )
+		self.m_panel71 = wx.Panel( self.m_notebook2, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
 		bSizer2 = wx.BoxSizer( wx.VERTICAL )
 
-		self.m_staticText25 = wx.StaticText( self.m_panel61, wx.ID_ANY, u"Developed for Timetable Division - BITS Pilani Hyderabad Campus", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText25 = wx.StaticText( self.m_panel71, wx.ID_ANY, u"Developed for Timetable Division - BITS Pilani Hyderabad Campus", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_staticText25.Wrap( -1 )
 
 		self.m_staticText25.SetFont( wx.Font( 15, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, wx.EmptyString ) )
 
 		bSizer2.Add( self.m_staticText25, 0, wx.ALL, 5 )
 
-		self.m_hyperlink1 = wx.adv.HyperlinkCtrl( self.m_panel61, wx.ID_ANY, u"https://github.com/ID-BPHC/Examination-Manager", u"https://github.com/ID-BPHC/Examination-Manager", wx.DefaultPosition, wx.DefaultSize, wx.adv.HL_DEFAULT_STYLE )
+		self.m_hyperlink1 = wx.adv.HyperlinkCtrl( self.m_panel71, wx.ID_ANY, u"https://github.com/ID-BPHC/Examination-Manager", u"https://github.com/ID-BPHC/Examination-Manager", wx.DefaultPosition, wx.DefaultSize, wx.adv.HL_DEFAULT_STYLE )
 		bSizer2.Add( self.m_hyperlink1, 0, wx.ALL, 5 )
 
-		self.m_bitmap2 = wx.StaticBitmap( self.m_panel61, wx.ID_ANY, wx.Bitmap( u"bits-logo.bmp", wx.BITMAP_TYPE_ANY ), wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_bitmap2 = wx.StaticBitmap( self.m_panel71, wx.ID_ANY, wx.Bitmap( u"bits-logo.bmp", wx.BITMAP_TYPE_ANY ), wx.DefaultPosition, wx.DefaultSize, 0 )
 		bSizer2.Add( self.m_bitmap2, 0, wx.ALL, 5 )
 
-		self.m_staticText27 = wx.StaticText( self.m_panel61, wx.ID_ANY, u"Developers:\n\nSohail Rajdev               2016AATS0158H\nVaibhav Kumar Tyagi    2016A7PS0141H", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText27 = wx.StaticText( self.m_panel71, wx.ID_ANY, u"Developers:\n\nSohail Rajdev               2016AATS0158H\nVaibhav Kumar Tyagi    2016A7PS0141H", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_staticText27.Wrap( -1 )
 
 		self.m_staticText27.SetFont( wx.Font( 10, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, wx.EmptyString ) )
@@ -510,10 +601,10 @@ class MainFrame ( wx.Frame ):
 		bSizer2.Add( self.m_staticText27, 0, wx.ALL, 5 )
 
 
-		self.m_panel61.SetSizer( bSizer2 )
-		self.m_panel61.Layout()
-		bSizer2.Fit( self.m_panel61 )
-		self.m_notebook2.AddPage( self.m_panel61, u"About", False )
+		self.m_panel71.SetSizer( bSizer2 )
+		self.m_panel71.Layout()
+		bSizer2.Fit( self.m_panel71 )
+		self.m_notebook2.AddPage( self.m_panel71, u"About", False )
 
 		bSizer1.Add( self.m_notebook2, 1, wx.EXPAND |wx.ALL, 5 )
 

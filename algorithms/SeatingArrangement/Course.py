@@ -21,11 +21,14 @@ class Course:
             if start_index >= len(self.students):
                 break
 
-            end_index = start_index + \
-                room[1] - 1 if start_index + room[1] - \
-                1 < len(self.students) else -1
+            end_index = (
+                start_index + room[1] - 1
+                if start_index + room[1] - 1 < len(self.students)
+                else -1
+            )
             slices.append(
-                (room[0], room[1], self.students[start_index], self.students[end_index]))
+                (room[0], room[1], self.students[start_index], self.students[end_index])
+            )
             start_index += room[1]
 
         return slices
@@ -64,7 +67,6 @@ class CourseList:
         self.courses.sort(key=lambda x: x.code)
 
         for course in self.courses:
-            course.rooms.sort()
             course.students.sort()
 
     def __repr__(self):
