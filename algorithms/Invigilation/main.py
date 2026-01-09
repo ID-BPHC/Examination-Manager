@@ -262,6 +262,36 @@ def get_secondary_invigilator(course, invigilator_list, start, end):
         print("Could not get secondary invigilator", course)
         return None
 
+def get_big_course_extra_invigilator(course, invigilator_list, start, end):
+    # Get invigilator for big courses. course scholar > department scholar > course faculty > department faculty > other dept
+    try:
+        fns = [
+            partial(course.get_available_scholar, start, end),
+            partial(
+                invigilator_list.get_available_department_scholar,
+                course.ic.department,
+                start,
+                end,
+            ),
+            partial(course.get_available_faculty, start, end),
+            partial(
+                invigilator_list.get_available_department_faculty,
+                course.ic.department,
+                start,
+                end,
+            ),
+            partial(invigilator_list.get_available_faculty, start, end),
+            partial(invigilator_list.get_available_scholar, start, end),
+        ]
+
+        for fn in fns:
+            invigilator = fn()
+
+            if invigilator is not None:
+                return invigilator
+    except:
+        print("Could not get big course extra invigilator", course)
+        return None
 
 def get_reserved_invigilator(invigilator_list, start, end):
     fns = [
@@ -502,7 +532,6 @@ def assign_invigilators(master_map, invigilator_list):
                     ] = right_invigilator
         flag = not flag
 
-
 def assign_ics(master_map):
     ic_assigned_set = set()
 
@@ -592,6 +621,7 @@ def assign_course_faculty(master_map):
                     if faculty is not None:
                         master_map[room][time_slot_key]["left_invigilator"] = faculty
                         faculty.duties.append(Duty(room, left_course, start, end))
+                        continue
 
                 if master_map[room][time_slot_key]["right_invigilator"] is None:
                     faculty = right_course.get_available_faculty(start, end)
@@ -599,6 +629,7 @@ def assign_course_faculty(master_map):
                     if faculty is not None:
                         master_map[room][time_slot_key]["right_invigilator"] = faculty
                         faculty.duties.append(Duty(room, right_course, start, end))
+                        continue
             else:
                 # Flag = False: Try right course first, then left course
                 if master_map[room][time_slot_key]["right_invigilator"] is None:
@@ -607,6 +638,7 @@ def assign_course_faculty(master_map):
                     if faculty is not None:
                         master_map[room][time_slot_key]["right_invigilator"] = faculty
                         faculty.duties.append(Duty(room, right_course, start, end))
+                        continue
 
                 if master_map[room][time_slot_key]["left_invigilator"] is None:
                     faculty = left_course.get_available_faculty(start, end)
@@ -614,6 +646,7 @@ def assign_course_faculty(master_map):
                     if faculty is not None:
                         master_map[room][time_slot_key]["left_invigilator"] = faculty
                         faculty.duties.append(Duty(room, left_course, start, end))
+                        continue
 
         flag = not flag
 
@@ -641,32 +674,34 @@ def assign_big_course_invigilators(master_map, invigilator_list, big_course_cuto
             if left_course.code not in extra_assigned_set:
                 for value in intervals:
                     if left_course.enrolment_count >= value:
-                        extra_invigilator = get_secondary_invigilator(
-                            left_course, invigilator_list, start, end
-                        )
+                        # extra_invigilator = get_secondary_invigilator(
+                        #     left_course, invigilator_list, start, end
+                        # )
 
                         for duty in left_course.ic.duties:
                             if duty.course == left_course:
-                                if right_invigilator.is_research_scholar:
-                                    extra_invigilator = get_primary_invigilator(
+                                if duty.room!="TBA" and right_invigilator is not None and right_invigilator.is_research_scholar:
+                                    extra_invigilator=get_primary_invigilator(left_course, invigilator_list, start, end)
+                                elif duty.room!="TBA" and right_invigilator is not None and not right_invigilator.is_research_scholar:
+                                    extra_invigilator=get_secondary_invigilator(left_course, invigilator_list, start, end)
+                                else:
+                                    extra_invigilator = get_big_course_extra_invigilator(
                                         left_course, invigilator_list, start, end
                                     )
-                                elif (
-                                    not right_invigilator.is_research_scholar
-                                    or extra_invigilator is None
-                                ):
-                                    extra_invigilator = get_secondary_invigilator(
-                                        left_course, invigilator_list, start, end
+                                if extra_invigilator is None:
+                                    print(
+                                        f"****** ERROR: No EXTRA Invigilators left for {left_course.code} @ {time_slot_key} ******"
                                     )
-
+                                    continue
                                 left_invigilator = extra_invigilator
 
                                 extra_invigilator.duties.append(
                                     Duty(duty.room, left_course, start, end)
                                 )
-                                master_map[room][time_slot_key][
-                                    "left_invigilator"
-                                ] = extra_invigilator
+                                if duty.room!="TBA":
+                                    master_map[room][time_slot_key][
+                                        "left_invigilator"
+                                    ] = extra_invigilator
                                 duty.room = "TBA"
                                 break
 
@@ -675,33 +710,35 @@ def assign_big_course_invigilators(master_map, invigilator_list, big_course_cuto
             if right_course.code not in extra_assigned_set:
                 for value in intervals:
                     if right_course.enrolment_count >= value:
-                        extra_invigilator = get_secondary_invigilator(
-                            right_course, invigilator_list, start, end
-                        )
+                        # extra_invigilator = get_secondary_invigilator(
+                        #     right_course, invigilator_list, start, end
+                        # )
 
-                        if extra_invigilator is None:
-                            print(
-                                f"****** ERROR: No EXTRA Invigilators left for {right_course.code} @ {time_slot_key} ******"
-                            )
-                            continue
+                        # if extra_invigilator is None:
+                        #     print(
+                        #         f"****** ERROR: No EXTRA Invigilators left for {right_course.code} @ {time_slot_key} ******"
+                        #     )
+                        #     continue
 
                         for duty in right_course.ic.duties:
                             if duty.course == right_course:
-                                if left_invigilator.is_research_scholar:
-                                    extra_invigilator = get_primary_invigilator(
+                                if duty.room!="TBA" and left_invigilator is not None and left_invigilator.is_research_scholar:
+                                    extra_invigilator=get_primary_invigilator(right_course, invigilator_list, start, end)
+                                elif duty.room!="TBA" and left_invigilator is not None and not left_invigilator.is_research_scholar:
+                                    extra_invigilator=get_secondary_invigilator(right_course, invigilator_list, start, end)
+                                else:
+                                    extra_invigilator = get_big_course_extra_invigilator(
                                         right_course, invigilator_list, start, end
                                     )
-                                elif (
-                                    not left_invigilator.is_research_scholar
-                                    or extra_invigilator is None
-                                ):
-                                    extra_invigilator = get_secondary_invigilator(
-                                        right_course, invigilator_list, start, end
+                                if extra_invigilator is None:
+                                    print(
+                                        f"****** ERROR: No EXTRA Invigilators left for {right_course.code} @ {time_slot_key} ******"
                                     )
-
-                                master_map[room][time_slot_key][
-                                    "right_invigilator"
-                                ] = extra_invigilator
+                                    continue
+                                if duty.room!="TBA":
+                                    master_map[room][time_slot_key][
+                                        "right_invigilator"
+                                    ] = extra_invigilator
                                 extra_invigilator.duties.append(
                                     Duty(duty.room, right_course, start, end)
                                 )
@@ -772,16 +809,14 @@ def assign_big_room_3_invigilators(master_map, invigilator_list, big_rooms_3):
             right_invigilator = master_map[room][time_slot_key]["right_invigilator"]
             invigilator = None
 
-            if left_invigilator.is_research_scholar:
-                invigilator = get_secondary_invigilator(
+            invigilator = get_secondary_invigilator(
+                left_course, invigilator_list, start, end
+            )
+            if invigilator is None:
+                invigilator = get_primary_invigilator(
                     left_course, invigilator_list, start, end
                 )
-                invigilator.duties.append(Duty(room, left_course, start, end))
-            else:
-                invigilator = get_secondary_invigilator(
-                    left_course, invigilator_list, start, end
-                )
-                invigilator.duties.append(Duty(room, right_course, start, end))
+            invigilator.duties.append(Duty(room, right_course, start, end))
 
 
 def assign_reserved_duties(master_map, invigilator_list, reserve_duties):
@@ -885,13 +920,13 @@ def start_invigilation_process(
     assign_ics(master_map)
 
     assign_course_faculty(master_map)
+    
+    assign_big_course_invigilators(master_map, invigilator_list, big_course_cutoffs)
 
     assign_invigilators(master_map, invigilator_list)
 
-    assign_big_course_invigilators(master_map, invigilator_list, big_course_cutoffs)
-
     assign_big_room_4_invigilators(master_map, invigilator_list, ["F102", "F105"])
-
+    
     assign_big_room_3_invigilators(master_map, invigilator_list, big_rooms_3)
 
     assign_reserved_duties(master_map, invigilator_list, reserve_duties)
