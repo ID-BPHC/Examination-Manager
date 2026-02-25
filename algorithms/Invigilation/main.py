@@ -156,9 +156,19 @@ def get_master_map(course_list, file_name):
                 "right_course": None,
                 "left_invigilator": None,
                 "right_invigilator": None,
+                "extra_course": None,
+                "extra_invigilator": None,
             }
 
-        if lr == "LEFT":
+        if lr=="EXTRA":
+            if master_map[room][time_slot_key]["extra_course"] is not None:
+                print(
+                    f"****** ERROR: Duplicate Entry in Room Allotment for {room} @ {time_slot_key} ******"
+                )
+
+            master_map[room][time_slot_key]["extra_course"] = course
+
+        elif lr == "LEFT":
             if master_map[room][time_slot_key]["left_course"] is not None:
                 print(
                     f"****** ERROR: Duplicate Entry in Room Allotment for {room} @ {time_slot_key} ******"
@@ -306,6 +316,61 @@ def get_reserved_invigilator(invigilator_list, start, end):
             return invigilator
 
     return None
+
+def assign_third_course_invigilator(master_map, invigilator_list):
+    for room in master_map:
+        for time_slot_key in master_map[room]:
+            start = None
+            end = None
+            try:
+                start, end = get_dates_from_key(time_slot_key)
+            except:
+                print(
+                    f"****** ERROR: Invalid time slot key '{time_slot_key}' in room {room} ******"
+                )
+                print("Invigilation will not be done for this slot", os.linesep)
+                continue
+
+            extra_course = master_map[room][time_slot_key]["extra_course"]
+            extra_invigilator = master_map[room][time_slot_key]["extra_invigilator"]
+
+            if extra_course is None:
+                continue
+
+            if extra_invigilator is None :
+                faculty = extra_course.get_available_faculty(start, end)
+
+                if faculty is not None:
+                    master_map[room][time_slot_key]["extra_invigilator"] = faculty
+                    faculty.duties.append(Duty(room, extra_course, start, end))
+                    continue
+
+                extra_invigilator = get_primary_invigilator(
+                        extra_course, invigilator_list, start, end
+                    )
+                
+                if extra_invigilator is not None :
+                    master_map[room][time_slot_key]["extra_invigilator"] = extra_invigilator
+                    extra_invigilator.duties.append(
+                            Duty(room, extra_course, start, end)
+                        )
+                    continue
+                    
+                extra_invigilator = get_secondary_invigilator(
+                        extra_course, invigilator_list, start, end
+                    )
+                
+                if extra_invigilator is not None :
+                    master_map[room][time_slot_key]["extra_invigilator"] = extra_invigilator
+                    extra_invigilator.duties.append(
+                            Duty(room, extra_course, start, end)
+                        )
+                    continue
+
+                if extra_invigilator is None :
+                    print(
+                        f"****** ERROR: Could not allot invigilator at '{room}' for Extra Course '{extra_course.code}' "
+                    )
 
 
 def assign_invigilators(master_map, invigilator_list):
@@ -924,6 +989,8 @@ def start_invigilation_process(
     assign_big_course_invigilators(master_map, invigilator_list, big_course_cutoffs)
 
     assign_invigilators(master_map, invigilator_list)
+
+    assign_third_course_invigilator(master_map, invigilator_list)
 
     assign_big_room_4_invigilators(master_map, invigilator_list, ["F102", "F105"])
     
