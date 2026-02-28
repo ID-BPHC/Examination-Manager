@@ -1,5 +1,6 @@
 import pandas as pd
 import os
+from datetime import datetime
 
 # Set Pandas to display all rows and columns
 pd.set_option("display.max_rows", None)  # Show all rows
@@ -208,6 +209,16 @@ def main_allot(room_data, staff_data, leave_data, duty_limits):
     merged_df = merged_df.sort_values(by=["Date", "Start Time", "Room"])
     return merged_df
 
+def is_sat_AN(date,period):
+    if period=="AN" and date.weekday() == 5:
+        return True
+    return False
+
+def has_sat_AN_duty(duties):
+    for duty_date, duty_period, *rest in duties:
+        if is_sat_AN(duty_date,duty_period):
+            return True
+    return False
 
 # Allotment of room captains
 def allot_room_captains(room_data, room_captains, leave_data, duty_limits):
@@ -256,6 +267,9 @@ def allot_room_captains(room_data, room_captains, leave_data, duty_limits):
                     )
                     for duty_date, duty_period, duty_room in duties[captain_id]
                 )
+                and (
+                        not is_sat_AN(row["Date"],row["Period"]) or not has_sat_AN_duty(duties[captain_id])
+                    )
             ):
 
                 timeslots = len(
@@ -287,8 +301,7 @@ def allot_room_captains(room_data, room_captains, leave_data, duty_limits):
             "Room Captain",
         ] = ", ".join(assigned_captains)
 
-    # Convert date back to desired format for display
-    room_data["Date"] = room_data["Date"].dt.strftime("%d-%m-%Y")
+    #room_data["Date"] = room_data["Date"].dt.strftime("%d-%m-%Y")
     return room_data
 
 
@@ -372,6 +385,9 @@ def allot_group_captains(room_data, group_captains, leave_data, duty_limits):
                             captain_id
                         ]
                     )
+                    and (
+                        not is_sat_AN(row["Date"],row["Period"]) or not has_sat_AN_duty(duties[captain_id])
+                    )
                 ):
 
                     room_data.loc[
@@ -399,6 +415,8 @@ def allot_group_captains(room_data, group_captains, leave_data, duty_limits):
                         )
                     break
 
+    # Convert date back to desired format for display
+    room_data["Date"] = room_data["Date"].dt.strftime("%d-%m-%Y")
     return room_data
 
 
@@ -423,7 +441,7 @@ def start_staff_duties_generation(staff_duties, staff_leave, max_duties):
 if __name__ == "__main__":
     # staff_duties = r"C:\Users\Anirudh\Documents\staff duties.xlsx"
 
-    staff_duties = r"C:\Users\Anirudh\Downloads\ROOM STAFF 123.xlsx"
-    staff_leave = r"C:\Users\Anirudh\Downloads\LEAVE.xlsx"
-    max_duties = r"C:\Users\Anirudh\Downloads\MAX DUTY.xlsx"
+    staff_duties = r"M:\EXAMINATION_MANAGER_IDBPHC\files\staffduties\ROOM_STAFF.xlsx"
+    staff_leave = r"M:\EXAMINATION_MANAGER_IDBPHC\files\staffduties\LEAVE.xlsx"
+    max_duties = r"M:\EXAMINATION_MANAGER_IDBPHC\files\staffduties\MAX_DUTY.xlsx"
     start_staff_duties_generation(staff_duties, staff_leave, max_duties)

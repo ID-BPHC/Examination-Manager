@@ -39,6 +39,11 @@ class Invigilator:
             if duty.start_time.date() == start.date():
                 return False
 
+        if start.date().weekday()==5:      #no two duties on saturday    
+            for duty in self.duties:
+                if duty.start_time.date().weekday()==5:
+                    return False
+
         return True
 
     def __repr__(self):

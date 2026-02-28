@@ -936,13 +936,13 @@ def start_invigilation_process(
 
 if __name__ == "__main__":
     start_invigilation_process(
-        r"C:\Users\Anirudh\Desktop\New folder\TTDdata\24-25 sem2\compre\FACULTY.csv",
-        r"C:\Users\Anirudh\Desktop\New folder\TTDdata\24-25 sem2\compre\PHD.csv",
-        r"C:\Users\Anirudh\Desktop\New folder\TTDdata\24-25 sem2\compre\chamber.csv",
-        r"C:\Users\Anirudh\Desktop\New folder\TTDdata\24-25 sem2\compre\For TT.csv",
-        r"C:\Users\Anirudh\Desktop\New folder\TTDdata\24-25 sem2\compre\PhD_Leave_Data (2).csv",
-        r"C:\Users\Anirudh\Desktop\New folder\TTDdata\24-25 sem2\compre\MAX.csv",
-        r"C:\Users\Anirudh\Desktop\New folder\TTDdata\24-25 sem2\compre\RoomAllotment.csv",
+        r"M:\EXAMINATION_MANAGER_IDBPHC\files\dec25invigilation\faculty.csv",
+        r"M:\EXAMINATION_MANAGER_IDBPHC\files\dec25invigilation\PHD.csv",
+        r"M:\EXAMINATION_MANAGER_IDBPHC\files\dec25invigilation\chember.csv",
+        r"M:\EXAMINATION_MANAGER_IDBPHC\files\dec25invigilation\For TT.csv",
+        r"M:\EXAMINATION_MANAGER_IDBPHC\files\dec25invigilation\LEAVE.csv",
+        r"M:\EXAMINATION_MANAGER_IDBPHC\files\dec25invigilation\max.csv",
+        r"M:\EXAMINATION_MANAGER_IDBPHC\files\dec25invigilation\RoomAllotment.csv",
         6,
         [40, 150, 300, 500, 1000],
         ["F103", "F104", "F106"],
