@@ -184,7 +184,6 @@ def generate_seating_charts(
         for room, remark, student_count, capacity in course.rooms:
             keys = get_matched_rooms(room_map, room)
             seated = 0
-            # print(len(keys))
             if len(keys)==2:
                 counts = [student_count//2, student_count]
             else:
@@ -193,10 +192,6 @@ def generate_seating_charts(
                 student_count = counts[index]
                 chart = final_solution[course.time][key]
                 limits = room_map[key]
-
-                # half_cap = int(int(capacity / 2))
-                # start_point = 1 if student_count <= half_cap else 0
-                # step_value = 1 if remark == "FULL" else 2
 
                 # Check if any seat in the room has any value other than an empty string
                 is_room_empty = not any(any(seat != "" for seat in row) for row in chart)
@@ -228,14 +223,6 @@ def generate_seating_charts(
 
                     total_seats = len(all_seats)
 
-                    # 2. Identify which seats are "Even" (Checkerboard)
-                    # We want to use these for the first part of the roll list
-                    # even_seats = [s for s in all_seats if (s[0] + s[1]) % 2 == 0]
-                    # odd_seats = [s for s in all_seats if (s[0] + s[1]) % 2 != 0]
-
-                    # 3. Calculate the "Switch Point"
-                    # How many students can we fit in a perfect checkerboard before we MUST 
-                    # start filling the gaps to accommodate everyone?
                     # Logic: Students left = Seats left
                     # If we have 40 students and 60 seats:
                     # We can skip 20 times. After 20 skips, we must fill every seat.
@@ -262,8 +249,6 @@ def generate_seating_charts(
 
                         # Seat the student
                         row_idx, col_idx = all_seats[seat_ptr]
-                        # if course.code == "ME G633":
-                        #     print(row_idx,col_idx, gaps_taken, max_gaps)
                         student = course.get_next_student()
                         if student:
                             chart[row_idx][col_idx] = f"{course.code} - {student}"
@@ -288,39 +273,8 @@ def generate_seating_charts(
                 f"Seating Arrangement Discrepancy - {len(course.students) - course.allotment_index} students after {course.get_next_student()} for {course.code} - {course.title}"
             )
 
-    # left_out_students_count = 0
-    # for time_room, courses in left_out_students.items():
-    #     room = time_room[0]
-    #     for course_code in courses:
-    #         count = 0
-    #         course = course_list.find_by_code(course_code)
-    #         keys = get_matched_rooms(room_map, room)
-    #         for key in keys:
-    #             chart = final_solution[course.time][key]
-    #             limits = room_map[key]
-    #             for i in range(0, len(limits)):
-    #                 for j in range(start_point, limits[i], step_value):
-    #                     if count == len(left_out_students[time_room][course_code]):
-    #                         break
-
-    #                     student = left_out_students[time_room][course_code][count]
-
-    #                     if chart[limits[i] - j - 1][i] == "":
-    #                         chart[limits[i] - j - 1][i] = f"{course.code} - {student}"
-    #                         left_out_students_copy[time_room][course_code].remove(
-    #                             student
-    #                         )
-    #                         count += 1
-    #                         left_out_students_count += 1
     export_charts(room_map, course_list, final_solution)
-    # print(
-    #     "Number of students alloted after alloting consecutive seats where required",
-    #     left_out_students_count,
-    # )
-    # print(
-    #     "Number of students which are still not alloted ",
-    #     not_alloted_students - left_out_students_count,
-    # )
+
     print(
         "Number of students which are still not alloted ",
         not_alloted_students,
