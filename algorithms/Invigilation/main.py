@@ -272,27 +272,47 @@ def get_secondary_invigilator(course, invigilator_list, start, end):
         print("Could not get secondary invigilator", course)
         return None
 
-def get_big_course_extra_invigilator(course, invigilator_list, start, end):
+def get_big_course_extra_invigilator(course, invigilator_list, start, end, prefer_faculty):
     # Get invigilator for big courses. course scholar > department scholar > course faculty > department faculty > other dept
     try:
-        fns = [
-            partial(course.get_available_scholar, start, end),
-            partial(
-                invigilator_list.get_available_department_scholar,
-                course.ic.department,
-                start,
-                end,
-            ),
-            partial(course.get_available_faculty, start, end),
-            partial(
-                invigilator_list.get_available_department_faculty,
-                course.ic.department,
-                start,
-                end,
-            ),
-            partial(invigilator_list.get_available_faculty, start, end),
-            partial(invigilator_list.get_available_scholar, start, end),
-        ]
+        if prefer_faculty:
+            fns = [
+                partial(course.get_available_faculty, start, end),
+                partial(
+                    invigilator_list.get_available_department_faculty,
+                    course.ic.department,
+                    start,
+                    end,
+                ),
+                partial(course.get_available_scholar, start, end),
+                partial(
+                    invigilator_list.get_available_department_scholar,
+                    course.ic.department,
+                    start,
+                    end,
+                ),
+                partial(invigilator_list.get_available_faculty, start, end),
+                partial(invigilator_list.get_available_scholar, start, end),
+            ]
+        else:
+            fns = [
+                partial(course.get_available_scholar, start, end),
+                partial(
+                    invigilator_list.get_available_department_scholar,
+                    course.ic.department,
+                    start,
+                    end,
+                ),
+                partial(course.get_available_faculty, start, end),
+                partial(
+                    invigilator_list.get_available_department_faculty,
+                    course.ic.department,
+                    start,
+                    end,
+                ),
+                partial(invigilator_list.get_available_faculty, start, end),
+                partial(invigilator_list.get_available_scholar, start, end),
+            ]
 
         for fn in fns:
             invigilator = fn()
@@ -737,6 +757,7 @@ def assign_big_course_invigilators(master_map, invigilator_list, big_course_cuto
             intervals = big_course_cutoffs
 
             if left_course.code not in extra_assigned_set:
+                prefer_faculty = False
                 for value in intervals:
                     if left_course.enrolment_count >= value:
                         # extra_invigilator = get_secondary_invigilator(
@@ -751,8 +772,9 @@ def assign_big_course_invigilators(master_map, invigilator_list, big_course_cuto
                                     extra_invigilator=get_secondary_invigilator(left_course, invigilator_list, start, end)
                                 else:
                                     extra_invigilator = get_big_course_extra_invigilator(
-                                        left_course, invigilator_list, start, end
+                                        left_course, invigilator_list, start, end, prefer_faculty
                                     )
+                                    prefer_faculty = not prefer_faculty
                                 if extra_invigilator is None:
                                     print(
                                         f"****** ERROR: No EXTRA Invigilators left for {left_course.code} @ {time_slot_key} ******"
@@ -773,6 +795,7 @@ def assign_big_course_invigilators(master_map, invigilator_list, big_course_cuto
                 extra_assigned_set.add(left_course.code)
 
             if right_course.code not in extra_assigned_set:
+                prefer_faculty = False
                 for value in intervals:
                     if right_course.enrolment_count >= value:
                         # extra_invigilator = get_secondary_invigilator(
@@ -793,8 +816,9 @@ def assign_big_course_invigilators(master_map, invigilator_list, big_course_cuto
                                     extra_invigilator=get_secondary_invigilator(right_course, invigilator_list, start, end)
                                 else:
                                     extra_invigilator = get_big_course_extra_invigilator(
-                                        right_course, invigilator_list, start, end
+                                        right_course, invigilator_list, start, end, prefer_faculty
                                     )
+                                    prefer_faculty = not prefer_faculty
                                 if extra_invigilator is None:
                                     print(
                                         f"****** ERROR: No EXTRA Invigilators left for {right_course.code} @ {time_slot_key} ******"
