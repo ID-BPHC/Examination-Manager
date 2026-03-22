@@ -184,82 +184,22 @@ def generate_seating_charts(
         for room, remark, student_count, capacity in course.rooms:
             keys = get_matched_rooms(room_map, room)
             seated = 0
-            count = 0
-            for key in keys:
+            if len(keys)==2:
+                counts = [student_count//2, student_count]
+            else:
+                counts = [student_count]
+            for index,key in enumerate(keys):
+                student_count = counts[index]
                 chart = final_solution[course.time][key]
                 limits = room_map[key]
 
-                half_cap = int(int(capacity / 2))
-                start_point = 1 if student_count <= half_cap else 0
-                step_value = 1 if remark == "FULL" else 2
+                # Check if any seat in the room has any value other than an empty string
+                is_room_empty = not any(any(seat != "" for seat in row) for row in chart)
 
-                # Edit
 
-                for i in range(0, len(limits)):
-                    if chart[len(chart) - start_point - 1][i] != "":
-                        start_point = start_point ^ 1
-                    count += start_point
-                    f = False  # flag to make sure first only the chessboard filling is done
-                    if (
-                        remark != "FULL" and student_count > half_cap
-                    ):  # check if uneven fill
-                        if count == capacity - student_count:
-                            row = start_point
-                        elif count > capacity - student_count:
-                            row = 0
-                        elif count < capacity - student_count:
-                            for j in range(
-                                start_point, limits[i], step_value
-                            ):  # fill in chessboard pattern for maximum possible students
-                                if count >= capacity - student_count:
-                                    row = j
-                                    # to continous fill from this point
-                                    break
-                                if j + step_value >= limits[i]:
-                                    f = True
-                                if chart[len(chart) - j - 1][i] == "":
-                                    student = course.get_next_student()
-                                    chart[len(chart) - j - 1][
-                                        i
-                                    ] = f"{course.code} - {student}"
-                                    seated += 1
-                                    if limits[i] - j - 2 >= 0:
-                                        count += 1
-
-                        if f:
-                            start_point = start_point ^ 1
-                            continue
-
-                        while row <= limits[i]:
-
-                            start_point = 0
-                            if seated >= student_count:
-                                break
-                            if chart[len(chart) - row - 1][i] == "":
-                                student = course.get_next_student()
-                                chart[len(chart) - row - 1][
-                                    i
-                                ] = f"{course.code} - {student}"
-
-                                seated += 1
-                            else:
-                                while chart[len(chart) - row - 1][i] != "":
-                                    if row < limits[i]:
-                                        row += 1
-                                    else:
-                                        break
-                                if row < limits[i]:
-                                    student = course.get_next_student()
-
-                                    chart[len(chart) - row - 1][
-                                        i
-                                    ] = f"{course.code} - {student}"
-
-                                    seated += 1
-                            row += 1
-
-                    else:
-                        for j in range(start_point, limits[i], step_value):
+                if remark=="FULL":
+                    for i in range(0, len(limits)):
+                        for j in range(limits[i]):
                             if seated >= student_count:
                                 break
                             if chart[len(chart) - j - 1][i] == "":
@@ -270,10 +210,50 @@ def generate_seating_charts(
                                 ] = f"{course.code} - {student}"
 
                                 seated += 1
+                        
+                else:
+                    # 1. Map out every single seat in physical order
+                    # (Column by Column, Front to Back)
+                    all_seats = []
+                    for i in range(len(limits)):
+                        for j in range(limits[i]):
+                            row_idx = len(chart) - j - 1
+                            if chart[row_idx][i] == "":
+                                all_seats.append((row_idx, i))
 
-                        if remark != "FULL":
-                            start_point = start_point ^ 1
-            # Edit
+                    total_seats = len(all_seats)
+
+                    # Logic: Students left = Seats left
+                    # If we have 40 students and 60 seats:
+                    # We can skip 20 times. After 20 skips, we must fill every seat.
+                    max_gaps = total_seats - student_count + seated
+                    gaps_taken = 0
+
+                    seat_ptr = 0
+                    begin_parity = (all_seats[seat_ptr][0] + all_seats[seat_ptr][1]) % 2
+                    for k in range(student_count):
+                        if seated >= student_count or seat_ptr >= total_seats:
+                            break
+
+                        current_seat = all_seats[seat_ptr]
+
+                        # Decide: Do we take this seat or skip it?
+                        # We skip only if:
+                        # 1. It's an 'Odd' seat (to maintain checkerboard)
+                        # 2. We still have 'gaps' left to give away
+                        while (current_seat[0] + current_seat[1]) % 2 != begin_parity and gaps_taken < max_gaps:
+                            gaps_taken += 1
+                            seat_ptr += 1
+                            if seat_ptr >= total_seats: break
+                            current_seat = all_seats[seat_ptr]
+
+                        # Seat the student
+                        row_idx, col_idx = all_seats[seat_ptr]
+                        student = course.get_next_student()
+                        if student:
+                            chart[row_idx][col_idx] = f"{course.code} - {student}"
+                            seated += 1
+                            seat_ptr += 1 # Move to next seat for next student
 
             for i in range(seated, student_count):
                 key_dict = (room, course.time)
@@ -293,38 +273,11 @@ def generate_seating_charts(
                 f"Seating Arrangement Discrepancy - {len(course.students) - course.allotment_index} students after {course.get_next_student()} for {course.code} - {course.title}"
             )
 
-    left_out_students_count = 0
-    for time_room, courses in left_out_students.items():
-        room = time_room[0]
-        for course_code in courses:
-            count = 0
-            course = course_list.find_by_code(course_code)
-            keys = get_matched_rooms(room_map, room)
-            for key in keys:
-                chart = final_solution[course.time][key]
-                limits = room_map[key]
-                for i in range(0, len(limits)):
-                    for j in range(start_point, limits[i], step_value):
-                        if count == len(left_out_students[time_room][course_code]):
-                            break
-
-                        student = left_out_students[time_room][course_code][count]
-
-                        if chart[limits[i] - j - 1][i] == "":
-                            chart[limits[i] - j - 1][i] = f"{course.code} - {student}"
-                            left_out_students_copy[time_room][course_code].remove(
-                                student
-                            )
-                            count += 1
-                            left_out_students_count += 1
     export_charts(room_map, course_list, final_solution)
-    print(
-        "Number of students alloted after alloting consecutive seats where required",
-        left_out_students_count,
-    )
+
     print(
         "Number of students which are still not alloted ",
-        not_alloted_students - left_out_students_count,
+        not_alloted_students,
     )
 
     print("Exporting Error file to error_file.csv ...")
@@ -546,8 +499,8 @@ def export_charts(room_map, course_list, final_solution):
 
 if __name__ == "__main__":
     generate_seating_charts(
-        r"C:\Users\Anirudh\Desktop\New folder\TTDdata\24-25 sem 1\compre\room_map.csv",
-        r"C:\Users\Anirudh\Desktop\New folder\TTDdata\24-25 sem 1\compre\RoomAllotment 123.csv",
-        r"C:\Users\Anirudh\Desktop\New folder\TTDdata\24-25 sem 1\compre\NAME ATTENDANCE STUDENT.csv",
-        r"C:\Users\Anirudh\Desktop\New folder\TTDdata\24-25 sem 1\compre\IC DETAILS.csv",
+        r"M:\EXAMINATION_MANAGER_IDBPHC\files\roomchar_mar26\room_map (1).csv",
+        r"M:\EXAMINATION_MANAGER_IDBPHC\files\roomchar_mar26\RoomAllotment checked.csv",
+        r"M:\EXAMINATION_MANAGER_IDBPHC\files\roomchar_mar26\SEATING ATTENDANCE.csv",
+        r"M:\EXAMINATION_MANAGER_IDBPHC\files\roomchar_mar26\ic email.csv",
     )
