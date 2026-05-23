@@ -272,27 +272,47 @@ def get_secondary_invigilator(course, invigilator_list, start, end):
         print("Could not get secondary invigilator", course)
         return None
 
-def get_big_course_extra_invigilator(course, invigilator_list, start, end):
-    # Get invigilator for big courses. course scholar > department scholar > course faculty > department faculty > other dept
+def get_big_course_extra_invigilator(course, invigilator_list, start, end, prefer_faculty):
+    # Get invigilator for big courses. flag to alternate between preferring faculty or scholars
     try:
-        fns = [
-            partial(course.get_available_scholar, start, end),
-            partial(
-                invigilator_list.get_available_department_scholar,
-                course.ic.department,
-                start,
-                end,
-            ),
-            partial(course.get_available_faculty, start, end),
-            partial(
-                invigilator_list.get_available_department_faculty,
-                course.ic.department,
-                start,
-                end,
-            ),
-            partial(invigilator_list.get_available_faculty, start, end),
-            partial(invigilator_list.get_available_scholar, start, end),
-        ]
+        if prefer_faculty:
+            fns = [
+                partial(course.get_available_faculty, start, end),
+                partial(
+                    invigilator_list.get_available_department_faculty,
+                    course.ic.department,
+                    start,
+                    end,
+                ),
+                partial(course.get_available_scholar, start, end),
+                partial(
+                    invigilator_list.get_available_department_scholar,
+                    course.ic.department,
+                    start,
+                    end,
+                ),
+                partial(invigilator_list.get_available_faculty, start, end),
+                partial(invigilator_list.get_available_scholar, start, end),
+            ]
+        else:
+            fns = [
+                partial(course.get_available_scholar, start, end),
+                partial(
+                    invigilator_list.get_available_department_scholar,
+                    course.ic.department,
+                    start,
+                    end,
+                ),
+                partial(course.get_available_faculty, start, end),
+                partial(
+                    invigilator_list.get_available_department_faculty,
+                    course.ic.department,
+                    start,
+                    end,
+                ),
+                partial(invigilator_list.get_available_faculty, start, end),
+                partial(invigilator_list.get_available_scholar, start, end),
+            ]
 
         for fn in fns:
             invigilator = fn()
@@ -616,6 +636,7 @@ def assign_ics(master_map):
 
             left_course = master_map[room][time_slot_key]["left_course"]
             right_course = master_map[room][time_slot_key]["right_course"]
+            extra_course = master_map[room][time_slot_key]["extra_course"]
 
             if (left_course is not None) and (left_course.code not in ic_assigned_set):
                 ic_assigned_set.add(left_course.code)
@@ -640,6 +661,20 @@ def assign_ics(master_map):
 
                 else:
                     print(f"****** ERROR: IC is None for {right_course.code} ******")
+            
+            if (extra_course is not None) and (
+                extra_course.code not in ic_assigned_set
+            ):
+                ic_assigned_set.add(extra_course.code)
+
+                if extra_course.ic is not None:
+                    master_map[room][time_slot_key][
+                        "extra_invigilator"
+                    ] = extra_course.ic
+                    extra_course.ic.duties.append(Duty(room, extra_course, start, end))
+
+                else:
+                    print(f"****** ERROR: IC is None for {extra_course.code} ******")
 
 
 def assign_course_faculty(master_map):
@@ -731,12 +766,14 @@ def assign_big_course_invigilators(master_map, invigilator_list, big_course_cuto
 
             left_course = master_map[room][time_slot_key]["left_course"]
             right_course = master_map[room][time_slot_key]["right_course"]
+            third_course = master_map[room][time_slot_key]["extra_course"]
             left_invigilator = master_map[room][time_slot_key]["left_invigilator"]
             right_invigilator = master_map[room][time_slot_key]["right_invigilator"]
 
             intervals = big_course_cutoffs
 
             if left_course.code not in extra_assigned_set:
+                prefer_faculty = False
                 for value in intervals:
                     if left_course.enrolment_count >= value:
                         # extra_invigilator = get_secondary_invigilator(
@@ -751,8 +788,9 @@ def assign_big_course_invigilators(master_map, invigilator_list, big_course_cuto
                                     extra_invigilator=get_secondary_invigilator(left_course, invigilator_list, start, end)
                                 else:
                                     extra_invigilator = get_big_course_extra_invigilator(
-                                        left_course, invigilator_list, start, end
+                                        left_course, invigilator_list, start, end, prefer_faculty
                                     )
+                                    prefer_faculty = not prefer_faculty
                                 if extra_invigilator is None:
                                     print(
                                         f"****** ERROR: No EXTRA Invigilators left for {left_course.code} @ {time_slot_key} ******"
@@ -773,17 +811,9 @@ def assign_big_course_invigilators(master_map, invigilator_list, big_course_cuto
                 extra_assigned_set.add(left_course.code)
 
             if right_course.code not in extra_assigned_set:
+                prefer_faculty = False
                 for value in intervals:
                     if right_course.enrolment_count >= value:
-                        # extra_invigilator = get_secondary_invigilator(
-                        #     right_course, invigilator_list, start, end
-                        # )
-
-                        # if extra_invigilator is None:
-                        #     print(
-                        #         f"****** ERROR: No EXTRA Invigilators left for {right_course.code} @ {time_slot_key} ******"
-                        #     )
-                        #     continue
 
                         for duty in right_course.ic.duties:
                             if duty.course == right_course:
@@ -793,8 +823,9 @@ def assign_big_course_invigilators(master_map, invigilator_list, big_course_cuto
                                     extra_invigilator=get_secondary_invigilator(right_course, invigilator_list, start, end)
                                 else:
                                     extra_invigilator = get_big_course_extra_invigilator(
-                                        right_course, invigilator_list, start, end
+                                        right_course, invigilator_list, start, end, prefer_faculty
                                     )
+                                    prefer_faculty = not prefer_faculty
                                 if extra_invigilator is None:
                                     print(
                                         f"****** ERROR: No EXTRA Invigilators left for {right_course.code} @ {time_slot_key} ******"
@@ -811,6 +842,34 @@ def assign_big_course_invigilators(master_map, invigilator_list, big_course_cuto
                                 break
 
                 extra_assigned_set.add(right_course.code)
+
+            if (third_course is not None) and third_course.code not in extra_assigned_set:
+                prefer_faculty = True
+                for value in intervals:
+                    if third_course.enrolment_count >= value:
+                        for duty in third_course.ic.duties:
+                            if duty.course == third_course:
+                                extra_invigilator = get_big_course_extra_invigilator(
+                                    third_course, invigilator_list, start, end, prefer_faculty
+                                )
+                                prefer_faculty = not prefer_faculty
+                                if extra_invigilator is None:
+                                    print(
+                                        f"****** ERROR: No EXTRA Invigilators left for {third_course.code} @ {time_slot_key} ******"
+                                    )
+                                    continue
+
+                                extra_invigilator.duties.append(
+                                    Duty(duty.room, third_course, start, end)
+                                )
+                                if duty.room!="TBA":
+                                    master_map[room][time_slot_key][
+                                        "extra_invigilator"
+                                    ] = extra_invigilator
+                                duty.room = "TBA"
+                                break
+
+                extra_assigned_set.add(third_course.code)
 
 
 def assign_big_room_4_invigilators(master_map, invigilator_list, big_rooms):
@@ -1003,13 +1062,13 @@ def start_invigilation_process(
 
 if __name__ == "__main__":
     start_invigilation_process(
-        r"M:\EXAMINATION_MANAGER_IDBPHC\files\dec25invigilation\faculty.csv",
-        r"M:\EXAMINATION_MANAGER_IDBPHC\files\dec25invigilation\PHD.csv",
-        r"M:\EXAMINATION_MANAGER_IDBPHC\files\dec25invigilation\chember.csv",
-        r"M:\EXAMINATION_MANAGER_IDBPHC\files\dec25invigilation\For TT.csv",
-        r"M:\EXAMINATION_MANAGER_IDBPHC\files\dec25invigilation\LEAVE.csv",
-        r"M:\EXAMINATION_MANAGER_IDBPHC\files\dec25invigilation\max.csv",
-        r"M:\EXAMINATION_MANAGER_IDBPHC\files\dec25invigilation\RoomAllotment.csv",
+        r"M:\EXAMINATION_MANAGER_IDBPHC\files\invig_compre_may26\FACULTY.csv",
+        r"M:\EXAMINATION_MANAGER_IDBPHC\files\invig_compre_may26\PHD.csv",
+        r"M:\EXAMINATION_MANAGER_IDBPHC\files\invig_compre_may26\CHAMBER.csv",
+        r"M:\EXAMINATION_MANAGER_IDBPHC\files\invig_compre_may26\TIMETABLE.csv",
+        r"M:\EXAMINATION_MANAGER_IDBPHC\files\invig_compre_may26\PhD_Leave_Data (3).csv",
+        r"M:\EXAMINATION_MANAGER_IDBPHC\files\invig_compre_may26\MAX.csv",
+        r"M:\EXAMINATION_MANAGER_IDBPHC\files\invig_compre_may26\RoomAllotment.csv",
         6,
         [40, 150, 300, 500, 1000],
         ["F103", "F104", "F106"],
