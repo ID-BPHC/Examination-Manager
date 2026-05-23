@@ -183,12 +183,15 @@ def generate_seating_charts(
     for course in course_list.courses:
         for room, remark, student_count, capacity in course.rooms:
             keys = get_matched_rooms(room_map, room)
+            total_students = student_count
             seated = 0
             if len(keys)==2:
                 counts = [student_count//2, student_count]
             else:
                 counts = [student_count]
             for index,key in enumerate(keys):
+                if seated>=total_students:
+                    break
                 student_count = counts[index]
                 chart = final_solution[course.time][key]
                 limits = room_map[key]
@@ -499,8 +502,8 @@ def export_charts(room_map, course_list, final_solution):
 
 if __name__ == "__main__":
     generate_seating_charts(
-        r"M:\EXAMINATION_MANAGER_IDBPHC\files\roomchar_mar26\room_map (1).csv",
-        r"M:\EXAMINATION_MANAGER_IDBPHC\files\roomchar_mar26\RoomAllotment checked.csv",
-        r"M:\EXAMINATION_MANAGER_IDBPHC\files\roomchar_mar26\SEATING ATTENDANCE.csv",
-        r"M:\EXAMINATION_MANAGER_IDBPHC\files\roomchar_mar26\ic email.csv",
+        r"M:\EXAMINATION_MANAGER_IDBPHC\files\SeatChart_may26\room_map (1).csv",
+        r"M:\EXAMINATION_MANAGER_IDBPHC\files\SeatChart_may26\RoomAllotment check.csv",
+        r"M:\EXAMINATION_MANAGER_IDBPHC\files\SeatChart_may26\ATTENDANCE.csv",
+        r"M:\EXAMINATION_MANAGER_IDBPHC\files\SeatChart_may26\IC EMAIL.csv",
     )
