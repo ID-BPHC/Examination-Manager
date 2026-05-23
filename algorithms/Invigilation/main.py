@@ -796,6 +796,7 @@ def assign_big_course_invigilators(master_map, invigilator_list, big_course_cuto
                                         f"****** ERROR: No EXTRA Invigilators left for {left_course.code} @ {time_slot_key} ******"
                                     )
                                     continue
+                                left_invigilator = extra_invigilator
 
                                 extra_invigilator.duties.append(
                                     Duty(duty.room, left_course, start, end)
@@ -1061,13 +1062,13 @@ def start_invigilation_process(
 
 if __name__ == "__main__":
     start_invigilation_process(
-        r"M:\EXAMINATION_MANAGER_IDBPHC\files\dec25invigilation\faculty.csv",
-        r"M:\EXAMINATION_MANAGER_IDBPHC\files\dec25invigilation\PHD.csv",
-        r"M:\EXAMINATION_MANAGER_IDBPHC\files\dec25invigilation\chember.csv",
-        r"M:\EXAMINATION_MANAGER_IDBPHC\files\dec25invigilation\For TT.csv",
-        r"M:\EXAMINATION_MANAGER_IDBPHC\files\dec25invigilation\LEAVE.csv",
-        r"M:\EXAMINATION_MANAGER_IDBPHC\files\dec25invigilation\max.csv",
-        r"M:\EXAMINATION_MANAGER_IDBPHC\files\dec25invigilation\RoomAllotment.csv",
+        r"M:\EXAMINATION_MANAGER_IDBPHC\files\invig_compre_may26\FACULTY.csv",
+        r"M:\EXAMINATION_MANAGER_IDBPHC\files\invig_compre_may26\PHD.csv",
+        r"M:\EXAMINATION_MANAGER_IDBPHC\files\invig_compre_may26\CHAMBER.csv",
+        r"M:\EXAMINATION_MANAGER_IDBPHC\files\invig_compre_may26\TIMETABLE.csv",
+        r"M:\EXAMINATION_MANAGER_IDBPHC\files\invig_compre_may26\PhD_Leave_Data (3).csv",
+        r"M:\EXAMINATION_MANAGER_IDBPHC\files\invig_compre_may26\MAX.csv",
+        r"M:\EXAMINATION_MANAGER_IDBPHC\files\invig_compre_may26\RoomAllotment.csv",
         6,
         [40, 150, 300, 500, 1000],
         ["F103", "F104", "F106"],
